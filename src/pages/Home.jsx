@@ -23,6 +23,9 @@ import {
   Calendar,
   BadgeCheck,
   Sparkles,
+  UploadCloud,
+  X,
+  Loader2,
 } from 'lucide-react';
 import {
   latestJobs,
@@ -261,6 +264,50 @@ export default function Home() {
   const [liveSSCNotices, setLiveSSCNotices] = useState([]);
   const [loadingSSC, setLoadingSSC] = useState(true);
 
+  // Resume Matcher States
+  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
+  const [resumeFile, setResumeFile] = useState(null);
+  const [isParsing, setIsParsing] = useState(false);
+  const [resumeKeywords, setResumeKeywords] = useState([]);
+  const [resumeError, setResumeError] = useState('');
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      setResumeError('Please upload a PDF file.');
+      return;
+    }
+    setResumeFile(file);
+    setResumeError('');
+    setIsParsing(true);
+    
+    const formData = new FormData();
+    formData.append('resume', file);
+    
+    try {
+      const res = await fetch('http://localhost:3000/api/parse-resume', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.success && data.text) {
+        const words = data.text.toLowerCase().match(/\b[a-z0-9]{3,}\b/g) || [];
+        const stopWords = ['the','and','for','with','that','this','you','from','are','can','not','has','was','but','all','experience','skills','education','work'];
+        const keywords = [...new Set(words.filter(w => !stopWords.includes(w)))];
+        setResumeKeywords(keywords);
+        setIsResumeModalOpen(false);
+      } else {
+        setResumeError(data.error || 'Failed to parse PDF.');
+      }
+    } catch (err) {
+      console.error(err);
+      setResumeError('Failed to connect to backend parser.');
+    } finally {
+      setIsParsing(false);
+    }
+  };
+
   // Fetch Live SSC Notices
   useEffect(() => {
     async function fetchSSC() {
@@ -332,8 +379,16 @@ export default function Home() {
   const filteredAnswerKeys = filterItems(answerKeys);
   const filteredAdmissions = filterItems(admissions);
   const filteredDocuments = filterItems(documents);
-  const filteredPrivateJobs = filterItems(privateJobs);
+  let filteredPrivateJobs = filterItems(privateJobs);
   const filteredSSCNotices = filterItems(liveSSCNotices);
+
+  if (resumeKeywords.length > 0) {
+    filteredPrivateJobs = filteredPrivateJobs.filter(job => {
+      const jobText = `${job.title} ${job.company} ${job.eligibility || ''}`.toLowerCase();
+      // Match if the job text contains at least one extracted keyword from the resume
+      return resumeKeywords.some(kw => jobText.includes(kw));
+    });
+  }
 
   const hasAnyResults = filteredGovtJobs.length || filteredResults.length || filteredAdmitCards.length ||
     filteredAnswerKeys.length || filteredAdmissions.length || filteredDocuments.length || 
@@ -365,10 +420,11 @@ export default function Home() {
             <a
               key={item.label}
               href="#"
-              className="flex items-center gap-1 text-sm text-gray-700 hover:text-black transition-colors"
+              className="relative flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-black transition-colors py-1 group"
             >
-              {item.label}
-              {item.chevron && <ChevronDown className="w-3.5 h-3.5" />}
+              <span className="relative z-10">{item.label}</span>
+              {item.chevron && <ChevronDown className="w-3.5 h-3.5 relative z-10 group-hover:translate-y-0.5 transition-transform" />}
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
             </a>
           ))}
         </div>
@@ -398,14 +454,20 @@ export default function Home() {
 
         {/* Heading */}
         <h1
-          className="animate-fade-in-up text-5xl sm:text-6xl md:text-7xl lg:text-[80px] font-normal leading-[1.1] tracking-tight mb-5"
+          className="animate-fade-in-up text-5xl sm:text-6xl md:text-7xl lg:text-[80px] font-normal leading-[1.1] tracking-tight mb-5 flex flex-wrap justify-center gap-x-4 gap-y-2"
           style={{ animationDelay: '0.3s', opacity: 0 }}
         >
-          Your Weekly Naukri
-          <br />
-          <span className="bg-gradient-to-r from-blue-950 via-blue-800 to-amber-500 bg-clip-text text-transparent">
-            Updates, Simplified.
-          </span>
+          {['Your', 'Weekly', 'Naukri'].map((word, i) => (
+            <span key={i} className="inline-block hover:-translate-y-2 hover:text-blue-900 transition-all duration-300 cursor-default">
+              {word}
+            </span>
+          ))}
+          <div className="w-full h-0"></div> {/* Line break */}
+          {['Updates,', 'Simplified.'].map((word, i) => (
+            <span key={i} className="inline-block bg-gradient-to-r from-blue-950 via-blue-800 to-amber-500 bg-clip-text text-transparent hover:-translate-y-2 hover:scale-105 transition-all duration-300 cursor-default">
+              {word}
+            </span>
+          ))}
         </h1>
 
         {/* Subheading */}
@@ -811,14 +873,33 @@ export default function Home() {
           )}
 
           {/* ── Private Jobs ──────────────────────────────── */}
-          {showPrivate && filteredPrivateJobs.length > 0 && (
+          {showPrivate && (
           <SectionCard
             icon={Briefcase}
-            title="Private Sector Jobs"
-            subtitle="Top IT, Banking & corporate openings"
+            title={
+              <div className="flex items-center justify-between w-full">
+                <span>Private Sector Jobs</span>
+                {resumeKeywords.length > 0 ? (
+                  <button onClick={() => setResumeKeywords([])} className="text-xs bg-red-500/20 text-red-100 hover:bg-red-500/30 px-3 py-1 rounded-full flex items-center gap-1 transition-colors">
+                    <X className="w-3 h-3" /> Clear Match
+                  </button>
+                ) : (
+                  <button onClick={() => setIsResumeModalOpen(true)} className="text-xs bg-white/20 text-white hover:bg-white/30 px-3 py-1 rounded-full flex items-center gap-1 transition-colors shadow-sm">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-300" /> AI Match Resume
+                  </button>
+                )}
+              </div>
+            }
+            subtitle={resumeKeywords.length > 0 ? `Matched ${filteredPrivateJobs.length} jobs to your skills!` : "Top IT, Banking & corporate openings"}
             color="bg-gradient-to-r from-blue-600 to-cyan-600"
             delay="1.3s"
           >
+            {filteredPrivateJobs.length === 0 && resumeKeywords.length > 0 ? (
+              <div className="p-8 text-center text-gray-500">
+                <p>No private jobs matched your resume skills perfectly right now.</p>
+                <button onClick={() => setResumeKeywords([])} className="mt-2 text-blue-600 font-medium">Clear filter to see all jobs</button>
+              </div>
+            ) : (
             <div className="space-y-0 divide-y divide-gray-100">
               {filteredPrivateJobs.map((pj, i) => (
                 <Link to={`/job/${pj.id}`} key={i} className="flex items-center justify-between py-3 group cursor-pointer block hover:bg-gray-50 -mx-4 px-4 rounded-xl transition-colors">
@@ -841,6 +922,7 @@ export default function Home() {
                 </Link>
               ))}
             </div>
+            )}
             <button className="mt-3 w-full text-center text-sm text-blue-600 font-medium hover:text-blue-800 transition-colors flex items-center justify-center gap-1 cursor-pointer">
               View All Private Jobs <ArrowRight className="w-4 h-4" />
             </button>
@@ -904,8 +986,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── FOOTER ──────────────────────────────────────── */}
-      <footer className="border-t border-gray-200 bg-gray-50">
+      {/* ── Footer ───────────────────────────────────────── */}
+      <footer className="bg-gray-50 border-t border-gray-200 pt-16 pb-8 mt-16">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
@@ -957,6 +1039,41 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* ── Resume Match Modal ───────────────────────────── */}
+      {isResumeModalOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl relative animate-fade-in-up">
+            <button onClick={() => setIsResumeModalOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+            <div className="text-center mb-6">
+              <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Sparkles className="w-6 h-6 text-amber-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">AI Resume Match</h3>
+              <p className="text-sm text-gray-500 mt-1">Upload your PDF resume to instantly find private sector jobs matching your skills.</p>
+            </div>
+            
+            <label className="border-2 border-dashed border-gray-300 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors group">
+              <input type="file" accept=".pdf" className="hidden" onChange={handleFileUpload} disabled={isParsing} />
+              {isParsing ? (
+                <>
+                  <Loader2 className="w-8 h-8 text-blue-600 animate-spin mb-3" />
+                  <span className="text-sm font-medium text-gray-700">Analyzing skills...</span>
+                </>
+              ) : (
+                <>
+                  <UploadCloud className="w-8 h-8 text-gray-400 group-hover:text-blue-600 transition-colors mb-3" />
+                  <span className="text-sm font-medium text-gray-700">Click to upload PDF</span>
+                  <span className="text-xs text-gray-500 mt-1">Max file size: 5MB</span>
+                </>
+              )}
+            </label>
+            {resumeError && <p className="text-sm text-red-500 mt-3 text-center">{resumeError}</p>}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
