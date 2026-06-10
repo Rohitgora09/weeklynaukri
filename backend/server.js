@@ -168,3 +168,28 @@ app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);
   console.log(`API Endpoint: http://localhost:${PORT}/api/ssc-notices`);
 });
+
+// --- AUTO CACHE WARMER & BACKGROUND REFRESH (Every 15 minutes) ---
+const CACHE_WARM_INTERVAL = 15 * 60 * 1000; // 15 minutes
+setInterval(async () => {
+  console.log("Auto-warming scraper cache...");
+  try {
+    await fetchSSCNotices(true);
+    await fetchSarkariResultData(true);
+    console.log("Cache successfully auto-warmed and refreshed!");
+  } catch (err) {
+    console.error("Auto-warm failed:", err);
+  }
+}, CACHE_WARM_INTERVAL);
+
+// Warm cache once on startup after 5 seconds
+setTimeout(async () => {
+  console.log("Initial scraper cache warm on startup...");
+  try {
+    await fetchSSCNotices(true);
+    await fetchSarkariResultData(true);
+    console.log("Initial cache successfully warmed!");
+  } catch (err) {
+    console.error("Initial cache warm failed:", err);
+  }
+}, 5000);
