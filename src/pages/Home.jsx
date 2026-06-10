@@ -454,6 +454,12 @@ export default function Home() {
     setSelectedCategory('All Categories');
   }
 
+  const handleFooterSearch = (category, query) => {
+    setSelectedCategory(category);
+    setSearchQuery(query);
+    document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="bg-white min-h-screen">
       {/* ─── NAVIGATION ──────────────────────────────────── */}
@@ -916,7 +922,10 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-            <button className="mt-3 w-full text-center text-sm text-indigo-600 font-medium hover:text-indigo-800 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+            <button 
+              onClick={() => handleFooterSearch('Govt Jobs', '')}
+              className="mt-3 w-full text-center text-sm text-indigo-600 font-medium hover:text-indigo-800 transition-colors flex items-center justify-center gap-1 cursor-pointer"
+            >
               View All Government Jobs <ArrowRight className="w-4 h-4" />
             </button>
           </SectionCard>
@@ -948,7 +957,10 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-            <button className="mt-3 w-full text-center text-sm text-green-600 font-medium hover:text-green-800 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+            <button 
+              onClick={() => handleFooterSearch('Results', '')}
+              className="mt-3 w-full text-center text-sm text-green-600 font-medium hover:text-green-800 transition-colors flex items-center justify-center gap-1 cursor-pointer"
+            >
               View All Results <ArrowRight className="w-4 h-4" />
             </button>
           </SectionCard>
@@ -984,7 +996,10 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-            <button className="mt-3 w-full text-center text-sm text-orange-600 font-medium hover:text-orange-800 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+            <button 
+              onClick={() => handleFooterSearch('Admit Cards', '')}
+              className="mt-3 w-full text-center text-sm text-orange-600 font-medium hover:text-orange-800 transition-colors flex items-center justify-center gap-1 cursor-pointer"
+            >
               View All Admit Cards <ArrowRight className="w-4 h-4" />
             </button>
           </SectionCard>
@@ -1015,7 +1030,10 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-            <button className="mt-3 w-full text-center text-sm text-teal-600 font-medium hover:text-teal-800 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+            <button 
+              onClick={() => handleFooterSearch('All Categories', 'Admission')}
+              className="mt-3 w-full text-center text-sm text-teal-600 font-medium hover:text-teal-800 transition-colors flex items-center justify-center gap-1 cursor-pointer"
+            >
               View All Admissions <ArrowRight className="w-4 h-4" />
             </button>
           </SectionCard>
@@ -1044,7 +1062,10 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-            <button className="mt-3 w-full text-center text-sm text-sky-600 font-medium hover:text-sky-800 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+            <button 
+              onClick={() => handleFooterSearch('All Categories', '')}
+              className="mt-3 w-full text-center text-sm text-sky-600 font-medium hover:text-sky-800 transition-colors flex items-center justify-center gap-1 cursor-pointer"
+            >
               View All Documents <ArrowRight className="w-4 h-4" />
             </button>
           </SectionCard>
@@ -1101,7 +1122,10 @@ export default function Home() {
               ))}
             </div>
             )}
-            <button className="mt-3 w-full text-center text-sm text-blue-600 font-medium hover:text-blue-800 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+            <button 
+              onClick={() => handleFooterSearch('Private Jobs', '')}
+              className="mt-3 w-full text-center text-sm text-blue-600 font-medium hover:text-blue-800 transition-colors flex items-center justify-center gap-1 cursor-pointer"
+            >
               View All Private Jobs <ArrowRight className="w-4 h-4" />
             </button>
           </SectionCard>
@@ -1180,32 +1204,32 @@ export default function Home() {
             <div>
               <h3 className="text-sm font-semibold text-gray-900 mb-3">Government</h3>
               <ul className="space-y-2 text-sm text-gray-500">
-                <li className="hover:text-black cursor-pointer transition-colors">SSC Jobs</li>
-                <li className="hover:text-black cursor-pointer transition-colors">UPSC Jobs</li>
-                <li className="hover:text-black cursor-pointer transition-colors">Railway Jobs</li>
-                <li className="hover:text-black cursor-pointer transition-colors">Banking Jobs</li>
-                <li className="hover:text-black cursor-pointer transition-colors">Defence Jobs</li>
-                <li className="hover:text-black cursor-pointer transition-colors">State PSC</li>
+                <li onClick={() => handleFooterSearch('Govt Jobs', 'SSC')} className="hover:text-black cursor-pointer transition-colors">SSC Jobs</li>
+                <li onClick={() => handleFooterSearch('Govt Jobs', 'UPSC')} className="hover:text-black cursor-pointer transition-colors">UPSC Jobs</li>
+                <li onClick={() => handleFooterSearch('Govt Jobs', 'Railway')} className="hover:text-black cursor-pointer transition-colors">Railway Jobs</li>
+                <li onClick={() => handleFooterSearch('Govt Jobs', 'Bank')} className="hover:text-black cursor-pointer transition-colors">Banking Jobs</li>
+                <li onClick={() => handleFooterSearch('Govt Jobs', 'Defence')} className="hover:text-black cursor-pointer transition-colors">Defence Jobs</li>
+                <li onClick={() => handleFooterSearch('Govt Jobs', 'PSC')} className="hover:text-black cursor-pointer transition-colors">State PSC</li>
               </ul>
             </div>
             <div>
               <h3 className="text-sm font-semibold text-gray-900 mb-3">Resources</h3>
               <ul className="space-y-2 text-sm text-gray-500">
-                <li className="hover:text-black cursor-pointer transition-colors">Exam Calendar</li>
-                <li className="hover:text-black cursor-pointer transition-colors">Syllabus</li>
-                <li className="hover:text-black cursor-pointer transition-colors">Previous Papers</li>
-                <li className="hover:text-black cursor-pointer transition-colors">Mock Tests</li>
-                <li className="hover:text-black cursor-pointer transition-colors">Admit Cards</li>
-                <li className="hover:text-black cursor-pointer transition-colors">Answer Keys</li>
+                <li onClick={() => handleFooterSearch('All Categories', 'Calendar')} className="hover:text-black cursor-pointer transition-colors">Exam Calendar</li>
+                <li onClick={() => handleFooterSearch('All Categories', 'Syllabus')} className="hover:text-black cursor-pointer transition-colors">Syllabus</li>
+                <li onClick={() => handleFooterSearch('All Categories', 'Previous Paper')} className="hover:text-black cursor-pointer transition-colors">Previous Papers</li>
+                <li onClick={() => handleFooterSearch('All Categories', 'Mock Test')} className="hover:text-black cursor-pointer transition-colors">Mock Tests</li>
+                <li onClick={() => handleFooterSearch('Admit Cards', '')} className="hover:text-black cursor-pointer transition-colors">Admit Cards</li>
+                <li onClick={() => handleFooterSearch('Answer Keys', '')} className="hover:text-black cursor-pointer transition-colors">Answer Keys</li>
               </ul>
             </div>
             <div>
               <h3 className="text-sm font-semibold text-gray-900 mb-3">Connect</h3>
               <ul className="space-y-2 text-sm text-gray-500">
-                <li className="hover:text-black cursor-pointer transition-colors">Telegram</li>
-                <li className="hover:text-black cursor-pointer transition-colors">WhatsApp</li>
-                <li className="hover:text-black cursor-pointer transition-colors">YouTube</li>
-                <li className="hover:text-black cursor-pointer transition-colors">Instagram</li>
+                <li><a href="https://t.me/weeklynaukri" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">Telegram</a></li>
+                <li><a href="https://wa.me/919999999999" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">WhatsApp</a></li>
+                <li><a href="https://youtube.com/@weeklynaukri" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">YouTube</a></li>
+                <li><a href="https://instagram.com/weeklynaukri" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">Instagram</a></li>
                 <li><Link to="/contact" className="hover:text-black cursor-pointer transition-colors">Contact Us</Link></li>
                 <li><Link to="/privacy-policy" className="hover:text-black cursor-pointer transition-colors">Privacy Policy</Link></li>
               </ul>
