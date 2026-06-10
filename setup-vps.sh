@@ -10,7 +10,7 @@ sudo apt-get update -y
 
 # Install git, curl, and build tools
 echo "=== Installing Essential Tools ==="
-sudo apt-get install -y git curl build-essential
+sudo apt-get install -y git curl build-essential tar unzip
 
 # Install Node.js v20
 echo "=== Installing Node.js v20 ==="
