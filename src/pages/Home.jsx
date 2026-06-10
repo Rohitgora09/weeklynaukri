@@ -1204,12 +1204,12 @@ export default function Home() {
             <div>
               <h3 className="text-sm font-semibold text-gray-900 mb-3">Government</h3>
               <ul className="space-y-2 text-sm text-gray-500">
-                <li onClick={() => handleFooterSearch('Govt Jobs', 'SSC')} className="hover:text-black cursor-pointer transition-colors">SSC Jobs</li>
-                <li onClick={() => handleFooterSearch('Govt Jobs', 'UPSC')} className="hover:text-black cursor-pointer transition-colors">UPSC Jobs</li>
-                <li onClick={() => handleFooterSearch('Govt Jobs', 'Railway')} className="hover:text-black cursor-pointer transition-colors">Railway Jobs</li>
-                <li onClick={() => handleFooterSearch('Govt Jobs', 'Bank')} className="hover:text-black cursor-pointer transition-colors">Banking Jobs</li>
-                <li onClick={() => handleFooterSearch('Govt Jobs', 'Defence')} className="hover:text-black cursor-pointer transition-colors">Defence Jobs</li>
-                <li onClick={() => handleFooterSearch('Govt Jobs', 'PSC')} className="hover:text-black cursor-pointer transition-colors">State PSC</li>
+                <li><a href="https://ssc.gov.in/" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">SSC Jobs</a></li>
+                <li><a href="https://upsc.gov.in/" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">UPSC Jobs</a></li>
+                <li><a href="https://www.rrcb.gov.in/" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">Railway Jobs</a></li>
+                <li><a href="https://ibps.in/" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">Banking Jobs</a></li>
+                <li><a href="https://joinindianarmy.nic.in/" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">Defence Jobs</a></li>
+                <li><a href="https://www.india.gov.in/my-government/state-pin-services/public-service-commissions" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">State PSC</a></li>
               </ul>
             </div>
             <div>
