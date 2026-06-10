@@ -26,6 +26,7 @@ import {
   UploadCloud,
   X,
   Loader2,
+  Menu,
 } from 'lucide-react';
 import {
   latestJobs,
@@ -296,6 +297,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [liveSSCNotices, setLiveSSCNotices] = useState([]);
   const [loadingSSC, setLoadingSSC] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Resume Matcher States
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
@@ -319,7 +321,7 @@ export default function Home() {
     formData.append('resume', file);
     
     try {
-      const res = await fetch('http://localhost:3000/api/parse-resume', {
+      const res = await fetch('/api/parse-resume', {
         method: 'POST',
         body: formData,
       });
@@ -439,38 +441,112 @@ export default function Home() {
         className="animate-fade-in-up px-6 py-4 flex items-center justify-between max-w-7xl mx-auto"
         style={{ animationDelay: '0.1s', opacity: 0 }}
       >
-        <a href="/" className="flex items-center gap-2 shrink-0">
-          <img src="/logo.png" alt="WeeklyNaukri Logo" className="h-16 w-16 md:h-20 md:w-20 object-cover object-center rounded-full shadow-md shrink-0" />
-        </a>
+        <Link to="/" className="flex items-center gap-2 shrink-0">
+          <img src="/logo.svg" alt="WeeklyNaukri Logo" className="h-16 w-16 md:h-20 md:w-20 object-contain rounded-full shadow-sm shrink-0 bg-white p-1" />
+        </Link>
 
         <div className="hidden md:flex items-center gap-8">
           {[
-            { label: 'Govt Jobs', chevron: true },
-            { label: 'Private Jobs', chevron: true },
-            { label: 'Exam Prep', chevron: false },
-            { label: 'Career Hub', chevron: false },
+            { label: 'Govt Jobs', value: 'Govt Jobs' },
+            { label: 'Private Jobs', value: 'Private Jobs' },
+            { label: 'Results', value: 'Results' },
+            { label: 'Admit Cards', value: 'Admit Cards' },
+            { label: 'Referrals', path: '/referrals' },
           ].map((item) => (
-            <a
-              key={item.label}
-              href="#"
-              className="relative flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-black transition-colors py-1 group"
-            >
-              <span className="relative z-10">{item.label}</span>
-              {item.chevron && <ChevronDown className="w-3.5 h-3.5 relative z-10 group-hover:translate-y-0.5 transition-transform" />}
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
-            </a>
+            item.path ? (
+              <Link
+                key={item.label}
+                to={item.path}
+                className="relative flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-black transition-colors py-1 group"
+              >
+                <span className="relative z-10">{item.label}</span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+            ) : (
+              <button
+                key={item.label}
+                onClick={() => {
+                  setSelectedCategory(item.value);
+                  document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="relative flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-black transition-colors py-1 group cursor-pointer bg-transparent border-none"
+              >
+                <span className="relative z-10">{item.label}</span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
+              </button>
+            )
           ))}
         </div>
 
         <div className="flex items-center gap-4">
-          <a href="#" className="text-sm text-gray-700 hover:text-black transition-colors hidden sm:block">
+          <Link to="/login" className="text-sm text-gray-700 hover:text-black transition-colors hidden sm:block">
             Login
-          </a>
-          <button className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors cursor-pointer">
+          </Link>
+          <Link to="/signup" className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors cursor-pointer hidden sm:block">
             Get started free
+          </Link>
+          {/* Hamburger Menu Toggle Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-gray-700 hover:text-black focus:outline-none cursor-pointer"
+            aria-label="Toggle Menu"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </nav>
+
+      {/* Mobile Navigation Dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white border-b border-gray-200 px-6 py-4 flex flex-col gap-4 animate-fade-in-down">
+          {[
+            { label: 'Govt Jobs', value: 'Govt Jobs' },
+            { label: 'Private Jobs', value: 'Private Jobs' },
+            { label: 'Results', value: 'Results' },
+            { label: 'Admit Cards', value: 'Admit Cards' },
+            { label: 'Referrals', path: '/referrals' },
+          ].map((item) => (
+            item.path ? (
+              <Link
+                key={item.label}
+                to={item.path}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm font-medium text-gray-700 hover:text-black py-2"
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <button
+                key={item.label}
+                onClick={() => {
+                  setSelectedCategory(item.value);
+                  setMobileMenuOpen(false);
+                  document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="text-left text-sm font-medium text-gray-700 hover:text-black py-2 bg-transparent border-none cursor-pointer"
+              >
+                {item.label}
+              </button>
+            )
+          ))}
+          <div className="border-t border-gray-100 pt-4 flex flex-col gap-3">
+            <Link
+              to="/login"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-center text-sm font-medium text-gray-700 hover:text-black py-2 rounded-xl border border-gray-200"
+            >
+              Login
+            </Link>
+            <Link
+              to="/signup"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-center text-sm font-medium bg-black text-white py-2.5 rounded-xl hover:bg-gray-800 transition-colors"
+            >
+              Get started free
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* ─── HERO ────────────────────────────────────────── */}
       <section className="px-6 pt-24 pb-32 max-w-7xl mx-auto text-center">
@@ -514,7 +590,10 @@ export default function Home() {
 
         {/* CTA */}
         <div className="animate-fade-in-up mb-12" style={{ animationDelay: '0.5s', opacity: 0 }}>
-          <button className="bg-amber-500 text-white px-8 py-3 rounded-full text-base font-medium hover:bg-amber-600 transition-colors cursor-pointer shadow-md shadow-amber-500/20">
+          <button
+            onClick={() => document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' })}
+            className="bg-amber-500 text-white px-8 py-3 rounded-full text-base font-medium hover:bg-amber-600 transition-colors cursor-pointer shadow-md shadow-amber-500/20"
+          >
             Explore Jobs
           </button>
         </div>
@@ -586,7 +665,7 @@ export default function Home() {
       {/* ─────────────────────────────────────────────────── */}
 
       {/* Quick Search Bar */}
-      <section className="px-6 max-w-7xl mx-auto -mt-16 mb-16 relative z-10">
+      <section id="search-section" className="px-6 max-w-7xl mx-auto -mt-16 mb-16 relative z-10">
         <div
           className="animate-fade-in-up bg-white border border-gray-200 rounded-2xl p-4 md:p-6 shadow-lg"
           style={{ animationDelay: '0.9s', opacity: 0 }}
@@ -1027,9 +1106,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
-              <a href="/" className="flex items-center gap-2 mb-4">
-                <img src="/logo.png" alt="WeeklyNaukri Logo" className="h-20 w-20 md:h-24 md:w-24 object-cover object-center rounded-full shadow-md shrink-0" />
-              </a>
+              <Link to="/" className="flex items-center gap-2 mb-4">
+                <img src="/logo.svg" alt="WeeklyNaukri Logo" className="h-20 w-20 md:h-24 md:w-24 object-contain rounded-full shadow-sm shrink-0 bg-white p-1" />
+              </Link>
               <p className="text-sm text-gray-500">India's #1 weekly job portal. Govt & private jobs, results, admit cards — all in one place at weeklynaukri.com</p>
             </div>
             <div>
