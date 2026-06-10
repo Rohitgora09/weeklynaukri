@@ -21,10 +21,6 @@ sudo apt-get install -y nodejs
 node -v
 npm -v
 
-# Install Puppeteer system dependencies for headless Chrome
-echo "=== Installing Puppeteer Dependencies ==="
-sudo apt-get install -y wget gnupg ca-certificates procps libxss1 libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxshmfence1 libxtst6
-
 # Install Nginx
 echo "=== Installing Nginx ==="
 sudo apt-get install -y nginx
@@ -52,6 +48,14 @@ cd "$TARGET_DIR"
 # Install app dependencies
 echo "=== Installing Project Dependencies ==="
 npm install
+
+# Install Puppeteer system dependencies for headless Chrome
+echo "=== Installing Puppeteer Dependencies ==="
+npx puppeteer browsers install chrome --install-deps || {
+    # Fallback manual install for Ubuntu 24.04 and 22.04 if the command fails
+    echo "=== Falling back to manual package installation ==="
+    sudo apt-get install -y ca-certificates fonts-liberation libasound2t64 libatk1.0-0t64 libatk-bridge2.0-0t64 libc6 libcairo2 libcups2t64 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc-s1 libglib2.0-0t64 libgtk-3-0t64 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 lsb-release wget xdg-utils || true
+}
 
 # Build the Vite React Frontend
 echo "=== Building Frontend ==="
