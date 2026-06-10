@@ -7,6 +7,20 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) {
+              return 'vendor-react';
+            }
+            return 'vendor-others';
+          }
+        }
+      }
+    }
+  },
   server: {
     proxy: {
       '/api': 'http://localhost:3000'

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import {
   ArrowLeft,
   Mail,
@@ -18,13 +19,36 @@ export default function Contact() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    setSubmitted(true);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSubmitted(true);
+      } else {
+        alert(data.error || 'Failed to send message');
+      }
+    } catch (err) {
+      alert('Error sending message');
+    }
   }
 
   return (
     <div className="min-h-screen bg-white">
+      <Helmet>
+        <title>Contact Us — WeeklyNaukri.com</title>
+        <meta name="description" content="Contact WeeklyNaukri.com for job alerts, feedback, or partnership inquiries. We're here to help Indian job seekers." />
+        <link rel="canonical" href="https://weeklynaukri.com/contact" />
+        <meta property="og:title" content="Contact Us — WeeklyNaukri.com" />
+        <meta property="og:description" content="Contact WeeklyNaukri.com for job alerts, feedback, or partnership inquiries." />
+        <meta property="og:url" content="https://weeklynaukri.com/contact" />
+        <meta property="og:site_name" content="WeeklyNaukri.com" />
+      </Helmet>
       {/* ─── Nav ──────────────────────────────────────────── */}
       <nav className="bg-white sticky top-0 z-50 border-b border-gray-100">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -32,7 +56,7 @@ export default function Contact() {
             <ArrowLeft className="w-4 h-4" /> Back to Home
           </Link>
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img src="/logo.png" alt="WeeklyNaukri Logo" className="h-16 w-16 md:h-20 md:w-20 object-cover object-center rounded-full shadow-md shrink-0" />
+            <img src="/logo.svg" alt="WeeklyNaukri Logo" width="80" height="80" className="h-16 w-16 md:h-20 md:w-20 object-cover object-center rounded-full shadow-md shrink-0" />
           </Link>
         </div>
       </nav>

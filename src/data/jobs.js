@@ -34,7 +34,7 @@ export const latestJobs = [
       { post: 'Inspector (Excise/Examiner/PO)', male: 'Height: 157.5 cm, Chest: 81 cm', female: 'Height: 152 cm, Weight: 48 kg' },
       { post: 'Sub-Inspector in CBI', male: 'Height: 165 cm', female: 'Height: 150 cm' }
     ],
-    links: { apply: '#', notification: 'https://ssc.gov.in/api/attachment/uploads/masterData/NoticeBoards/Notice_of_CGLE_2024_24_06_24.pdf', official: 'https://ssc.nic.in' }
+    links: { apply: 'https://ssc.gov.in/home/apply', notification: 'https://ssc.gov.in/api/attachment/uploads/masterData/NoticeBoards/Notice_of_CGLE_2024_24_06_24.pdf', official: 'https://ssc.gov.in' }
   },
   { 
     id: 'rrb-ntpc-2026',
@@ -135,46 +135,46 @@ export const latestJobs = [
 ];
 
 export const latestResults = [
-  { id: 'result-1', title: 'SSC CHSL Tier-II Result 2025', date: '02 Jun 2026', status: 'Declared' },
-  { id: 'result-2', title: 'UPSC NDA/NA (I) Written Result', date: '28 May 2026', status: 'Declared' },
-  { id: 'result-3', title: 'RRB Group D CBT Result', date: '25 May 2026', status: 'Declared' },
-  { id: 'result-4', title: 'IBPS Clerk Final Result 2025', date: '20 May 2026', status: 'Declared' },
-  { id: 'result-5', title: 'UP TET 2025 Result', date: '15 May 2026', status: 'Declared' },
-  { id: 'result-6', title: 'Bihar BPSC 70th PT Result', date: '10 May 2026', status: 'Declared' },
+  { id: 'result-1', title: 'SSC CHSL Tier-II Result 2025', date: '02 Jun 2026', status: 'Declared', links: { official: 'https://ssc.gov.in', notification: 'https://ssc.gov.in/home/candidate-result', apply: 'https://ssc.gov.in/home/candidate-result' } },
+  { id: 'result-2', title: 'UPSC NDA/NA (I) Written Result', date: '28 May 2026', status: 'Declared', links: { official: 'https://upsc.gov.in', notification: 'https://upsc.gov.in/exams-related-info/exam-notification', apply: 'https://upsc.gov.in' } },
+  { id: 'result-3', title: 'RRB Group D CBT Result', date: '25 May 2026', status: 'Declared', links: { official: 'https://indianrailways.gov.in', notification: 'https://indianrailways.gov.in/railwayboard/uploads/announcements/2026/RRB_Result.pdf', apply: 'https://indianrailways.gov.in' } },
+  { id: 'result-4', title: 'IBPS Clerk Final Result 2025', date: '20 May 2026', status: 'Declared', links: { official: 'https://ibps.in', notification: 'https://ibps.in/result-clerk', apply: 'https://ibps.in' } },
+  { id: 'result-5', title: 'UP TET 2025 Result', date: '15 May 2026', status: 'Declared', links: { official: 'https://updeled.gov.in', notification: 'https://updeled.gov.in/uptet-result', apply: 'https://updeled.gov.in' } },
+  { id: 'result-6', title: 'Bihar BPSC 70th PT Result', date: '10 May 2026', status: 'Declared', links: { official: 'https://bpsc.bih.nic.in', notification: 'https://bpsc.bih.nic.in/Notices', apply: 'https://bpsc.bih.nic.in' } },
 ];
 
 export const admitCards = [
-  { id: 'admit-1', title: 'SSC CGL Tier-I Admit Card 2026', examDate: '01-15 Aug 2026', status: 'Available' },
-  { id: 'admit-2', title: 'UPSC CSE Prelims Admit Card', examDate: '25 Jul 2026', status: 'Available' },
-  { id: 'admit-3', title: 'RRB NTPC CBT-1 City Slip', examDate: '10-30 Jul 2026', status: 'Soon' },
-  { id: 'admit-4', title: 'IBPS PO Prelims Call Letter', examDate: '05 Sep 2026', status: 'Soon' },
-  { id: 'admit-5', title: 'Indian Navy Agniveer Admit Card', examDate: '20 Jul 2026', status: 'Available' },
-  { id: 'admit-6', title: 'CTET July 2026 Admit Card', examDate: '07 Jul 2026', status: 'Available' },
+  { id: 'admit-1', title: 'SSC CGL Tier-I Admit Card 2026', examDate: '01-15 Aug 2026', status: 'Available', links: { official: 'https://ssc.gov.in', notification: 'https://ssc.gov.in/home/apply', apply: 'https://ssc.gov.in/home/apply' } },
+  { id: 'admit-2', title: 'UPSC CSE Prelims Admit Card', examDate: '25 Jul 2026', status: 'Available', links: { official: 'https://upsc.gov.in', notification: 'https://upsc.gov.in/exams-related-info/admit-card', apply: 'https://upsc.gov.in/exams-related-info/admit-card' } },
+  { id: 'admit-3', title: 'RRB NTPC CBT-1 City Slip', examDate: '10-30 Jul 2026', status: 'Soon', links: { official: 'https://www.rrbcdg.gov.in', notification: 'https://www.rrbcdg.gov.in/admit-card.html', apply: 'https://www.rrbcdg.gov.in/admit-card.html' } },
+  { id: 'admit-4', title: 'IBPS PO Prelims Call Letter', examDate: '05 Sep 2026', status: 'Soon', links: { official: 'https://ibps.in', notification: 'https://ibps.in/call-letter', apply: 'https://ibps.in/call-letter' } },
+  { id: 'admit-5', title: 'Indian Navy Agniveer Admit Card', examDate: '20 Jul 2026', status: 'Available', links: { official: 'https://joinindiannavy.gov.in', notification: 'https://joinindiannavy.gov.in/admit-card', apply: 'https://joinindiannavy.gov.in/admit-card' } },
+  { id: 'admit-6', title: 'CTET July 2026 Admit Card', examDate: '07 Jul 2026', status: 'Available', links: { official: 'https://ctet.nic.in', notification: 'https://ctet.nic.in/admit-card', apply: 'https://ctet.nic.in/admit-card' } },
 ];
 
 export const answerKeys = [
-  { id: 'ans-1', title: 'SSC CHSL Tier-II Answer Key', date: '28 May 2026' },
-  { id: 'ans-2', title: 'UPSC NDA (I) Answer Key', date: '22 May 2026' },
-  { id: 'ans-3', title: 'RRB Group D Answer Key', date: '18 May 2026' },
-  { id: 'ans-4', title: 'UP Police Constable Answer Key', date: '10 May 2026' },
+  { id: 'ans-1', title: 'SSC CHSL Tier-II Answer Key', date: '28 May 2026', links: { official: 'https://ssc.gov.in', notification: 'https://ssc.gov.in/home/answer-key', apply: 'https://ssc.gov.in/home/answer-key' } },
+  { id: 'ans-2', title: 'UPSC NDA (I) Answer Key', date: '22 May 2026', links: { official: 'https://upsc.gov.in', notification: 'https://upsc.gov.in/exams-related-info/exam-notification', apply: 'https://upsc.gov.in' } },
+  { id: 'ans-3', title: 'RRB Group D Answer Key', date: '18 May 2026', links: { official: 'https://indianrailways.gov.in', notification: 'https://indianrailways.gov.in', apply: 'https://indianrailways.gov.in' } },
+  { id: 'ans-4', title: 'UP Police Constable Answer Key', date: '10 May 2026', links: { official: 'https://uppbpb.gov.in', notification: 'https://uppbpb.gov.in', apply: 'https://uppbpb.gov.in' } },
 ];
 
 export const admissions = [
-  { id: 'adm-1', title: 'CTET September Online Form 2026', org: 'CBSE', date: '10 Aug 2026' },
-  { id: 'adm-2', title: 'UP Board Class 10th, 12th Compartment', org: 'UPMSP', date: '05 Aug 2026' },
-  { id: 'adm-3', title: 'NTA CSIR UGC NET June', org: 'NTA', date: '20 Jul 2026' },
-  { id: 'adm-4', title: 'Delhi University DU PG', org: 'DU', date: '15 Jul 2026' },
-  { id: 'adm-5', title: 'NTA ICAR AIEEA PG and PhD', org: 'NTA', date: '25 Jul 2026' },
-  { id: 'adm-6', title: 'SWD UP IAS / PCS Free Coaching', org: 'SWD UP', date: '30 Jul 2026' },
+  { id: 'adm-1', title: 'CTET September Online Form 2026', org: 'CBSE', date: '10 Aug 2026', links: { official: 'https://ctet.nic.in', notification: 'https://ctet.nic.in/online-application', apply: 'https://ctet.nic.in/online-application' } },
+  { id: 'adm-2', title: 'UP Board Class 10th, 12th Compartment', org: 'UPMSP', date: '05 Aug 2026', links: { official: 'https://upmsp.edu.in', notification: 'https://upmsp.edu.in/notification', apply: 'https://upmsp.edu.in' } },
+  { id: 'adm-3', title: 'NTA CSIR UGC NET June', org: 'NTA', date: '20 Jul 2026', links: { official: 'https://csirnet.nta.ac.in', notification: 'https://csirnet.nta.ac.in/information-bulletin', apply: 'https://csirnet.nta.ac.in/apply-online' } },
+  { id: 'adm-4', title: 'Delhi University DU PG', org: 'DU', date: '15 Jul 2026', links: { official: 'https://admission.uod.ac.in', notification: 'https://admission.uod.ac.in/notification', apply: 'https://admission.uod.ac.in' } },
+  { id: 'adm-5', title: 'NTA ICAR AIEEA PG and PhD', org: 'NTA', date: '25 Jul 2026', links: { official: 'https://aieea.nta.ac.in', notification: 'https://aieea.nta.ac.in/information-bulletin', apply: 'https://aieea.nta.ac.in/apply-online' } },
+  { id: 'adm-6', title: 'SWD UP IAS / PCS Free Coaching', org: 'SWD UP', date: '30 Jul 2026', links: { official: 'https://swd.up.gov.in', notification: 'https://swd.up.gov.in/notification', apply: 'https://swd.up.gov.in' } },
 ];
 
 export const documents = [
-  { id: 'doc-1', title: 'BPSC Exam Calendar 2026', type: 'Calendar' },
-  { id: 'doc-2', title: 'SSC Exam Calendar 2026-27', type: 'Calendar' },
-  { id: 'doc-3', title: 'UP Scholarship Online Form 2025-26', type: 'Scholarship' },
-  { id: 'doc-4', title: 'UP Police OTR Registration 2025', type: 'Registration' },
-  { id: 'doc-5', title: 'PAN Card Registration, Correction', type: 'Certificate' },
-  { id: 'doc-6', title: 'Aadhar Card Download, Correction', type: 'Certificate' },
+  { id: 'doc-1', title: 'BPSC Exam Calendar 2026', type: 'Calendar', links: { official: 'https://bpsc.bih.nic.in', notification: 'https://bpsc.bih.nic.in/Notices', apply: 'https://bpsc.bih.nic.in' } },
+  { id: 'doc-2', title: 'SSC Exam Calendar 2026-27', type: 'Calendar', links: { official: 'https://ssc.gov.in', notification: 'https://ssc.gov.in/exam-calendar', apply: 'https://ssc.gov.in' } },
+  { id: 'doc-3', title: 'UP Scholarship Online Form 2025-26', type: 'Scholarship', links: { official: 'https://scholarship.up.gov.in', notification: 'https://scholarship.up.gov.in/notifications', apply: 'https://scholarship.up.gov.in/applicantForm' } },
+  { id: 'doc-4', title: 'UP Police OTR Registration 2025', type: 'Registration', links: { official: 'https://uppbpb.gov.in', notification: 'https://uppbpb.gov.in/pages/instructions', apply: 'https://otr.pariksha.nic.in' } },
+  { id: 'doc-5', title: 'PAN Card Registration, Correction', type: 'Certificate', links: { official: 'https://www.incometax.gov.in', notification: 'https://www.incometax.gov.in/iec/foportal/help/individual/pan-application', apply: 'https://onlineservices.tin.egov-nsdl.com/TPDCore/forms/panapplication' } },
+  { id: 'doc-6', title: 'Aadhar Card Download, Correction', type: 'Certificate', links: { official: 'https://uidai.gov.in', notification: 'https://uidai.gov.in/my-aadhaar/get-aadhaar.html', apply: 'https://myaadhaar.uidai.gov.in' } },
 ];
 
 export const privateJobs = [

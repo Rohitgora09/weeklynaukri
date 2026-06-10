@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Star,
@@ -225,6 +225,39 @@ function OverlayApply() {
           Apply Now
         </button>
       </div>
+    </div>
+  );
+}
+
+
+/* ─── Lazy Load Section Wrapper ─────────────────────────── */
+function LazySection({ children, height = '350px' }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!window.IntersectionObserver) {
+      setIsVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '300px' }
+    );
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className="w-full">
+      {isVisible ? children : <div className="animate-pulse bg-gray-50 border border-gray-100 rounded-2xl h-[350px] w-full" />}
     </div>
   );
 }
@@ -965,6 +998,7 @@ export default function Home() {
         )}
 
         {/* ── Stats Banner ─────────────────────────────── */}
+        <LazySection height="150px">
         <div
           className="animate-fade-in-up mt-12 bg-gradient-to-r from-blue-950 to-blue-900 rounded-2xl p-8 md:p-12 shadow-xl shadow-blue-900/10"
           style={{ animationDelay: '1.5s', opacity: 0 }}
@@ -984,9 +1018,11 @@ export default function Home() {
             ))}
           </div>
         </div>
+        </LazySection>
       </section>
 
       {/* ── Footer ───────────────────────────────────────── */}
+      <LazySection height="300px">
       <footer className="bg-gray-50 border-t border-gray-200 pt-16 pb-8 mt-16">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -1039,6 +1075,7 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      </LazySection>
 
       {/* ── Resume Match Modal ───────────────────────────── */}
       {isResumeModalOpen && (

@@ -1,9 +1,19 @@
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { ArrowLeft, Briefcase, Shield } from 'lucide-react';
 
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-white">
+      <Helmet>
+        <title>Privacy Policy — WeeklyNaukri.com</title>
+        <meta name="description" content="Read the Privacy Policy of WeeklyNaukri.com. Learn how we collect, use, and protect your personal information." />
+        <link rel="canonical" href="https://weeklynaukri.com/privacy-policy" />
+        <meta property="og:title" content="Privacy Policy — WeeklyNaukri.com" />
+        <meta property="og:description" content="Read the Privacy Policy of WeeklyNaukri.com." />
+        <meta property="og:url" content="https://weeklynaukri.com/privacy-policy" />
+        <meta property="og:site_name" content="WeeklyNaukri.com" />
+      </Helmet>
       {/* ─── Nav ──────────────────────────────────────────── */}
       <nav className="bg-white sticky top-0 z-50 border-b border-gray-100">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -11,7 +21,7 @@ export default function PrivacyPolicy() {
             <ArrowLeft className="w-4 h-4" /> Back to Home
           </Link>
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img src="/logo.png" alt="WeeklyNaukri Logo" className="h-16 w-16 md:h-20 md:w-20 object-cover object-center rounded-full shadow-md shrink-0" />
+            <img src="/logo.svg" alt="WeeklyNaukri Logo" width="80" height="80" className="h-16 w-16 md:h-20 md:w-20 object-cover object-center rounded-full shadow-md shrink-0" />
           </Link>
         </div>
       </nav>

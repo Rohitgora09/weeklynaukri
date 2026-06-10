@@ -1,4 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import { useState, useEffect } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -11,6 +13,7 @@ import {
   ExternalLink,
   Building2,
   Share2,
+  Loader2,
 } from 'lucide-react';
 import {
   latestJobs,
@@ -32,7 +35,92 @@ function findJobById(id) {
 
 export default function JobDetails() {
   const { id } = useParams();
-  const job = findJobById(id);
+  const localJob = id ? findJobById(id) : null;
+  
+  const [liveJob, setLiveJob] = useState(null);
+  const [loading, setLoading] = useState(id ? id.startsWith('sr-') : false);
+  
+  useEffect(() => {
+    if (!localJob && id && id.startsWith('sr-')) {
+      const fetchLiveJob = async () => {
+        try {
+          // First, we need to find the job summary to get its URL and title
+          const summaryRes = await fetch('/api/live-jobs');
+          const summaryJson = await summaryRes.json();
+          let summaryItem = null;
+          
+          if (summaryJson.success && summaryJson.data) {
+            const allLive = [...summaryJson.data.latestJobs, ...summaryJson.data.results, ...summaryJson.data.admitCards];
+            summaryItem = allLive.find(item => item.id === id);
+          }
+          
+          if (summaryItem && summaryItem.link) {
+            // Then fetch deep details from the URL
+            const detailsRes = await fetch(`/api/job-details?url=${encodeURIComponent(summaryItem.link)}`);
+            const detailsJson = await detailsRes.json();
+            
+            if (detailsJson.success && detailsJson.data) {
+              const d = detailsJson.data;
+              setLiveJob({
+                id: summaryItem.id,
+                title: summaryItem.title,
+                org: summaryItem.org || 'WeeklyNaukri.Com',
+                status: summaryItem.tag || 'Available',
+                date: summaryItem.date || 'Recent Update',
+                
+                // Detailed data
+                fee: {
+                  general: d.fee.general,
+                  scSt: d.fee.scSt,
+                  women: d.fee.women
+                },
+                dates: {
+                  applyStart: d.dates.applyStart,
+                  applyEnd: d.dates.applyEnd,
+                  examDate: d.dates.examDate
+                },
+                ageLimit: {
+                  min: d.ageLimit.min,
+                  max: d.ageLimit.max,
+                  relaxation: d.ageLimit.relaxation
+                },
+                vacancies: d.vacancies,
+                vacancyDetails: [
+                  { post: 'Various Posts', count: d.vacancies, eligibility: d.eligibility }
+                ],
+                questions: [
+                  { q: `When does the application for ${summaryItem.title} start?`, a: `The application starts on ${d.dates.applyStart}.` },
+                  { q: `What is the last date to apply?`, a: `The last date is ${d.dates.applyEnd}.` },
+                  { q: `What are the eligibility criteria?`, a: `Candidates must have ${d.eligibility}.` }
+                ],
+                links: {
+                  apply: d.links.apply !== '#' ? d.links.apply : summaryItem.link,
+                  notification: d.links.notification !== '#' ? d.links.notification : summaryItem.link,
+                  official: d.links.official !== '#' ? d.links.official : summaryItem.link
+                }
+              });
+            }
+          }
+        } catch (err) {
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchLiveJob();
+    }
+  }, [id, localJob]);
+
+  const job = localJob || liveJob;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
+        <Loader2 className="w-12 h-12 text-blue-900 animate-spin mb-4" />
+        <p className="text-gray-500 font-medium">Loading details...</p>
+      </div>
+    );
+  }
 
   if (!job) {
     return (
@@ -48,17 +136,98 @@ export default function JobDetails() {
   }
 
   // Fallbacks for data that might not be fully enriched (e.g., results, admit cards)
-  const isDetailedJob = !!job.fee; 
-  
+  const isDetailedJob = !!job.fee;
+
+  // SEO Meta
+  const pageTitle = isDetailedJob
+    ? `${job.org} ${job.title} Online Form 2026 — WeeklyNaukri.com`
+    : `${job.title} 2026 — WeeklyNaukri.com`;
+  const pageDescription = isDetailedJob
+    ? `${job.org} ${job.title} 2026 — ${job.vacancies || ''} Posts. Last Date: ${job.dates?.applyEnd || 'Check Notification'}. Apply online, download notification, eligibility, age limit and more at WeeklyNaukri.com.`
+    : `${job.title} — Check status, download link, and official notification at WeeklyNaukri.com.`;
+  const pageUrl = `https://weeklynaukri.com/job/${id}`;
+
+  // Determine category for schema
+  const isAdmitCard = id.startsWith('admit');
+  const isResult = id.startsWith('result');
+  const isAnswerKey = id.startsWith('ans');
+  const pageType = isAdmitCard ? 'Admit Card' : isResult ? 'Result' : isAnswerKey ? 'Answer Key' : 'Job Notification';
+
   return (
     <div className="min-h-screen bg-white pb-20">
+      <Helmet>
+        {/* Primary Meta Tags */}
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large" />
+        <link rel="canonical" href={pageUrl} />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:site_name" content="WeeklyNaukri.com" />
+        <meta property="og:locale" content="en_IN" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+
+        {/* JSON-LD Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': isDetailedJob ? 'JobPosting' : 'WebPage',
+            ...(isDetailedJob ? {
+              title: job.title,
+              description: pageDescription,
+              hiringOrganization: {
+                '@type': 'Organization',
+                name: job.org || job.company,
+              },
+              datePosted: job.dates?.applyStart || '2026-01-01',
+              validThrough: job.dates?.applyEnd || '2026-12-31',
+              employmentType: 'FULL_TIME',
+              jobLocation: {
+                '@type': 'Place',
+                address: {
+                  '@type': 'PostalAddress',
+                  addressCountry: 'IN',
+                },
+              },
+            } : {
+              name: pageTitle,
+              description: pageDescription,
+              url: pageUrl,
+              publisher: {
+                '@type': 'Organization',
+                name: 'WeeklyNaukri.com',
+              },
+            }),
+          })}
+        </script>
+      </Helmet>
       {/* ─── Header Navigation ────────────────────────────── */}
       <nav className="bg-white sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-gray-600 hover:text-black transition-colors font-medium text-sm">
             <ArrowLeft className="w-4 h-4" /> Back to Home
           </Link>
-          <button className="flex items-center gap-2 text-gray-500 hover:text-black transition-colors">
+          <button 
+            onClick={async () => {
+              try {
+                if (navigator.share) {
+                  await navigator.share({ title: job?.title, text: `Check out: ${job?.title}`, url: window.location.href });
+                } else {
+                  await navigator.clipboard.writeText(window.location.href);
+                  alert('Link copied to clipboard!');
+                }
+              } catch (err) { console.log('Share cancelled'); }
+            }}
+            className="flex items-center gap-2 text-gray-500 hover:text-black transition-colors"
+          >
             <Share2 className="w-4 h-4" /> <span className="text-sm font-medium hidden sm:inline">Share</span>
           </button>
         </div>
@@ -243,7 +412,7 @@ export default function JobDetails() {
                   <tr className="border-b border-gray-300 hover:bg-gray-50">
                     <td className="p-3 text-sm font-bold text-blue-900 border-r border-gray-300 w-1/2 md:w-2/3">Apply Online</td>
                     <td className="p-3 text-center">
-                      <a href={(job.links?.apply && job.links.apply !== '#') ? job.links.apply : (job.links?.official || '#')} target="_blank" rel="noreferrer" className="inline-block bg-blue-950 text-white px-4 py-1.5 rounded-sm text-xs font-bold hover:bg-blue-800 transition-colors">
+                      <a href={(job.links?.apply && job.links.apply !== '#') ? job.links.apply : (job.links?.official || '#')} target="_blank" rel="noopener noreferrer" className="inline-block bg-blue-950 text-white px-4 py-1.5 rounded-sm text-xs font-bold hover:bg-blue-800 transition-colors">
                         Click Here
                       </a>
                     </td>
@@ -251,7 +420,7 @@ export default function JobDetails() {
                   <tr className="border-b border-gray-300 hover:bg-gray-50">
                     <td className="p-3 text-sm font-bold text-blue-900 border-r border-gray-300">Download Notification</td>
                     <td className="p-3 text-center">
-                      <a href={(job.links?.notification && job.links.notification !== '#') ? job.links.notification : (job.links?.official || '#')} target="_blank" rel="noreferrer" className="inline-block bg-amber-600 text-white px-4 py-1.5 rounded-sm text-xs font-bold hover:bg-amber-700 transition-colors">
+                      <a href={(job.links?.notification && job.links.notification !== '#') ? job.links.notification : (job.links?.official || '#')} target="_blank" rel="noopener noreferrer" className="inline-block bg-amber-600 text-white px-4 py-1.5 rounded-sm text-xs font-bold hover:bg-amber-700 transition-colors">
                         Click Here
                       </a>
                     </td>
@@ -259,7 +428,7 @@ export default function JobDetails() {
                   <tr className="hover:bg-gray-50">
                     <td className="p-3 text-sm font-bold text-blue-900 border-r border-gray-300">Official Website</td>
                     <td className="p-3 text-center">
-                      <a href={job.links?.official || '#'} target="_blank" rel="noreferrer" className="inline-block text-blue-700 font-bold hover:underline">
+                      <a href={job.links?.official || '#'} target="_blank" rel="noopener noreferrer" className="inline-block text-blue-700 font-bold hover:underline">
                         Click Here
                       </a>
                     </td>
@@ -272,9 +441,9 @@ export default function JobDetails() {
         ) : (
           /* Simplified layout for non-detailed items (results, admit cards, etc) */
           <div className="border border-gray-300 bg-white mb-8">
-             <div className="bg-blue-950 text-white font-bold text-center py-2 border-b border-gray-300">
-                Summary Information
-              </div>
+            <div className="bg-blue-950 text-white font-bold text-center py-2 border-b border-gray-300">
+              Summary Information
+            </div>
             <div className="p-6">
               <p className="text-gray-800 mb-4 text-sm font-medium text-center">
                 This is a summarized notification update. Please visit the official website or download the full notification for complete details.
@@ -284,11 +453,42 @@ export default function JobDetails() {
                 {job.date && <p><span className="font-bold text-blue-900">Published / Event Date:</span> {job.date}</p>}
                 {job.status && <p><span className="font-bold text-blue-900">Current Status:</span> <span className="font-bold text-amber-600">{job.status}</span></p>}
               </div>
-              <div className="text-center">
-                <a href="#" className="inline-block bg-blue-950 text-white px-8 py-2 rounded-sm font-bold hover:bg-blue-800 transition-colors">
-                  Go to Official Site
-                </a>
+
+              {/* Important Links Table */}
+              <div className="border border-gray-300">
+                <div className="bg-blue-100 text-amber-600 font-bold text-center py-2 border-b border-gray-300 uppercase tracking-wide">
+                  Some Useful Important Links
+                </div>
+                <table className="w-full text-left border-collapse">
+                  <tbody>
+                    <tr className="border-b border-gray-300 hover:bg-gray-50">
+                      <td className="p-3 text-sm font-bold text-blue-900 border-r border-gray-300">Apply / Download</td>
+                      <td className="p-3 text-center">
+                        <a href={(job.links?.apply && job.links.apply !== '#') ? job.links.apply : (job.links?.official || '#')} target="_blank" rel="noopener noreferrer" className="inline-block bg-blue-950 text-white px-4 py-1.5 rounded-sm text-xs font-bold hover:bg-blue-800 transition-colors">
+                          Click Here
+                        </a>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-300 hover:bg-gray-50">
+                      <td className="p-3 text-sm font-bold text-blue-900 border-r border-gray-300">Download Notification</td>
+                      <td className="p-3 text-center">
+                        <a href={(job.links?.notification && job.links.notification !== '#') ? job.links.notification : (job.links?.official || '#')} target="_blank" rel="noopener noreferrer" className="inline-block bg-amber-600 text-white px-4 py-1.5 rounded-sm text-xs font-bold hover:bg-amber-700 transition-colors">
+                          Click Here
+                        </a>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="p-3 text-sm font-bold text-blue-900 border-r border-gray-300">Official Website</td>
+                      <td className="p-3 text-center">
+                        <a href={job.links?.official || '#'} target="_blank" rel="noopener noreferrer" className="inline-block text-blue-700 font-bold hover:underline">
+                          Click Here
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
+
             </div>
           </div>
         )}
