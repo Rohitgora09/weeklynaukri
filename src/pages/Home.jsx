@@ -298,6 +298,26 @@ export default function Home() {
   const [liveSSCNotices, setLiveSSCNotices] = useState([]);
   const [loadingSSC, setLoadingSSC] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    try {
+      const user = localStorage.getItem('currentUser');
+      if (user) {
+        setCurrentUser(JSON.parse(user));
+      }
+    } catch (e) {
+      console.warn("Failed to parse current user:", e);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('sessionToken');
+    localStorage.removeItem('adminPassword');
+    setCurrentUser(null);
+    window.location.reload();
+  };
 
   // Resume Matcher States
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
@@ -479,12 +499,33 @@ export default function Home() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Link to="/login" className="text-sm text-gray-700 hover:text-black transition-colors hidden sm:block">
-            Login
-          </Link>
-          <Link to="/signup" className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors cursor-pointer hidden sm:block">
-            Get started free
-          </Link>
+          {currentUser ? (
+            <div className="hidden sm:flex items-center gap-4">
+              <span className="text-sm font-medium text-gray-700">
+                Hi, {currentUser.name}
+              </span>
+              {currentUser.role === 'admin' && (
+                <Link to="/dashboard" className="text-sm font-semibold text-amber-600 hover:text-amber-700 transition-colors">
+                  Dashboard
+                </Link>
+              )}
+              <button
+                onClick={handleLogout}
+                className="text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 px-3.5 py-2 rounded-full font-medium transition-colors cursor-pointer border border-gray-200"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="hidden sm:flex items-center gap-4">
+              <Link to="/login" className="text-sm text-gray-700 hover:text-black transition-colors">
+                Login
+              </Link>
+              <Link to="/signup" className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors cursor-pointer">
+                Get started free
+              </Link>
+            </div>
+          )}
           {/* Hamburger Menu Toggle Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -530,20 +571,45 @@ export default function Home() {
             )
           ))}
           <div className="border-t border-gray-100 pt-4 flex flex-col gap-3">
-            <Link
-              to="/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-center text-sm font-medium text-gray-700 hover:text-black py-2 rounded-xl border border-gray-200"
-            >
-              Login
-            </Link>
-            <Link
-              to="/signup"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-center text-sm font-medium bg-black text-white py-2.5 rounded-xl hover:bg-gray-800 transition-colors"
-            >
-              Get started free
-            </Link>
+            {currentUser ? (
+              <div className="flex flex-col gap-2">
+                <span className="text-xs text-gray-500 px-1">
+                  Logged in as: <strong className="text-gray-850">{currentUser.name}</strong>
+                </span>
+                {currentUser.role === 'admin' && (
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-center text-sm font-semibold text-amber-700 py-2 bg-amber-50 hover:bg-amber-100 rounded-xl"
+                  >
+                    Dashboard
+                  </Link>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="text-center text-sm font-medium bg-gray-100 text-gray-700 py-2.5 rounded-xl hover:bg-gray-200 transition-colors cursor-pointer border-none"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-center text-sm font-medium text-gray-700 hover:text-black py-2 rounded-xl border border-gray-200"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-center text-sm font-medium bg-black text-white py-2.5 rounded-xl hover:bg-gray-800 transition-colors"
+                >
+                  Get started free
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

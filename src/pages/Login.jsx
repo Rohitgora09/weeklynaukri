@@ -7,25 +7,46 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
     
     try {
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.email === email && u.password === password);
-      
-      if (user) {
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        navigate('/');
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        // Store session details in localStorage
+        localStorage.setItem('currentUser', JSON.stringify(data.user));
+        localStorage.setItem('sessionToken', data.token);
+
+        // Redirect admins to Dashboard and standard users to Home page
+        if (data.user.role === 'admin') {
+          navigate('/dashboard');
+        } else {
+          navigate('/');
+        }
+        
+        // Force header update by reloading page
+        window.location.reload();
       } else {
-        setError('Invalid email or password');
+        setError(data.error || 'Invalid email or password');
       }
     } catch (err) {
-      setError('An error occurred during login');
+      console.error(err);
+      setError('An error occurred during login. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,10 +77,10 @@ export default function Login() {
             
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back</h1>
-              <p className="text-gray-500 text-sm">Enter your details to access your account.</p>
+              <p className="text-gray-500 text-sm">Enter your credentials to access your account.</p>
             </div>
             
-            {error && <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">{error}</div>}
+            {error && <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-xl text-sm border border-red-100">{error}</div>}
 
             <form className="space-y-5" onSubmit={handleLogin}>
               
@@ -73,6 +94,7 @@ export default function Login() {
                   <input
                     type="email"
                     required
+                    disabled={loading}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
@@ -94,6 +116,7 @@ export default function Login() {
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
+                    disabled={loading}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
@@ -112,9 +135,10 @@ export default function Login() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-black text-white py-3.5 rounded-xl font-medium shadow-md shadow-black/10 hover:bg-gray-800 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer mt-4"
+                disabled={loading}
+                className="w-full bg-black text-white py-3.5 rounded-xl font-medium shadow-md shadow-black/10 hover:bg-gray-800 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer mt-4 disabled:opacity-50"
               >
-                Sign In
+                {loading ? 'Signing In...' : 'Sign In'}
               </button>
 
             </form>

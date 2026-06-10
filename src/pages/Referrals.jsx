@@ -16,6 +16,26 @@ export default function Referrals() {
   const [postForm, setPostForm] = useState({ company: '', role: '', description: '', link: '', author: '' });
   const [commentText, setCommentText] = useState('');
   const [commentAuthor, setCommentAuthor] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    try {
+      const user = localStorage.getItem('currentUser');
+      if (user) {
+        setCurrentUser(JSON.parse(user));
+      }
+    } catch (e) {
+      console.warn("Failed to parse current user:", e);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('sessionToken');
+    localStorage.removeItem('adminPassword');
+    setCurrentUser(null);
+    window.location.reload();
+  };
 
   const fetchReferrals = async () => {
     try {
@@ -106,10 +126,29 @@ export default function Referrals() {
             <span className="font-bold text-gray-900 tracking-tight hidden sm:block">WeeklyNaukri</span>
           </Link>
           <div className="flex items-center gap-3">
-            <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-black">Login</Link>
+            {currentUser ? (
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium text-gray-705 hidden sm:inline">
+                  Hi, {currentUser.name}
+                </span>
+                {currentUser.role === 'admin' && (
+                  <Link to="/dashboard" className="text-sm font-semibold text-amber-600 hover:text-amber-700 transition-colors">
+                    Dashboard
+                  </Link>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="text-xs bg-gray-100 text-gray-700 hover:bg-gray-250 px-3 py-1.5 rounded-full font-medium transition-colors cursor-pointer border border-gray-200"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-black">Login</Link>
+            )}
             <button 
               onClick={() => setShowPostModal(true)}
-              className="bg-black text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors flex items-center gap-1.5"
+              className="bg-black text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <PlusCircle className="w-4 h-4" />
               <span className="hidden sm:inline">Post Referral</span>
