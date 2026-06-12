@@ -1,0 +1,74 @@
+import db from '../../lib/db';
+import { 
+  latestJobs, 
+  latestResults, 
+  admitCards, 
+  answerKeys, 
+  admissions, 
+  documents, 
+  privateJobs 
+} from '../../data/jobs';
+
+export const revalidate = 3600; // Cache sitemap for 1 hour
+
+export async function GET() {
+  try {
+    const staticPages = [
+      '',
+      '/contact',
+      '/privacy-policy',
+      '/about',
+      '/referrals'
+    ];
+
+    // Get all static job identifiers
+    const allStaticJobs = [
+      ...latestJobs, ...latestResults, ...admitCards, 
+      ...answerKeys, ...admissions, ...documents, ...privateJobs
+    ];
+
+    const staticUrls = staticPages.map(page => ({
+      loc: `https://weeklynaukri.com${page}`,
+      changefreq: page === '' ? 'daily' : 'monthly',
+      priority: page === '' ? '1.0' : '0.5'
+    }));
+
+    const staticJobUrls = allStaticJobs.map(job => ({
+      loc: `https://weeklynaukri.com/job/${job.id}`,
+      changefreq: 'weekly',
+      priority: '0.8'
+    }));
+
+    // Get all dynamic scraped jobs from SQLite Cache
+    const dynamicJobs = db.prepare(`
+      SELECT url_slug FROM scraper_cache 
+      ORDER BY scraped_at DESC
+    `).all();
+
+    const dynamicJobUrls = dynamicJobs.map(job => ({
+      loc: `https://weeklynaukri.com/job/${job.url_slug}`,
+      changefreq: 'weekly',
+      priority: '0.9'
+    }));
+
+    const allUrls = [...staticUrls, ...staticJobUrls, ...dynamicJobUrls];
+
+    const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${allUrls.map(url => `  <url>
+    <loc>${url.loc}</loc>
+    <changefreq>${url.changefreq}</changefreq>
+    <priority>${url.priority}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+
+    return new Response(sitemapXml, {
+      headers: {
+        'Content-Type': 'application/xml; charset=utf-8'
+      }
+    });
+  } catch (err) {
+    console.error("Sitemap generation failure:", err.message);
+    return new Response('Failed to generate sitemap', { status: 500 });
+  }
+}

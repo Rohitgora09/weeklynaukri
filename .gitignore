@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Next.js build and database files
+.next/
+data/
+next-env.d.ts
