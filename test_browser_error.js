@@ -2,22 +2,22 @@ import { spawn } from 'child_process';
 import puppeteer from 'puppeteer';
 
 async function test() {
-  console.log("Starting Vite dev server...");
-  const devServer = spawn('npx', ['vite', '--port', '5173'], {
+  console.log("Starting Next.js dev server...");
+  const devServer = spawn('npx', ['next', 'dev', '--port', '3000'], {
     shell: true,
     cwd: process.cwd()
   });
 
   devServer.stdout.on('data', (data) => {
-    console.log(`Vite: ${data.toString().trim()}`);
+    console.log(`Next.js: ${data.toString().trim()}`);
   });
 
   devServer.stderr.on('data', (data) => {
-    console.error(`Vite Error: ${data.toString().trim()}`);
+    console.error(`Next.js Error: ${data.toString().trim()}`);
   });
 
-  // Wait 3 seconds for Vite to start
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  // Wait 5 seconds for Next.js to start
+  await new Promise(resolve => setTimeout(resolve, 5000));
 
   console.log("Launching Puppeteer...");
   const browser = await puppeteer.launch({
@@ -37,8 +37,8 @@ async function test() {
   });
 
   try {
-    console.log("Navigating to http://localhost:5173/...");
-    await page.goto('http://localhost:5173/', { waitUntil: 'load', timeout: 10000 });
+    console.log("Navigating to http://localhost:3000/...");
+    await page.goto('http://localhost:3000/', { waitUntil: 'load', timeout: 15000 });
     console.log("Page loaded. Waiting 2 seconds for errors...");
     await new Promise(resolve => setTimeout(resolve, 2000));
   } catch (err) {
@@ -46,7 +46,7 @@ async function test() {
   } finally {
     console.log("Closing browser...");
     await browser.close();
-    console.log("Stopping Vite dev server...");
+    console.log("Stopping Next.js dev server...");
     devServer.kill();
     process.exit(0);
   }
