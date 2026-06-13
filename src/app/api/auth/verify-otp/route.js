@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import db from '../../../../lib/db';
+import { supabase } from '../../../../lib/supabase';
 import { verifyOTP } from '../../../../lib/auth';
 
 export async function POST(request) {
@@ -17,11 +17,19 @@ export async function POST(request) {
 
     const user = verification.user;
 
-    // Save to SQLite users table
-    const result = db.prepare(`
-      INSERT INTO users (name, email, password_hash, role, verified, created_at)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(user.name, user.email, user.password_hash, user.role, user.verified, user.createdAt);
+    // Save to Supabase users table
+    const { error: insertError } = await supabase
+      .from('users')
+      .insert({
+        name: user.name,
+        email: user.email,
+        password_hash: user.password_hash,
+        role: user.role,
+        verified: user.verified === 1 || user.verified === true,
+        created_at: user.createdAt
+      });
+
+    if (insertError) throw insertError;
 
     return NextResponse.json({
       success: true,

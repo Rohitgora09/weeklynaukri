@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import db from '../../../../lib/db';
+import { supabase } from '../../../../lib/supabase';
 import { comparePassword, generateToken } from '../../../../lib/auth';
 
 export async function POST(request) {
@@ -10,13 +10,19 @@ export async function POST(request) {
       return NextResponse.json({ success: false, error: 'Email and password are required' }, { status: 400 });
     }
 
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email.toLowerCase());
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email.toLowerCase())
+      .maybeSingle();
+
+    if (error) throw error;
 
     if (!user) {
       return NextResponse.json({ success: false, error: 'Invalid email or password credentials' }, { status: 401 });
     }
 
-    if (user.verified !== 1) {
+    if (!user.verified) {
       return NextResponse.json({ success: false, error: 'This account email has not been verified yet.' }, { status: 401 });
     }
 

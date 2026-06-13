@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import db from '../../../../lib/db';
+import { supabase } from '../../../../lib/supabase';
 import { verifyToken } from '../../../../lib/auth';
 
 export async function POST(request) {
@@ -26,7 +26,12 @@ export async function POST(request) {
     }
 
     console.log("Clearing all backend scraper caches");
-    db.prepare("DELETE FROM scraper_cache").run();
+    const { error } = await supabase
+      .from('scraper_cache')
+      .delete()
+      .neq('job_id', '');
+
+    if (error) throw error;
 
     return NextResponse.json({ success: true, message: 'Caches successfully cleared and scheduled for reload.' });
   } catch (err) {
@@ -34,3 +39,4 @@ export async function POST(request) {
     return NextResponse.json({ success: false, error: 'Cache clearing failed' }, { status: 500 });
   }
 }
+

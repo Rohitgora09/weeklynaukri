@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import db from '../../../../../lib/db';
+import { supabase } from '../../../../../lib/supabase';
 
 export async function POST(request, { params }) {
   try {
@@ -10,8 +10,13 @@ export async function POST(request, { params }) {
       return NextResponse.json({ success: false, error: 'Comment text is required' }, { status: 400 });
     }
 
-    const checkReferral = db.prepare('SELECT id FROM referrals WHERE id = ?').get(referralId);
-    if (!checkReferral) {
+    const { data: checkReferral, error: checkError } = await supabase
+      .from('referrals')
+      .select('id')
+      .eq('id', referralId)
+      .maybeSingle();
+
+    if (checkError || !checkReferral) {
       return NextResponse.json({ success: false, error: 'Referral listing not found' }, { status: 404 });
     }
 
@@ -23,16 +28,17 @@ export async function POST(request, { params }) {
       createdAt: new Date().toISOString()
     };
 
-    db.prepare(`
-      INSERT INTO comments (id, referral_id, text, author, created_at)
-      VALUES (?, ?, ?, ?, ?)
-    `).run(
-      newComment.id,
-      newComment.referral_id,
-      newComment.text,
-      newComment.author,
-      newComment.createdAt
-    );
+    const { error: insertError } = await supabase
+      .from('comments')
+      .insert({
+        id: newComment.id,
+        referral_id: newComment.referral_id,
+        text: newComment.text,
+        author: newComment.author,
+        created_at: newComment.createdAt
+      });
+
+    if (insertError) throw insertError;
 
     return NextResponse.json({ success: true, data: newComment });
   } catch (err) {
@@ -40,3 +46,4 @@ export async function POST(request, { params }) {
     return NextResponse.json({ success: false, error: 'Failed to save comment' }, { status: 500 });
   }
 }
+

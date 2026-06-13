@@ -15,7 +15,7 @@ export async function POST(request) {
       ip = ip.split(',')[0].trim();
     }
 
-    trackHit({
+    await trackHit({
       pathname,
       referrer,
       screenWidth,

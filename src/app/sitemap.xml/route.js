@@ -1,4 +1,4 @@
-import db from '../../lib/db';
+import { supabase } from '../../lib/supabase';
 import { 
   latestJobs, 
   latestResults, 
@@ -39,11 +39,15 @@ export async function GET() {
       priority: '0.8'
     }));
 
-    // Get all dynamic scraped jobs from SQLite Cache
-    const dynamicJobs = db.prepare(`
-      SELECT url_slug FROM scraper_cache 
-      ORDER BY scraped_at DESC
-    `).all();
+    // Get all dynamic scraped jobs from Supabase Cache
+    const { data: dynamicJobsData, error: dynamicJobsError } = await supabase
+      .from('scraper_cache')
+      .select('url_slug')
+      .order('scraped_at', { ascending: false });
+
+    if (dynamicJobsError) throw dynamicJobsError;
+
+    const dynamicJobs = dynamicJobsData || [];
 
     const dynamicJobUrls = dynamicJobs.map(job => ({
       loc: `https://weeklynaukri.com/job/${job.url_slug}`,
@@ -72,3 +76,4 @@ ${allUrls.map(url => `  <url>
     return new Response('Failed to generate sitemap', { status: 500 });
   }
 }
+

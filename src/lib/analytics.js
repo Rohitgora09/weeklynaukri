@@ -1,4 +1,4 @@
-import db from './db.js';
+import { supabase } from './supabase.js';
 
 // Browser parsing helper
 function getBrowser(userAgent) {
@@ -32,22 +32,23 @@ function stableHash(str) {
   return Math.abs(hash).toString(36);
 }
 
-// Clean old tracking data to optimize SQLite size (older than 30 days)
-function cleanOldHits() {
+// Clean old tracking data to optimize database size (older than 30 days)
+async function cleanOldHits() {
   try {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-    db.prepare("DELETE FROM analytics_hits WHERE created_at < ?").run(thirtyDaysAgo);
+    await supabase
+      .from('analytics_hits')
+      .delete()
+      .lt('created_at', thirtyDaysAgo);
   } catch (err) {
     console.error("Failed to prune old analytics database hits:", err.message);
   }
 }
 
 // Record a new visitor hit
-export function trackHit({ pathname, referrer, screenWidth, userAgent, ip }) {
+export async function trackHit({ pathname, referrer, screenWidth, userAgent, ip }) {
   try {
     const today = new Date().toISOString().split('T')[0];
-    const browser = getBrowser(userAgent || '');
-    const device = getDevice(userAgent || '', screenWidth);
     
     let cleanReferrer = 'direct';
     if (referrer && referrer !== 'direct') {
@@ -61,10 +62,18 @@ export function trackHit({ pathname, referrer, screenWidth, userAgent, ip }) {
     const ipHash = stableHash(ip || '127.0.0.1') + '-' + today;
     const now = new Date().toISOString();
 
-    db.prepare(`
-      INSERT INTO analytics_hits (pathname, referrer, screen_width, user_agent, ip_hash, created_at)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(pathname, cleanReferrer, screenWidth || 0, userAgent || '', ipHash, now);
+    const { error } = await supabase
+      .from('analytics_hits')
+      .insert({
+        pathname,
+        referrer: cleanReferrer,
+        screen_width: screenWidth || 0,
+        user_agent: userAgent || '',
+        ip_hash: ipHash,
+        created_at: now
+      });
+
+    if (error) throw error;
 
     // Run clean up asynchronously sometimes
     if (Math.random() < 0.05) {
@@ -76,84 +85,87 @@ export function trackHit({ pathname, referrer, screenWidth, userAgent, ip }) {
 }
 
 // Fetch aggregate dashboard stats
-export function getStats() {
+export async function getStats() {
   try {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+    // Fetch analytics hits from last 30 days, up to 5000 records
+    const { data: hits, error } = await supabase
+      .from('analytics_hits')
+      .select('pathname, referrer, screen_width, user_agent, ip_hash, created_at')
+      .gte('created_at', thirtyDaysAgo)
+      .order('created_at', { ascending: false })
+      .range(0, 4999);
+
+    if (error) throw error;
+
+    const processedHits = hits || [];
+
     // 1. Total Page Views
-    const totalPageViews = db.prepare('SELECT COUNT(*) as count FROM analytics_hits').get().count;
+    const totalPageViews = processedHits.length;
 
     // 2. Unique Visitors (aggregating unique IP hashes)
-    const totalUniqueVisitors = db.prepare('SELECT COUNT(DISTINCT ip_hash) as count FROM analytics_hits').get().count;
+    const uniqueIps = new Set(processedHits.map(h => h.ip_hash));
+    const totalUniqueVisitors = uniqueIps.size;
 
     // 3. Views by Page
-    const viewsByPageRows = db.prepare(`
-      SELECT pathname, COUNT(*) as count 
-      FROM analytics_hits 
-      GROUP BY pathname 
-      ORDER BY count DESC 
-      LIMIT 10
-    `).all();
-    const viewsByPage = {};
-    viewsByPageRows.forEach(row => { viewsByPage[row.pathname] = row.count; });
+    const viewsByPageMap = {};
+    processedHits.forEach(h => {
+      viewsByPageMap[h.pathname] = (viewsByPageMap[h.pathname] || 0) + 1;
+    });
+    const viewsByPage = Object.fromEntries(
+      Object.entries(viewsByPageMap)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+    );
 
     // 4. Browsers Split
-    const browserRows = db.prepare(`
-      SELECT user_agent, COUNT(*) as count 
-      FROM analytics_hits 
-      GROUP BY user_agent
-    `).all();
     const browsers = { Chrome: 0, Firefox: 0, Safari: 0, Edge: 0, Other: 0 };
-    browserRows.forEach(row => {
-      const b = getBrowser(row.user_agent);
-      browsers[b] = (browsers[b] || 0) + row.count;
+    processedHits.forEach(h => {
+      const b = getBrowser(h.user_agent);
+      browsers[b] = (browsers[b] || 0) + 1;
     });
 
     // 5. Devices Split
-    const deviceRows = db.prepare(`
-      SELECT user_agent, screen_width, COUNT(*) as count 
-      FROM analytics_hits 
-      GROUP BY user_agent, screen_width
-    `).all();
     const devices = { Mobile: 0, Tablet: 0, Desktop: 0 };
-    deviceRows.forEach(row => {
-      const d = getDevice(row.user_agent, row.screen_width);
-      devices[d] = (devices[d] || 0) + row.count;
+    processedHits.forEach(h => {
+      const d = getDevice(h.user_agent, h.screen_width);
+      devices[d] = (devices[d] || 0) + 1;
     });
 
     // 6. Referrer splits
-    const referrerRows = db.prepare(`
-      SELECT referrer, COUNT(*) as count 
-      FROM analytics_hits 
-      GROUP BY referrer 
-      ORDER BY count DESC 
-      LIMIT 10
-    `).all();
-    const referrers = {};
-    referrerRows.forEach(row => { referrers[row.referrer] = row.count; });
+    const referrerMap = {};
+    processedHits.forEach(h => {
+      const ref = h.referrer || 'direct';
+      referrerMap[ref] = (referrerMap[ref] || 0) + 1;
+    });
+    const referrers = Object.fromEntries(
+      Object.entries(referrerMap)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+    );
 
     // 7. Daily Views Chart Data (last 7 days)
-    const dailyViewsRows = db.prepare(`
-      SELECT strftime('%Y-%m-%d', created_at) as day, COUNT(*) as count 
-      FROM analytics_hits 
-      GROUP BY day 
-      ORDER BY day DESC 
-      LIMIT 7
-    `).all();
+    const dailyViewsMap = {};
+    processedHits.forEach(h => {
+      if (h.created_at) {
+        const day = h.created_at.split('T')[0];
+        dailyViewsMap[day] = (dailyViewsMap[day] || 0) + 1;
+      }
+    });
     const dailyViews = {};
-    dailyViewsRows.reverse().forEach(row => { dailyViews[row.day] = row.count; });
+    const days = Object.keys(dailyViewsMap).sort().slice(-7);
+    days.forEach(day => {
+      dailyViews[day] = dailyViewsMap[day];
+    });
 
     // 8. Recent Hits log (last 50 requests)
-    const recentHitsRows = db.prepare(`
-      SELECT pathname, referrer, user_agent, screen_width, created_at 
-      FROM analytics_hits 
-      ORDER BY created_at DESC 
-      LIMIT 50
-    `).all();
-    const recentHits = recentHitsRows.map(row => ({
-      timestamp: row.created_at,
-      pathname: row.pathname,
-      browser: getBrowser(row.user_agent),
-      device: getDevice(row.user_agent, row.screen_width),
-      referrer: row.referrer
+    const recentHits = processedHits.slice(0, 50).map(h => ({
+      timestamp: h.created_at,
+      pathname: h.pathname,
+      browser: getBrowser(h.user_agent),
+      device: getDevice(h.user_agent, h.screen_width),
+      referrer: h.referrer
     }));
 
     return {
@@ -180,3 +192,4 @@ export function getStats() {
     };
   }
 }
+

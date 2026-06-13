@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import db from '../../../../lib/db';
+import { supabase } from '../../../../lib/supabase';
 import { registerPendingUser, sendOTPEmail } from '../../../../lib/auth';
 
 export async function POST(request) {
@@ -10,7 +10,14 @@ export async function POST(request) {
       return NextResponse.json({ success: false, error: 'Name, email, and password are required' }, { status: 400 });
     }
 
-    const checkExists = db.prepare('SELECT id FROM users WHERE email = ?').get(email.toLowerCase());
+    const { data: checkExists, error } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email.toLowerCase())
+      .maybeSingle();
+
+    if (error) throw error;
+
     if (checkExists) {
       return NextResponse.json({ success: false, error: 'Email address is already registered' }, { status: 400 });
     }

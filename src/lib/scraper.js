@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer';
-import db from './db.js';
+import { supabase } from './supabase.js';
 import { slugify } from '../utils/slugify.js';
 
 let sharedBrowser = null;
@@ -53,16 +53,16 @@ export async function fetchSSCNotices(force = false) {
   const CACHE_DURATION_MS = 15 * 60 * 1000;
   
   if (!force) {
-    const cached = db.prepare(`
-      SELECT * FROM scraper_cache 
-      WHERE category = 'notices' 
-      ORDER BY scraped_at DESC
-    `).all();
+    const { data: cached, error: cacheError } = await supabase
+      .from('scraper_cache')
+      .select('*')
+      .eq('category', 'notices')
+      .order('scraped_at', { ascending: false });
 
-    if (cached.length > 0) {
+    if (!cacheError && cached && cached.length > 0) {
       const newestTime = new Date(cached[0].scraped_at).getTime();
       if (Date.now() - newestTime < CACHE_DURATION_MS) {
-        console.log("Returning SQLite cached SSC notices");
+        console.log("Returning Supabase cached SSC notices");
         return cached.map(item => ({
           id: item.job_id,
           slug: item.url_slug,
@@ -124,29 +124,38 @@ export async function fetchSSCNotices(force = false) {
 
     await page.close();
     
-    console.log(`Scraped ${notices.length} notices from ssc.gov.in. Updating SQLite cache...`);
+    console.log(`Scraped ${notices.length} notices from ssc.gov.in. Updating Supabase cache...`);
 
     const now = new Date().toISOString();
     
-    db.transaction(() => {
-      // Clear old cached notices
-      db.prepare("DELETE FROM scraper_cache WHERE category = 'notices'").run();
-      
-      const insert = db.prepare(`
-        INSERT INTO scraper_cache (url_slug, job_id, title, org, category, source_url, scraped_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `);
-      
-      notices.forEach(notice => {
-        const id = stableId('ssc-', notice.title);
-        const slug = slugify(notice.title) + '-' + id;
-        insert.run(slug, id, notice.title, 'Staff Selection Commission', 'notices', notice.link, now);
-      });
-    })();
+    // Clear old cached notices
+    await supabase
+      .from('scraper_cache')
+      .delete()
+      .eq('category', 'notices');
+    
+    const insertRows = notices.map(notice => {
+      const id = stableId('ssc-', notice.title);
+      const slug = slugify(notice.title) + '-' + id;
+      return {
+        url_slug: slug,
+        job_id: id,
+        title: notice.title,
+        org: 'Staff Selection Commission',
+        category: 'notices',
+        source_url: notice.link,
+        scraped_at: now
+      };
+    });
 
-    // Read back clean structures
-    const updatedCached = db.prepare("SELECT * FROM scraper_cache WHERE category = 'notices' ORDER BY scraped_at DESC").all();
-    return updatedCached.map(item => ({
+    if (insertRows.length > 0) {
+      const { error: insertError } = await supabase
+        .from('scraper_cache')
+        .insert(insertRows);
+      if (insertError) throw insertError;
+    }
+
+    return insertRows.map(item => ({
       id: item.job_id,
       slug: item.url_slug,
       title: item.title,
@@ -160,8 +169,14 @@ export async function fetchSSCNotices(force = false) {
   } catch (error) {
     console.error("Error scraping SSC notices:", error.message);
     // Return stale cache as fallback
-    const stale = db.prepare("SELECT * FROM scraper_cache WHERE category = 'notices' ORDER BY scraped_at DESC").all();
-    return stale.map(item => ({
+    const { data: stale } = await supabase
+      .from('scraper_cache')
+      .select('*')
+      .eq('category', 'notices')
+      .order('scraped_at', { ascending: false });
+
+    const staleList = stale || [];
+    return staleList.map(item => ({
       id: item.job_id,
       slug: item.url_slug,
       title: item.title,
@@ -207,25 +222,44 @@ export async function fetchSarkariResultData(force = false) {
   };
 
   if (!force) {
-    const cachedJobs = db.prepare("SELECT * FROM scraper_cache WHERE category = 'latestJobs'").all();
-    const cachedAdmit = db.prepare("SELECT * FROM scraper_cache WHERE category = 'admitCards'").all();
-    const cachedResults = db.prepare("SELECT * FROM scraper_cache WHERE category = 'results'").all();
-    const cachedAnswerKeys = db.prepare("SELECT * FROM scraper_cache WHERE category = 'answerKeys'").all();
-    const cachedAdmissions = db.prepare("SELECT * FROM scraper_cache WHERE category = 'admissions'").all();
-    const cachedDocuments = db.prepare("SELECT * FROM scraper_cache WHERE category = 'documents'").all();
+    const categories = ['latestJobs', 'admitCards', 'results', 'answerKeys', 'admissions', 'documents'];
+    const { data: cached, error: cacheError } = await supabase
+      .from('scraper_cache')
+      .select('*')
+      .in('category', categories);
 
-    if (cachedJobs.length > 0 && cachedAdmit.length > 0 && cachedResults.length > 0) {
-      const newestTime = new Date(cachedJobs[0].scraped_at).getTime();
-      if (Date.now() - newestTime < CACHE_DURATION_MS) {
-        console.log("Returning SQLite cached SarkariResult data");
-        return {
-          latestJobs: cachedJobs.map(mapper),
-          admitCards: cachedAdmit.map(mapper),
-          results: cachedResults.map(mapper),
-          answerKeys: cachedAnswerKeys.map(mapper),
-          admissions: cachedAdmissions.map(mapper),
-          documents: cachedDocuments.map(mapper)
-        };
+    if (!cacheError && cached && cached.length > 0) {
+      const grouped = {
+        latestJobs: [],
+        admitCards: [],
+        results: [],
+        answerKeys: [],
+        admissions: [],
+        documents: []
+      };
+      
+      cached.forEach(item => {
+        if (grouped[item.category]) {
+          grouped[item.category].push(item);
+        }
+      });
+
+      const allCached = Object.values(grouped).flat();
+      if (allCached.length > 0) {
+        const sortedCached = [...allCached].sort((a, b) => new Date(b.scraped_at) - new Date(a.scraped_at));
+        const newestTime = new Date(sortedCached[0].scraped_at).getTime();
+
+        if (Date.now() - newestTime < CACHE_DURATION_MS && grouped.latestJobs.length > 0) {
+          console.log("Returning Supabase cached SarkariResult data");
+          return {
+            latestJobs: grouped.latestJobs.map(mapper),
+            admitCards: grouped.admitCards.map(mapper),
+            results: grouped.results.map(mapper),
+            answerKeys: grouped.answerKeys.map(mapper),
+            admissions: grouped.admissions.map(mapper),
+            documents: grouped.documents.map(mapper)
+          };
+        }
       }
     }
   }
@@ -313,52 +347,87 @@ export async function fetchSarkariResultData(force = false) {
 
     await page.close();
 
-    console.log(`Scraped SarkariResult. Updating SQLite cache tables...`);
+    console.log(`Scraped SarkariResult. Updating Supabase cache tables...`);
     const now = new Date().toISOString();
+    const categories = ['latestJobs', 'admitCards', 'results', 'answerKeys', 'admissions', 'documents'];
 
-    db.transaction(() => {
-      db.prepare("DELETE FROM scraper_cache WHERE category IN ('latestJobs', 'admitCards', 'results', 'answerKeys', 'admissions', 'documents')").run();
-      
-      const insert = db.prepare(`
-        INSERT OR IGNORE INTO scraper_cache (url_slug, job_id, title, org, category, source_url, scraped_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `);
+    await supabase
+      .from('scraper_cache')
+      .delete()
+      .in('category', categories);
 
-      const saveItems = (items, categoryName) => {
-        if (!items) return;
-        items.forEach(item => {
-          const id = stableId('sr-', item.title);
-          const slug = slugify(item.title) + '-' + id;
-          insert.run(slug, id, item.title, item.org, categoryName, item.link, now);
+    const insertRows = [];
+    const prepareRows = (items, categoryName) => {
+      if (!items) return;
+      items.forEach(item => {
+        const id = stableId('sr-', item.title);
+        const slug = slugify(item.title) + '-' + id;
+        insertRows.push({
+          url_slug: slug,
+          job_id: id,
+          title: item.title,
+          org: item.org,
+          category: categoryName,
+          source_url: item.link,
+          scraped_at: now
         });
-      };
+      });
+    };
 
-      saveItems(rawData.latestJobs, 'latestJobs');
-      saveItems(rawData.admitCards, 'admitCards');
-      saveItems(rawData.results, 'results');
-      saveItems(rawData.answerKeys, 'answerKeys');
-      saveItems(rawData.admissions, 'admissions');
-      saveItems(rawData.documents, 'documents');
-    })();
+    prepareRows(rawData.latestJobs, 'latestJobs');
+    prepareRows(rawData.admitCards, 'admitCards');
+    prepareRows(rawData.results, 'results');
+    prepareRows(rawData.answerKeys, 'answerKeys');
+    prepareRows(rawData.admissions, 'admissions');
+    prepareRows(rawData.documents, 'documents');
 
+    if (insertRows.length > 0) {
+      const { error: insertError } = await supabase
+        .from('scraper_cache')
+        .insert(insertRows);
+      if (insertError) throw insertError;
+    }
+
+    const getGroup = (category) => insertRows.filter(r => r.category === category).map(mapper);
     return {
-      latestJobs: db.prepare("SELECT * FROM scraper_cache WHERE category = 'latestJobs'").all().map(mapper),
-      admitCards: db.prepare("SELECT * FROM scraper_cache WHERE category = 'admitCards'").all().map(mapper),
-      results: db.prepare("SELECT * FROM scraper_cache WHERE category = 'results'").all().map(mapper),
-      answerKeys: db.prepare("SELECT * FROM scraper_cache WHERE category = 'answerKeys'").all().map(mapper),
-      admissions: db.prepare("SELECT * FROM scraper_cache WHERE category = 'admissions'").all().map(mapper),
-      documents: db.prepare("SELECT * FROM scraper_cache WHERE category = 'documents'").all().map(mapper)
+      latestJobs: getGroup('latestJobs'),
+      admitCards: getGroup('admitCards'),
+      results: getGroup('results'),
+      answerKeys: getGroup('answerKeys'),
+      admissions: getGroup('admissions'),
+      documents: getGroup('documents')
     };
 
   } catch (error) {
     console.error("Error scraping SarkariResult data:", error.message);
+    const categories = ['latestJobs', 'admitCards', 'results', 'answerKeys', 'admissions', 'documents'];
+    const { data: fallbackData } = await supabase
+      .from('scraper_cache')
+      .select('*')
+      .in('category', categories);
+
+    const grouped = {
+      latestJobs: [],
+      admitCards: [],
+      results: [],
+      answerKeys: [],
+      admissions: [],
+      documents: []
+    };
+    if (fallbackData) {
+      fallbackData.forEach(item => {
+        if (grouped[item.category]) {
+          grouped[item.category].push(item);
+        }
+      });
+    }
     return {
-      latestJobs: db.prepare("SELECT * FROM scraper_cache WHERE category = 'latestJobs'").all().map(mapper),
-      admitCards: db.prepare("SELECT * FROM scraper_cache WHERE category = 'admitCards'").all().map(mapper),
-      results: db.prepare("SELECT * FROM scraper_cache WHERE category = 'results'").all().map(mapper),
-      answerKeys: db.prepare("SELECT * FROM scraper_cache WHERE category = 'answerKeys'").all().map(mapper),
-      admissions: db.prepare("SELECT * FROM scraper_cache WHERE category = 'admissions'").all().map(mapper),
-      documents: db.prepare("SELECT * FROM scraper_cache WHERE category = 'documents'").all().map(mapper)
+      latestJobs: grouped.latestJobs.map(mapper),
+      admitCards: grouped.admitCards.map(mapper),
+      results: grouped.results.map(mapper),
+      answerKeys: grouped.answerKeys.map(mapper),
+      admissions: grouped.admissions.map(mapper),
+      documents: grouped.documents.map(mapper)
     };
   } finally {
     isScrapingLock = false;
@@ -439,7 +508,11 @@ export async function fetchPrivateJobs(force = false) {
   const mapper = item => {
     let details = {};
     if (item.full_details_json) {
-      try { details = JSON.parse(item.full_details_json); } catch (e) {}
+      try {
+        details = typeof item.full_details_json === 'string'
+          ? JSON.parse(item.full_details_json)
+          : item.full_details_json;
+      } catch (e) {}
     }
     return {
       id: item.job_id,
@@ -457,16 +530,16 @@ export async function fetchPrivateJobs(force = false) {
   };
 
   if (!force) {
-    const cached = db.prepare(`
-      SELECT * FROM scraper_cache 
-      WHERE category = 'privateJobs' 
-      ORDER BY scraped_at DESC
-    `).all();
+    const { data: cached, error: cacheError } = await supabase
+      .from('scraper_cache')
+      .select('*')
+      .eq('category', 'privateJobs')
+      .order('scraped_at', { ascending: false });
 
-    if (cached.length > 0) {
+    if (!cacheError && cached && cached.length > 0) {
       const newestTime = new Date(cached[0].scraped_at).getTime();
       if (Date.now() - newestTime < CACHE_DURATION_MS) {
-        console.log("Returning SQLite cached private jobs");
+        console.log("Returning Supabase cached private jobs");
         return cached.map(mapper);
       }
     }
@@ -474,7 +547,12 @@ export async function fetchPrivateJobs(force = false) {
 
   if (isScrapingLock) {
     console.log("Scraper lock active, skipping private jobs live fetch");
-    return db.prepare("SELECT * FROM scraper_cache WHERE category = 'privateJobs' ORDER BY scraped_at DESC").all().map(mapper);
+    const { data: cached } = await supabase
+      .from('scraper_cache')
+      .select('*')
+      .eq('category', 'privateJobs')
+      .order('scraped_at', { ascending: false });
+    return (cached || []).map(mapper);
   }
 
   isScrapingLock = true;
@@ -522,7 +600,7 @@ export async function fetchPrivateJobs(force = false) {
 
     await page.close();
 
-    console.log(`Scraped ${rawJobs.length} private jobs. Saving to SQLite...`);
+    console.log(`Scraped ${rawJobs.length} private jobs. Saving to Supabase...`);
     const now = new Date().toISOString();
 
     const getMockSalary = (title) => {
@@ -539,41 +617,56 @@ export async function fetchPrivateJobs(force = false) {
       return `₹${4 + Math.floor(Math.random()*3)} - ₹${8 + Math.floor(Math.random()*4)} LPA`;
     };
 
-    db.transaction(() => {
-      db.prepare("DELETE FROM scraper_cache WHERE category = 'privateJobs'").run();
+    await supabase
+      .from('scraper_cache')
+      .delete()
+      .eq('category', 'privateJobs');
+
+    const insertRows = rawJobs.map(job => {
+      const id = stableId('pvt-', job.title + '-' + job.company);
+      const slug = slugify(job.title) + '-' + id;
+      const salary = getMockSalary(job.title);
       
-      const insert = db.prepare(`
-        INSERT OR IGNORE INTO scraper_cache (url_slug, job_id, title, org, category, source_url, full_details_json, scraped_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `);
+      const details = {
+        location: job.location,
+        salary: salary,
+        eligibility: `${job.experience}, B.Tech/B.E/MCA/B.Sc/BCA or equivalent degree.`,
+        dates: { applyStart: 'Immediately', applyEnd: 'Within 30 Days', examDate: 'N/A' },
+        fee: { general: '₹0', scSt: '₹0', women: '₹0' },
+        ageLimit: { min: '18 Years', max: 'No limit', relaxation: 'N/A' },
+        vacancies: 'Multiple',
+        links: { apply: job.url, notification: job.url, official: job.url }
+      };
 
-      rawJobs.forEach(job => {
-        const id = stableId('pvt-', job.title + '-' + job.company);
-        const slug = slugify(job.title) + '-' + id;
-        const salary = getMockSalary(job.title);
-        
-        const details = {
-          location: job.location,
-          salary: salary,
-          eligibility: `${job.experience}, B.Tech/B.E/MCA/B.Sc/BCA or equivalent degree.`,
-          dates: { applyStart: 'Immediately', applyEnd: 'Within 30 Days', examDate: 'N/A' },
-          fee: { general: '₹0', scSt: '₹0', women: '₹0' },
-          ageLimit: { min: '18 Years', max: 'No limit', relaxation: 'N/A' },
-          vacancies: 'Multiple',
-          links: { apply: job.url, notification: job.url, official: job.url }
-        };
+      return {
+        url_slug: slug,
+        job_id: id,
+        title: job.title,
+        org: job.company,
+        category: 'privateJobs',
+        source_url: job.url,
+        full_details_json: details,
+        scraped_at: now
+      };
+    });
 
-        insert.run(slug, id, job.title, job.company, 'privateJobs', job.url, JSON.stringify(details), now);
-      });
-    })();
+    if (insertRows.length > 0) {
+      const { error: insertError } = await supabase
+        .from('scraper_cache')
+        .insert(insertRows);
+      if (insertError) throw insertError;
+    }
 
-    const updated = db.prepare("SELECT * FROM scraper_cache WHERE category = 'privateJobs' ORDER BY scraped_at DESC").all();
-    return updated.map(mapper);
+    return insertRows.map(mapper);
 
   } catch (error) {
     console.error("Error scraping private jobs:", error.message);
-    const stale = db.prepare("SELECT * FROM scraper_cache WHERE category = 'privateJobs' ORDER BY scraped_at DESC").all();
-    return stale.map(mapper);
+    const { data: stale } = await supabase
+      .from('scraper_cache')
+      .select('*')
+      .eq('category', 'privateJobs')
+      .order('scraped_at', { ascending: false });
+    return (stale || []).map(mapper);
   } finally {
     isScrapingLock = false;
   }

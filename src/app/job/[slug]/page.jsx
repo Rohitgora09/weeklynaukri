@@ -7,7 +7,7 @@ import {
   ExternalLink,
   IndianRupee
 } from 'lucide-react';
-import db from '../../../lib/db';
+import { supabase } from '../../../lib/supabase';
 import { fetchSarkariJobDetails } from '../../../lib/scraper';
 import JobPostingSchema from '../../../components/seo/JobPostingSchema';
 import ShareButtonClient from './ShareButtonClient'; // Client side click handler for clipboard/share
@@ -40,20 +40,23 @@ async function getJobData(slug) {
     return { isStatic: true, job: staticJob };
   }
 
-  // 2. Query SQLite Cache
-  const cached = db.prepare(`
-    SELECT * FROM scraper_cache 
-    WHERE url_slug = ? OR job_id = ?
-  `).get(slug, slug);
+  // 2. Query Supabase Cache
+  const { data: cached, error: cacheError } = await supabase
+    .from('scraper_cache')
+    .select('*')
+    .or(`url_slug.eq.${slug},job_id.eq.${slug}`)
+    .maybeSingle();
 
-  if (!cached) {
+  if (cacheError || !cached) {
     return null;
   }
 
   // If already scraped detailed info is cached, return it
   if (cached.full_details_json) {
     try {
-      const details = JSON.parse(cached.full_details_json);
+      const details = typeof cached.full_details_json === 'string'
+        ? JSON.parse(cached.full_details_json)
+        : cached.full_details_json;
       return {
         isStatic: false,
         job: {
@@ -95,12 +98,11 @@ async function getJobData(slug) {
     };
   }
 
-  // Update SQLite cache with detailed payload
-  db.prepare(`
-    UPDATE scraper_cache 
-    SET full_details_json = ? 
-    WHERE url_slug = ?
-  `).run(JSON.stringify(details), cached.url_slug);
+  // Update Supabase cache with detailed payload
+  await supabase
+    .from('scraper_cache')
+    .update({ full_details_json: details })
+    .eq('url_slug', cached.url_slug);
 
   return {
     isStatic: false,
@@ -192,11 +194,17 @@ export default async function JobDetailsPage({ params }) {
   // Fetch recent jobs for internal linking to avoid orphan pages
   let recentJobs = [];
   try {
-    recentJobs = db.prepare(`
-      SELECT title, url_slug, org, category FROM scraper_cache 
-      WHERE url_slug != ? AND category = 'latestJobs'
-      ORDER BY scraped_at DESC LIMIT 6
-    `).all(slug);
+    const { data: recentData, error: recentError } = await supabase
+      .from('scraper_cache')
+      .select('title, url_slug, org, category')
+      .neq('url_slug', slug)
+      .eq('category', 'latestJobs')
+      .order('scraped_at', { ascending: false })
+      .limit(6);
+
+    if (!recentError && recentData) {
+      recentJobs = recentData;
+    }
   } catch (e) {
     console.error("Failed to query recent jobs for details widget:", e);
   }

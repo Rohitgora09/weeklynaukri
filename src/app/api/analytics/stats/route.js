@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getStats } from '../../../../lib/analytics';
-import db from '../../../../lib/db';
+import { supabase } from '../../../../lib/supabase';
 import { verifyToken } from '../../../../lib/auth';
 
 const nodeStartTime = Date.now(); // Track process uptime
@@ -12,7 +12,7 @@ export async function GET(request) {
     const adminPasswordHeader = request.headers.get('x-admin-password');
     
     let isAuthorized = false;
-
+ 
     // Check x-admin-password
     const expectedPassword = process.env.ADMIN_PASSWORD || 'admin123';
     if (adminPasswordHeader && adminPasswordHeader === expectedPassword) {
@@ -32,11 +32,16 @@ export async function GET(request) {
       return NextResponse.json({ success: false, error: 'Unauthorized. Invalid credentials.' }, { status: 401 });
     }
 
-    const stats = getStats();
+    const stats = await getStats();
     
-    // Fetch count metadata
-    const usersCount = db.prepare('SELECT COUNT(*) as count FROM users').get().count;
-    const referralsCount = db.prepare('SELECT COUNT(*) as count FROM referrals').get().count;
+    // Fetch count metadata from Supabase
+    const { count: usersCount } = await supabase
+      .from('users')
+      .select('*', { count: 'exact', head: true });
+
+    const { count: referralsCount } = await supabase
+      .from('referrals')
+      .select('*', { count: 'exact', head: true });
 
     return NextResponse.json({
       success: true,
@@ -48,8 +53,8 @@ export async function GET(request) {
         memoryUsage: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + ' MB'
       },
       counts: {
-        referrals: referralsCount,
-        users: usersCount
+        referrals: referralsCount || 0,
+        users: usersCount || 0
       }
     });
   } catch (err) {
@@ -57,3 +62,4 @@ export async function GET(request) {
     return NextResponse.json({ success: false, error: 'Failed to retrieve stats' }, { status: 500 });
   }
 }
+

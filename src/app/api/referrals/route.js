@@ -1,25 +1,35 @@
 import { NextResponse } from 'next/server';
-import db from '../../../lib/db';
+import { supabase } from '../../../lib/supabase';
 
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const sortBy = searchParams.get('sort');
 
-    let referrals = db.prepare('SELECT * FROM referrals').all();
+    const { data: referrals, error } = await supabase
+      .from('referrals')
+      .select('*, comments(*)');
 
-    // Fetch comments for each referral
-    const commentsStmt = db.prepare('SELECT * FROM comments WHERE referral_id = ? ORDER BY created_at ASC');
-    referrals = referrals.map(ref => ({
-      ...ref,
-      comments: commentsStmt.all(ref.id)
-    }));
+    if (error) throw error;
+
+    let processedReferrals = referrals || [];
+
+    // Sort nested comments by created_at
+    processedReferrals = processedReferrals.map(ref => {
+      const sortedComments = [...(ref.comments || [])].sort(
+        (a, b) => new Date(a.created_at) - new Date(b.created_at)
+      );
+      return {
+        ...ref,
+        comments: sortedComments
+      };
+    });
 
     if (sortBy === 'recent') {
-      referrals.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      processedReferrals.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
 
-    return NextResponse.json({ success: true, data: referrals });
+    return NextResponse.json({ success: true, data: processedReferrals });
   } catch (err) {
     console.error("API get referrals error:", err.message);
     return NextResponse.json({ success: false, error: 'Failed to retrieve referrals' }, { status: 500 });
@@ -48,18 +58,19 @@ export async function POST(request) {
       createdAt: new Date().toISOString()
     };
 
-    db.prepare(`
-      INSERT INTO referrals (id, company, role, description, link, author, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(
-      newReferral.id,
-      newReferral.company,
-      newReferral.role,
-      newReferral.description,
-      newReferral.link,
-      newReferral.author,
-      newReferral.createdAt
-    );
+    const { error } = await supabase
+      .from('referrals')
+      .insert({
+        id: newReferral.id,
+        company: newReferral.company,
+        role: newReferral.role,
+        description: newReferral.description,
+        link: newReferral.link,
+        author: newReferral.author,
+        created_at: newReferral.createdAt
+      });
+
+    if (error) throw error;
 
     return NextResponse.json({
       success: true,
