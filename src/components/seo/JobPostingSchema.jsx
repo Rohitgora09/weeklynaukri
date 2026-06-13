@@ -77,6 +77,9 @@ export default function JobPostingSchema({ job }) {
     datePublished: postedDate,
     dateModified: postedDate,
     description: pageDescription,
+    image: [
+      'https://weeklynaukri.com/logo.png'
+    ],
     author: {
       '@type': 'Organization',
       name: 'WeeklyNaukri.com',
