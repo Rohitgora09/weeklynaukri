@@ -9,7 +9,8 @@ import {
   ArrowRight,
   Calendar,
   Briefcase,
-  BookOpen
+  BookOpen,
+  Bell
 } from 'lucide-react';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
@@ -153,9 +154,13 @@ export default function ItGovtJobsClient({ initialJobs, initialNotices }) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             {activeItems.length > 0 ? (
-              <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm">
-                <JobList jobs={activeItems} />
-              </div>
+              <JobList 
+                items={activeItems} 
+                title={selectedCategory} 
+                icon={selectedCategory === 'Technical Jobs' ? Briefcase : (selectedCategory === 'Admit Cards' ? Calendar : (selectedCategory === 'Results' ? BookOpen : Bell))}
+                color={selectedCategory === 'Technical Jobs' ? 'bg-blue-600' : (selectedCategory === 'Admit Cards' ? 'bg-orange-500' : (selectedCategory === 'Results' ? 'bg-green-600' : 'bg-purple-650'))}
+                limit={20}
+              />
             ) : (
               <div className="text-center py-16 bg-gray-50/50 border border-dashed border-gray-200 rounded-3xl">
                 <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
