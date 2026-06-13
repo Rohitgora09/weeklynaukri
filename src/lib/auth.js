@@ -1,16 +1,20 @@
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev_jwt_secret_key_12345';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required and must not use a default value.');
+}
 
 // Temporary in-memory storage for unverified registrations
 // Key: email, Value: { name, email, password_hash, otp, expiresAt }
 const pendingVerifications = new Map();
 
-// Helper to generate a secure 6-digit OTP code
+// Helper to generate a cryptographically secure 6-digit OTP code
 export function generateOTP() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  return crypto.randomInt(100000, 1000000).toString();
 }
 
 // Helper to hash password
@@ -133,7 +137,9 @@ export function verifyOTP(email, enteredOtp) {
     return { success: false, error: "OTP has expired. Please sign up again." };
   }
 
-  if (pending.otp !== enteredOtp.trim()) {
+  const expected = Buffer.from(pending.otp);
+  const provided = Buffer.from(String(enteredOtp).trim());
+  if (expected.length !== provided.length || !crypto.timingSafeEqual(expected, provided)) {
     return { success: false, error: "Invalid OTP verification code." };
   }
 
