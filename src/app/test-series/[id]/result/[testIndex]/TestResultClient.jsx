@@ -375,6 +375,54 @@ export default function TestResultClient({ series, test, attemptId }) {
           </div>
         </Card>
 
+        {/* 3. Sectional Performance Analysis */}
+        <Card padding="p-0" hover={false} className="border-gray-200/80 overflow-hidden shadow-sm">
+          <div className="p-6 border-b border-gray-150 bg-gray-50/40 flex items-center justify-between">
+            <h3 className="font-bold text-gray-800 text-sm uppercase tracking-wider flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-blue-900" /> Sectional Breakdown
+            </h3>
+            <span className="text-[10px] font-bold text-gray-405 uppercase tracking-widest">Weights: +{series.marksPerQuestion} / -{series.negativeMark}</span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-gray-100/50 border-b border-gray-150 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                  <th className="py-4 px-6">Section Name</th>
+                  <th className="py-4 px-6 text-center">Questions</th>
+                  <th className="py-4 px-6 text-center">Correct</th>
+                  <th className="py-4 px-6 text-center">Incorrect</th>
+                  <th className="py-4 px-6 text-center">Unattempted</th>
+                  <th className="py-4 px-6 text-center">Accuracy</th>
+                  <th className="py-4 px-6 text-right">Score</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 text-xs font-bold text-gray-700">
+                {sectionalStats.map((sec, idx) => (
+                  <tr key={idx} className="hover:bg-gray-50/30 transition-colors">
+                    <td className="py-4 px-6 font-extrabold text-gray-900 text-sm">{sec.name}</td>
+                    <td className="py-4 px-6 text-center text-gray-450">{sec.total}</td>
+                    <td className="py-4 px-6 text-center text-green-600">{sec.correct}</td>
+                    <td className="py-4 px-6 text-center text-red-500">{sec.incorrect}</td>
+                    <td className="py-4 px-6 text-center text-gray-400">{sec.unattempted}</td>
+                    <td className="py-4 px-6 text-center">
+                      <span className={`inline-block px-2.5 py-1 rounded-full ${
+                        sec.accuracy >= 80 ? 'bg-green-50 text-green-700' :
+                        sec.accuracy >= 60 ? 'bg-amber-50 text-amber-700' :
+                        'bg-red-50 text-red-700'
+                      }`}>
+                        {sec.accuracy}%
+                      </span>
+                    </td>
+                    <td className="py-4 px-6 text-right text-sm font-extrabold text-blue-900">
+                      {sec.score} <span className="text-[10px] text-gray-400">/ {sec.maxScore}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
 
 
         {/* 4. Detailed Solution Key Section */}
@@ -404,6 +452,33 @@ export default function TestResultClient({ series, test, attemptId }) {
 
           {/* Solutions Filters Bar */}
           <div className="flex flex-wrap items-center gap-3">
+            {/* Section Filters */}
+            <div className="flex items-center bg-white border border-gray-200 rounded-xl p-1">
+              <button
+                onClick={() => setSelectedSection('All')}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  selectedSection === 'All'
+                    ? 'bg-black text-white'
+                    : 'hover:bg-gray-50 text-gray-600'
+                }`}
+              >
+                All Sections
+              </button>
+              {sections.map(sec => (
+                <button
+                  key={sec}
+                  onClick={() => setSelectedSection(sec)}
+                  className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                    selectedSection === sec
+                      ? 'bg-black text-white'
+                      : 'hover:bg-gray-50 text-gray-600'
+                  }`}
+                >
+                  {sec.split(' ')[0]} {/* Shortened name */}
+                </button>
+              ))}
+            </div>
+
             {/* Status Filters */}
             <div className="flex items-center bg-white border border-gray-200 rounded-xl p-1">
               {['All', 'Correct', 'Incorrect', 'Unattempted'].map(status => (
@@ -456,7 +531,7 @@ export default function TestResultClient({ series, test, attemptId }) {
                   <div className="px-6 py-4 bg-gray-50/50 flex items-center justify-between border-b border-gray-100 gap-4 flex-wrap">
                     <div className="flex items-center gap-3">
                       <span className="text-[10px] font-extrabold uppercase tracking-wider text-gray-400">
-                        Question {globalIdx + 1}
+                        Q.{globalIdx + 1} &bull; <strong className="text-blue-900">{q.section}</strong>
                       </span>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${statusBadgeBg}`}>
                         {statusBadgeText}

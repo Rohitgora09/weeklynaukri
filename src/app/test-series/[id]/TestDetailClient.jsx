@@ -67,60 +67,67 @@ export default function TestDetailClient({ series }) {
                     <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-gray-400" /> {test.durationMinutes} Minutes</span>
                     <span className="flex items-center gap-1"><HelpCircle className="w-3.5 h-3.5 text-gray-400" /> {series.totalQuestions} Questions</span>
                     <span className="flex items-center gap-1"><Award className="w-3.5 h-3.5 text-gray-400" /> {series.totalMarks} Marks</span>
+                    {series.sections && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {series.sections.map((sec, sIdx) => (
+                          <span key={sIdx} className="text-[9px] bg-blue-50 text-blue-700 font-bold px-2.5 py-1 rounded-md border border-blue-100">
+                            {sec}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
-
-
                 </div>
 
                 <div className="shrink-0 flex items-center justify-start sm:justify-end">
-                  {test.isFree ? (
-                    <Link
-                      href={`/test-series/${series.id}/take/${test.index}`}
-                      className="bg-black hover:bg-gray-800 text-white text-xs font-bold px-5 py-2.5 rounded-full flex items-center gap-1.5 shadow-sm transition-all hover:-translate-y-0.5 cursor-pointer"
-                    >
-                      <Play className="w-3.5 h-3.5 fill-white" /> Start Test
-                    </Link>
-                  ) : (
-                    <button
-                      disabled
-                      className="bg-gray-100 text-gray-400 text-xs font-bold px-5 py-2.5 rounded-full flex items-center gap-1.5 border border-gray-200 cursor-not-allowed"
-                    >
-                      <Lock className="w-3.5 h-3.5" /> Premium Pack
-                    </button>
-                  )}
-                </div>
-              </Card>
-            ))}
-          </div>
+                    {test.isFree ? (
+                      <Link
+                        href={`/test-series/${series.id}/take/${test.index}`}
+                        className="bg-black hover:bg-gray-800 text-white text-xs font-bold px-5 py-2.5 rounded-full flex items-center gap-1.5 shadow-sm transition-all hover:-translate-y-0.5 cursor-pointer"
+                      >
+                        <Play className="w-3.5 h-3.5 fill-white" /> Start Test
+                      </Link>
+                    ) : (
+                      <button
+                        disabled
+                        className="bg-gray-100 text-gray-400 text-xs font-bold px-5 py-2.5 rounded-full flex items-center gap-1.5 border border-gray-200 cursor-not-allowed"
+                      >
+                        <Lock className="w-3.5 h-3.5" /> Premium Pack
+                      </button>
+                    )}
+                  </div>
+                </Card>
+              ))}
+            </div>
 
-          {/* Sidebar Guidelines */}
-          <div className="lg:col-span-4 space-y-6">
-            <h3 className="font-extrabold text-blue-950 text-lg tracking-wide uppercase">Exam Information</h3>
-            
-            <Card padding="p-5" hover={false} className="border-gray-200/80">
-              <div className="flex items-center gap-2 mb-4 text-blue-900">
-                <Info className="w-4.5 h-4.5" />
-                <h4 className="font-bold text-sm">General Instructions</h4>
-              </div>
+            {/* Sidebar Guidelines */}
+            <div className="lg:col-span-4 space-y-6">
+              <h3 className="font-extrabold text-blue-950 text-lg tracking-wide uppercase">Exam Information</h3>
               
-              <ul className="text-xs text-gray-600 space-y-3 leading-relaxed">
-                <li className="flex items-start gap-1.5">
-                  <span className="text-blue-500 font-bold">&bull;</span>
-                  <span><strong>Clock Behavior:</strong> The timer will run on server-absolute time. Refreshing the browser will <strong>not</strong> reset the clock.</span>
-                </li>
-                <li className="flex items-start gap-1.5">
-                  <span className="text-blue-500 font-bold">&bull;</span>
-                  <span><strong>Marking Scheme:</strong> Each correct response awards <strong>+{series.marksPerQuestion} marks</strong>.</span>
-                </li>
-                <li className="flex items-start gap-1.5">
-                  <span className="text-red-500 font-bold">&bull;</span>
-                  <span><strong>Negative Marking:</strong> Each incorrect response will deduct <strong>-{series.negativeMark} marks</strong>.</span>
-                </li>
-                <li className="flex items-start gap-1.5">
-                  <span className="text-blue-500 font-bold">&bull;</span>
-                  <span><strong>Submission:</strong> The test will automatically submit if the timer reaches 0:00.</span>
-                </li>
-              </ul>
+              <Card padding="p-5" hover={false} className="border-gray-200/80">
+                <div className="flex items-center gap-2 mb-4 text-blue-900">
+                  <Info className="w-4.5 h-4.5" />
+                  <h4 className="font-bold text-sm">General Instructions</h4>
+                </div>
+                
+                <ul className="text-xs text-gray-600 space-y-3 leading-relaxed">
+                  <li className="flex items-start gap-1.5">
+                    <span className="text-blue-500 font-bold">&bull;</span>
+                    <span><strong>Sectional Timing:</strong> Each section has a strict <strong>15-minute time limit</strong>. You cannot switch sections manually.</span>
+                  </li>
+                  <li className="flex items-start gap-1.5">
+                    <span className="text-blue-500 font-bold">&bull;</span>
+                    <span><strong>Clock Behavior:</strong> The timer runs on absolute time. Refreshing will <strong>not</strong> reset the clock.</span>
+                  </li>
+                  <li className="flex items-start gap-1.5">
+                    <span className="text-blue-500 font-bold">&bull;</span>
+                    <span><strong>Marking Scheme:</strong> Each correct response awards <strong>+{series.marksPerQuestion} marks</strong>.</span>
+                  </li>
+                  <li className="flex items-start gap-1.5">
+                    <span className="text-red-500 font-bold">&bull;</span>
+                    <span><strong>Negative Marking:</strong> Each incorrect response will deduct <strong>-{series.negativeMark} marks</strong>.</span>
+                  </li>
+                </ul>
             </Card>
 
             <Card padding="p-5" hover={false} className="border-amber-100 bg-amber-50/20">

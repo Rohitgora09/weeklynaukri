@@ -12,7 +12,8 @@ import {
   Bookmark,
   Menu,
   X,
-  User
+  User,
+  Lock
 } from 'lucide-react';
 import Card from '../../../../../components/ui/Card';
 
@@ -22,12 +23,13 @@ export default function TestTakeClient({ series, test }) {
   // Active states
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answers, setAnswers] = useState({}); // { questionId: selectedIndex }
-  const [visited, setVisited] = useState([test.questions[0]?.id]); // Array of question IDs visited
+  const [visited, setVisited] = useState([]); // Array of question IDs visited
   const [marked, setMarked] = useState([]); // Array of question IDs marked for review
   
-  // Timer States
-  const [timeLeft, setTimeLeft] = useState(test.durationMinutes * 60);
-  const [endTimestamp, setEndTimestamp] = useState(null);
+  // Sectional Timer States
+  const [activeSectionIdx, setActiveSectionIdx] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(series.sectionDurationMinutes * 60);
+  const [sectionEndTimestamp, setSectionEndTimestamp] = useState(null);
   
   // UI States
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -41,30 +43,57 @@ export default function TestTakeClient({ series, test }) {
   useEffect(() => {
     try {
       const savedState = localStorage.getItem(stateKey);
+      const activeSectionName = series.sections[0];
+      const initialQId = test.questions.find(q => q.section === activeSectionName)?.id || test.questions[0]?.id;
+
       if (savedState) {
         const state = JSON.parse(savedState);
-        setAnswers(state.answers || {});
-        setVisited(state.visited || [test.questions[0]?.id]);
-        setMarked(state.marked || []);
-        setEndTimestamp(state.endTimestamp);
-        
-        // Calculate remaining seconds
-        const remaining = Math.max(0, Math.floor((state.endTimestamp - Date.now()) / 1000));
-        setTimeLeft(remaining);
-        if (remaining <= 0) {
+        const savedActiveIdx = state.activeSectionIdx !== undefined ? state.activeSectionIdx : 0;
+        const savedEndTime = state.sectionEndTimestamp;
+
+        let currentActiveIdx = savedActiveIdx;
+        let currentEndTime = savedEndTime;
+        let remaining = Math.max(0, Math.floor((currentEndTime - Date.now()) / 1000));
+
+        // Auto-advance sections if elapsed while tab was closed
+        while (remaining <= 0 && currentActiveIdx < series.sections.length - 1) {
+          currentActiveIdx += 1;
+          currentEndTime = Date.now() + series.sectionDurationMinutes * 60 * 1000;
+          remaining = Math.max(0, Math.floor((currentEndTime - Date.now()) / 1000));
+        }
+
+        if (remaining <= 0 && currentActiveIdx === series.sections.length - 1) {
+          // All section times fully expired
           handleAutoSubmit(state.answers || {});
+        } else {
+          setActiveSectionIdx(currentActiveIdx);
+          setSectionEndTimestamp(currentEndTime);
+          setTimeLeft(remaining);
+          setAnswers(state.answers || {});
+          setVisited(state.visited || [initialQId]);
+          setMarked(state.marked || []);
+          
+          // Auto-focus first question of current active section
+          const activeSecName = series.sections[currentActiveIdx];
+          const firstQIdx = test.questions.findIndex(q => q.section === activeSecName);
+          if (firstQIdx !== -1) {
+            setCurrentIdx(firstQIdx);
+          }
         }
       } else {
-        // Fresh start: Set absolute end timestamp
-        const endTime = Date.now() + test.durationMinutes * 60 * 1000;
-        setEndTimestamp(endTime);
-        setTimeLeft(test.durationMinutes * 60);
-        
+        // Fresh start: Set absolute end timestamp for first section
+        const endTime = Date.now() + series.sectionDurationMinutes * 60 * 1000;
+        setSectionEndTimestamp(endTime);
+        setTimeLeft(series.sectionDurationMinutes * 60);
+        setActiveSectionIdx(0);
+        setVisited([initialQId]);
+
         const initialState = {
           answers: {},
-          visited: [test.questions[0]?.id],
+          visited: [initialQId],
           marked: [],
-          endTimestamp: endTime
+          activeSectionIdx: 0,
+          sectionEndTimestamp: endTime
         };
         localStorage.setItem(stateKey, JSON.stringify(initialState));
       }
@@ -73,32 +102,68 @@ export default function TestTakeClient({ series, test }) {
     }
   }, []);
 
-  // 2. Timer Countdown Loop
+  // 2. Sectional Timer Countdown Loop
   useEffect(() => {
-    if (!endTimestamp) return;
+    if (!sectionEndTimestamp) return;
 
     timerRef.current = setInterval(() => {
-      const remaining = Math.max(0, Math.floor((endTimestamp - Date.now()) / 1000));
+      const remaining = Math.max(0, Math.floor((sectionEndTimestamp - Date.now()) / 1000));
       setTimeLeft(remaining);
 
       if (remaining <= 0) {
         clearInterval(timerRef.current);
-        handleAutoSubmit(answers);
+        
+        // Timer reached 0:00 - switch section or submit
+        const nextSectionIdx = activeSectionIdx + 1;
+        if (nextSectionIdx < series.sections.length) {
+          const nextSectionName = series.sections[nextSectionIdx];
+          const firstQIdxOfSec = test.questions.findIndex(q => q.section === nextSectionName);
+          const nextEndTime = Date.now() + series.sectionDurationMinutes * 60 * 1000;
+
+          setActiveSectionIdx(nextSectionIdx);
+          setSectionEndTimestamp(nextEndTime);
+          setTimeLeft(series.sectionDurationMinutes * 60);
+
+          if (firstQIdxOfSec !== -1) {
+            setCurrentIdx(firstQIdxOfSec);
+            const qId = test.questions[firstQIdxOfSec].id;
+            const updatedVisited = visited.includes(qId) ? visited : [...visited, qId];
+            setVisited(updatedVisited);
+            
+            // Save state for next section
+            try {
+              const state = {
+                answers,
+                visited: updatedVisited,
+                marked,
+                activeSectionIdx: nextSectionIdx,
+                sectionEndTimestamp: nextEndTime
+              };
+              localStorage.setItem(stateKey, JSON.stringify(state));
+            } catch (e) {
+              console.error("Failed to save state on auto section switch:", e);
+            }
+          }
+        } else {
+          // Final section expired, submit entire exam
+          handleAutoSubmit(answers);
+        }
       }
     }, 1000);
 
     return () => clearInterval(timerRef.current);
-  }, [endTimestamp, answers]);
+  }, [sectionEndTimestamp, activeSectionIdx, answers, visited, marked]);
 
   // 3. Save state on change helper
   const saveState = (updatedAnswers, updatedVisited, updatedMarked) => {
-    if (!endTimestamp) return;
+    if (!sectionEndTimestamp) return;
     try {
       const state = {
         answers: updatedAnswers || answers,
         visited: updatedVisited || visited,
         marked: updatedMarked || marked,
-        endTimestamp
+        activeSectionIdx,
+        sectionEndTimestamp
       };
       localStorage.setItem(stateKey, JSON.stringify(state));
     } catch (e) {
@@ -107,7 +172,11 @@ export default function TestTakeClient({ series, test }) {
   };
 
   const currentQuestion = test.questions[currentIdx];
-  const isLastQuestion = currentIdx === test.questions.length - 1;
+  const activeSectionName = series.sections[activeSectionIdx];
+  
+  // Navigation locks
+  const isFirstQuestionOfSection = currentIdx === 0 || test.questions[currentIdx - 1]?.section !== activeSectionName;
+  const isLastQuestionOfSection = currentIdx === test.questions.length - 1 || test.questions[currentIdx + 1]?.section !== activeSectionName;
 
   // Mark a question as visited
   const markAsVisited = (qId) => {
@@ -119,7 +188,7 @@ export default function TestTakeClient({ series, test }) {
   };
 
   const handleNext = () => {
-    if (!isLastQuestion) {
+    if (!isLastQuestionOfSection) {
       const nextIdx = currentIdx + 1;
       setCurrentIdx(nextIdx);
       markAsVisited(test.questions[nextIdx].id);
@@ -127,7 +196,7 @@ export default function TestTakeClient({ series, test }) {
   };
 
   const handlePrev = () => {
-    if (currentIdx > 0) {
+    if (!isFirstQuestionOfSection) {
       const prevIdx = currentIdx - 1;
       setCurrentIdx(prevIdx);
       markAsVisited(test.questions[prevIdx].id);
@@ -157,8 +226,8 @@ export default function TestTakeClient({ series, test }) {
     setMarked(updatedMarked);
     saveState(null, null, updatedMarked);
     
-    // Auto-advance
-    if (!isLastQuestion) {
+    // Auto-advance if not last of section
+    if (!isLastQuestionOfSection) {
       handleNext();
     }
   };
@@ -193,6 +262,10 @@ export default function TestTakeClient({ series, test }) {
         ? Math.round((correctCount / (correctCount + incorrectCount)) * 100) 
         : 0;
 
+      // Sectional time spent sum calculation
+      const totalTimeSpentSeconds = activeSectionIdx * series.sectionDurationMinutes * 60 + 
+        (series.sectionDurationMinutes * 60 - timeLeft);
+
       // Unique attempt ID
       const attemptId = `attempt_${Date.now()}`;
       
@@ -209,7 +282,7 @@ export default function TestTakeClient({ series, test }) {
         unattempted: unattemptedCount,
         accuracy,
         submittedAt: new Date().toISOString(),
-        timeSpentSeconds: test.durationMinutes * 60 - timeLeft,
+        timeSpentSeconds: totalTimeSpentSeconds,
         answers: finalAnswers
       };
 
@@ -262,13 +335,19 @@ export default function TestTakeClient({ series, test }) {
       <header className="bg-blue-950 text-white px-6 py-4 flex items-center justify-between border-b border-blue-900 shrink-0 shadow-md">
         <div>
           <h2 className="font-extrabold text-sm sm:text-base tracking-wide uppercase">{series.title}</h2>
-          <span className="text-xs text-blue-200 font-semibold">{test.title}</span>
+          <div className="flex flex-wrap items-center gap-2 mt-0.5">
+            <span className="text-xs text-blue-200 font-semibold">{test.title}</span>
+            <span className="text-gray-600 text-xs font-semibold">&bull;</span>
+            <span className="text-[10px] bg-blue-800/80 text-blue-100 border border-blue-700 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
+              Section: {activeSectionName}
+            </span>
+          </div>
         </div>
         
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 bg-blue-900 px-4 py-2 rounded-xl border border-blue-800 text-xs sm:text-sm font-bold shadow-inner">
             <Clock className="w-4 h-4 text-amber-400" />
-            <span className="text-amber-300">Time Left: {formatTime(timeLeft)}</span>
+            <span className="text-amber-300">Section Time Left: {formatTime(timeLeft)}</span>
           </div>
 
           <button
@@ -365,7 +444,7 @@ export default function TestTakeClient({ series, test }) {
             <div className="flex items-center gap-2">
               <button
                 onClick={handlePrev}
-                disabled={currentIdx === 0}
+                disabled={isFirstQuestionOfSection}
                 className="bg-white hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-white text-gray-750 border border-gray-250 p-2.5 rounded-xl transition-all cursor-pointer"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -373,7 +452,7 @@ export default function TestTakeClient({ series, test }) {
 
               <button
                 onClick={handleNext}
-                disabled={isLastQuestion}
+                disabled={isLastQuestionOfSection}
                 className="bg-black hover:bg-gray-800 disabled:opacity-30 disabled:hover:bg-black text-white text-xs font-bold px-5 py-2.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 Save & Next <ChevronRight className="w-4 h-4" />
@@ -407,9 +486,11 @@ export default function TestTakeClient({ series, test }) {
               {test.questions.map((q, idx) => {
                 const paletteState = getPaletteState(q);
                 const isActive = currentIdx === idx;
+                const isLocked = q.section !== activeSectionName;
                 
                 let btnStyles = 'bg-gray-100 text-gray-650 border-gray-200';
-                if (paletteState === 'answered') btnStyles = 'bg-green-600 border-green-600 text-white';
+                if (isLocked) btnStyles = 'bg-gray-50 text-gray-300 border-gray-150 opacity-50 cursor-not-allowed';
+                else if (paletteState === 'answered') btnStyles = 'bg-green-600 border-green-600 text-white';
                 else if (paletteState === 'not-answered') btnStyles = 'bg-red-500 border-red-500 text-white';
                 else if (paletteState === 'marked') btnStyles = 'bg-indigo-650 border-indigo-650 text-white';
                 else if (paletteState === 'answered-marked') btnStyles = 'bg-indigo-650 border-indigo-650 text-white ring-2 ring-green-400 ring-offset-1';
@@ -417,17 +498,25 @@ export default function TestTakeClient({ series, test }) {
                 return (
                   <button
                     key={q.id}
+                    disabled={isLocked}
                     onClick={() => {
+                      if (isLocked) return;
                       setCurrentIdx(idx);
                       markAsVisited(q.id);
                       setMobileSidebarOpen(false); // Close on mobile toggle
                     }}
-                    className={`w-11 h-11 rounded-xl font-bold text-sm border flex items-center justify-center transition-all cursor-pointer relative ${btnStyles} ${
+                    className={`w-11 h-11 rounded-xl font-bold text-sm border flex items-center justify-center transition-all relative ${btnStyles} ${
                       isActive ? 'ring-4 ring-blue-100 scale-105 border-blue-600' : ''
-                    }`}
+                    } ${isLocked ? '' : 'cursor-pointer'}`}
                   >
-                    {idx + 1}
-                    {paletteState === 'answered-marked' && (
+                    {isLocked ? (
+                      <span className="flex items-center justify-center text-gray-300">
+                        <Lock className="w-3.5 h-3.5" />
+                      </span>
+                    ) : (
+                      idx + 1
+                    )}
+                    {paletteState === 'answered-marked' && !isLocked && (
                       <span className="absolute bottom-1 right-1 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></span>
                     )}
                   </button>
@@ -443,8 +532,9 @@ export default function TestTakeClient({ series, test }) {
               <div className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 bg-green-600 border border-green-600 rounded-md"></span> Answered</div>
               <div className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 bg-red-500 border border-red-500 rounded-md"></span> Not Answered</div>
               <div className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 bg-indigo-650 border border-indigo-650 rounded-md"></span> Marked</div>
-              <div className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 bg-indigo-650 border-indigo-650 rounded-md relative"><span className="absolute bottom-0 right-0 w-1.5 h-1.5 bg-green-500 rounded-full border border-white"></span></span> Answered & Marked</div>
+              <div className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 bg-indigo-650 border border-indigo-650 rounded-md relative"><span className="absolute bottom-0 right-0 w-1.5 h-1.5 bg-green-500 rounded-full border border-white"></span></span> Answered & Marked</div>
               <div className="flex items-center gap-1.5 col-span-2"><span className="w-3.5 h-3.5 bg-gray-100 border border-gray-200 rounded-md"></span> Not Visited</div>
+              <div className="flex items-center gap-1.5 col-span-2"><span className="w-3.5 h-3.5 bg-gray-50 border border-gray-150 rounded-md flex items-center justify-center text-gray-400"><Lock className="w-2.5 h-2.5" /></span> Inactive Section (Locked)</div>
             </div>
           </div>
 
