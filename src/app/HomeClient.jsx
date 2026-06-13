@@ -26,6 +26,12 @@ import SarkariCalendar from '../components/jobs/SarkariCalendar';
 import Card from '../components/ui/Card';
 import Tag from '../components/ui/Tag';
 import { api } from '../services/api';
+import { 
+  privateJobs as fallbackPrivateJobs, 
+  answerKeys as fallbackAnswerKeys, 
+  admissions as fallbackAdmissions, 
+  documents as fallbackDocuments 
+} from '../data/jobs';
 
 // Simple client-side list wrapper for lazy loading sections
 function LazySection({ children }) {
@@ -43,45 +49,25 @@ export default function HomeClient({ initialJobs, initialNotices }) {
   const [latestResults, setLatestResults] = useState(initialJobs.results || []);
   const [liveSSCNotices, setLiveSSCNotices] = useState(initialNotices || []);
   
-  // Custom mock data for admissions/documents/answer keys/private sectors
-  const [privateJobs, setPrivateJobs] = useState([
-    { id: 'p1', title: 'Senior Software Engineer (Node/React)', company: 'InnovateTech Solutions', location: 'Bangalore / Remote', salary: '₹12L - ₹18L', tag: 'Hot', tagColor: 'red' },
-    { id: 'p2', title: 'Data Analyst', company: 'FinMetrics Solutions', location: 'Mumbai (On-site)', salary: '₹6L - ₹9L', tag: 'Remote', tagColor: 'green' },
-    { id: 'p3', title: 'Digital Marketing Specialist', company: 'GrowthHackers Agency', location: 'Hyderabad (Hybrid)', salary: '₹5L - ₹8L', tag: 'Featured', tagColor: 'purple' },
-    { id: 'p4', title: 'UI/UX Designer', company: 'DesignCraft Studios', location: 'Pune / Remote', salary: '₹8L - ₹12L', tag: 'New', tagColor: 'orange' }
-  ]);
+  // Custom mock data for admissions/documents/answer keys/private sectors (mapped to correct global job data IDs to avoid 404s)
+  const [privateJobs, setPrivateJobs] = useState(fallbackPrivateJobs);
   
   const [answerKeys, setAnswerKeys] = useState(
     initialJobs.answerKeys && initialJobs.answerKeys.length > 0 
       ? initialJobs.answerKeys 
-      : [
-          { id: 'ans1', title: 'SSC GD Constable Answer Key 2026', date: '10 Jun 2026' },
-          { id: 'ans2', title: 'UPSC Civil Services Prelims Answer Key 2026', date: '08 Jun 2026' },
-          { id: 'ans3', title: 'IBPS PO Main Answer Key 2026', date: '05 Jun 2026' },
-          { id: 'ans4', title: 'RRB NTPC CBT 1 Official Answer Key 2026', date: '01 Jun 2026' }
-        ]
+      : fallbackAnswerKeys
   );
 
   const [admissions, setAdmissions] = useState(
     initialJobs.admissions && initialJobs.admissions.length > 0 
       ? initialJobs.admissions 
-      : [
-          { id: 'adm1', title: 'Delhi University UG Admission 2026', date: '05 Jun 2026' },
-          { id: 'adm2', title: 'IIT JEE Advanced Registration 2026', date: '30 May 2026' },
-          { id: 'adm3', title: 'NEET UG Counselling Choice Filling 2026', date: '25 May 2026' },
-          { id: 'adm4', title: 'IGNOU Admission Form July Cycle 2026', date: '20 May 2026' }
-        ]
+      : fallbackAdmissions
   );
 
   const [documents, setDocuments] = useState(
     initialJobs.documents && initialJobs.documents.length > 0 
       ? initialJobs.documents 
-      : [
-          { id: 'doc1', title: 'UP Scholarship Online Form 2026', date: '12 Jun 2026' },
-          { id: 'doc2', title: 'Aadhar Card Mobile Number Link Guide', date: '08 Jun 2026' },
-          { id: 'doc3', title: 'Pan Card Online Correction Portal 2026', date: '01 Jun 2026' },
-          { id: 'doc4', title: 'Voter ID Card Online Registration 2026', date: '24 May 2026' }
-        ]
+      : fallbackDocuments
   );
 
   // AI Resume Match States
@@ -313,6 +299,55 @@ export default function HomeClient({ initialJobs, initialNotices }) {
         {/* Display grids or Exam Calendar */}
         {selectedCategory === 'Exam Calendar' ? (
           <SarkariCalendar allItems={[...latestJobs, ...admitCards, ...latestResults, ...answerKeys, ...admissions, ...documents]} />
+        ) : selectedCategory === 'Private Jobs' ? (
+          <div className="max-w-4xl mx-auto w-full">
+            <JobList
+              title="Private Jobs"
+              subtitle="Top hiring companies matching skills"
+              icon={Building2}
+              color="bg-indigo-650"
+              variant="private"
+              items={filteredPrivateJobs}
+              limit={20}
+              emptyText="No private sector jobs match this query."
+            />
+          </div>
+        ) : selectedCategory === 'Results' ? (
+          <div className="max-w-4xl mx-auto w-full">
+            <JobList
+              title="Sarkari Results"
+              subtitle="Latest exam results declared"
+              icon={BookOpen}
+              color="bg-green-600"
+              items={filteredResults}
+              limit={24}
+              emptyText="No declared results match your query."
+            />
+          </div>
+        ) : selectedCategory === 'Admit Cards' ? (
+          <div className="max-w-4xl mx-auto w-full">
+            <JobList
+              title="Admit Cards"
+              subtitle="Download hall tickets & exam dates"
+              icon={Calendar}
+              color="bg-orange-500"
+              items={filteredAdmitCards}
+              limit={24}
+              emptyText="No admit cards match your query."
+            />
+          </div>
+        ) : selectedCategory === 'Answer Keys' ? (
+          <div className="max-w-4xl mx-auto w-full">
+            <JobList
+              title="Answer Keys"
+              subtitle="Official exam answer sheets"
+              icon={BookOpen}
+              variant="list"
+              items={filteredAnswerKeys}
+              limit={24}
+              emptyText="No answer keys match your query."
+            />
+          </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
@@ -369,7 +404,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                   title="Live SSC Notices"
                   subtitle="Staff Selection Commission live alerts"
                   icon={Bell}
-                  color="bg-purple-600"
+                  color="bg-purple-650"
                   variant="list"
                   items={filteredSSCNotices}
                   limit={8}
