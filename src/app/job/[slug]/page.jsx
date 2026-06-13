@@ -132,15 +132,21 @@ export async function generateMetadata({ params }) {
   const { job } = data;
   const isDetailedJob = !!job.fee;
   
-  const pageTitle = isDetailedJob
-    ? `${job.org} ${job.title} Online Form 2026 — WeeklyNaukri.com`
-    : `${job.title} 2026 — WeeklyNaukri.com`;
+  // Keep title concise and under 60 characters
+  const rawTitle = isDetailedJob
+    ? `${job.org} ${job.title} Form 2026`
+    : `${job.title} 2026`;
+  const cleanTitle = rawTitle.length > 47 ? `${rawTitle.slice(0, 44)}...` : rawTitle;
+  const pageTitle = `${cleanTitle} — WeeklyNaukri`;
 
-  const pageDescription = isDetailedJob
-    ? `${job.org} ${job.title} 2026 — ${job.vacancies || ''} Posts. Last Date: ${job.dates?.applyEnd || 'Check Notification'}. Apply online, download notification, eligibility, age limit and more at WeeklyNaukri.com.`
-    : `${job.title} — Check status, download link, and official notification at WeeklyNaukri.com.`;
+  // Keep meta description concise and under 155 characters
+  const rawDesc = isDetailedJob
+    ? `${job.org} ${job.title} (Vacancies: ${job.vacancies || 'N/A'}). Last Date: ${job.dates?.applyEnd || 'See info'}. Apply online & check details at WeeklyNaukri.`
+    : `${job.title} 2026 - Check status, download notification, and get official links at WeeklyNaukri.com.`;
+  const pageDescription = rawDesc.length > 153 ? `${rawDesc.slice(0, 150)}...` : rawDesc;
 
   const pageUrl = `https://weeklynaukri.com/job/${slug}`;
+  const shareImage = 'https://weeklynaukri.com/logo.png';
 
   return {
     title: pageTitle,
@@ -153,12 +159,21 @@ export async function generateMetadata({ params }) {
       description: pageDescription,
       url: pageUrl,
       type: 'article',
-      siteName: 'WeeklyNaukri.com'
+      siteName: 'WeeklyNaukri.com',
+      images: [
+        {
+          url: shareImage,
+          width: 1200,
+          height: 630,
+          alt: pageTitle
+        }
+      ]
     },
     twitter: {
       card: 'summary_large_image',
       title: pageTitle,
-      description: pageDescription
+      description: pageDescription,
+      images: [shareImage]
     }
   };
 }
@@ -173,6 +188,18 @@ export default async function JobDetailsPage({ params }) {
 
   const { job } = data;
   const isDetailedJob = !!job.fee;
+
+  // Fetch recent jobs for internal linking to avoid orphan pages
+  let recentJobs = [];
+  try {
+    recentJobs = db.prepare(`
+      SELECT title, url_slug, org, category FROM scraper_cache 
+      WHERE url_slug != ? AND category = 'latestJobs'
+      ORDER BY scraped_at DESC LIMIT 6
+    `).all(slug);
+  } catch (e) {
+    console.error("Failed to query recent jobs for details widget:", e);
+  }
 
   return (
     <div className="min-h-screen bg-white pb-20">
@@ -393,6 +420,27 @@ export default async function JobDetailsPage({ params }) {
                 </table>
               </div>
 
+            </div>
+          </div>
+        )}
+
+        {/* Recent Government Job Openings Widget (SEO Internal Linking to eliminate orphan pages) */}
+        {recentJobs.length > 0 && (
+          <div className="mt-12 border border-gray-200 bg-gray-50/30 rounded-2xl p-6 md:p-8">
+            <h4 className="font-extrabold text-blue-950 text-base mb-6 uppercase tracking-wider border-b border-gray-100 pb-3">
+              Recent Government Job Openings
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {recentJobs.map((rj, idx) => (
+                <Link 
+                  key={idx} 
+                  href={`/job/${rj.url_slug}`} 
+                  className="block bg-white p-4 rounded-xl border border-gray-200/80 hover:border-blue-500 hover:shadow-md transition-all group"
+                >
+                  <p className="text-[10px] font-bold text-amber-600 uppercase tracking-wide truncate">{rj.org}</p>
+                  <p className="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-1 mt-1">{rj.title}</p>
+                </Link>
+              ))}
             </div>
           </div>
         )}

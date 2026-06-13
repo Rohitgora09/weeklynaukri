@@ -1,7 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // We can add any required configurations here
+  async redirects() {
+    return [
+      {
+        source: '/job-details/:id',
+        destination: '/job/:id',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
