@@ -22,6 +22,7 @@ import {
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import JobList from '../components/jobs/JobList';
+import SarkariCalendar from '../components/jobs/SarkariCalendar';
 import Card from '../components/ui/Card';
 import Tag from '../components/ui/Tag';
 import { api } from '../services/api';
@@ -277,22 +278,24 @@ export default function HomeClient({ initialJobs, initialNotices }) {
       {/* Job Search Core Section */}
       <section id="search-section" className="max-w-7xl mx-auto px-6 py-12 w-full flex-1">
         {/* Search Bar Input */}
-        <div className="relative max-w-2xl mx-auto mb-12">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <Search className="w-5 h-5 text-gray-400" />
+        {selectedCategory !== 'Exam Calendar' && (
+          <div className="relative max-w-2xl mx-auto mb-12">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="w-5 h-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search by post name, department, location, or exam..."
+              defaultValue={searchQuery}
+              onChange={handleSearchChange}
+              className="w-full pl-12 pr-4 py-4 rounded-full border border-gray-200/80 shadow-md shadow-gray-100/50 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 bg-gray-50/50 hover:bg-gray-50 transition-all text-sm font-medium"
+            />
           </div>
-          <input
-            type="text"
-            placeholder="Search by post name, department, location, or exam..."
-            defaultValue={searchQuery}
-            onChange={handleSearchChange}
-            className="w-full pl-12 pr-4 py-4 rounded-full border border-gray-200/80 shadow-md shadow-gray-100/50 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 bg-gray-50/50 hover:bg-gray-50 transition-all text-sm font-medium"
-          />
-        </div>
+        )}
 
         {/* Tab Selection Filter */}
         <div className="flex border-b border-gray-100 mb-8 overflow-x-auto gap-1">
-          {['All Categories', 'Govt Jobs', 'Private Jobs', 'Results', 'Admit Cards', 'Answer Keys'].map(tab => (
+          {['All Categories', 'Govt Jobs', 'Private Jobs', 'Results', 'Admit Cards', 'Answer Keys', 'Exam Calendar'].map(tab => (
             <button
               key={tab}
               onClick={() => setSelectedCategory(tab)}
@@ -307,86 +310,90 @@ export default function HomeClient({ initialJobs, initialNotices }) {
           ))}
         </div>
 
-        {/* Display grids */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Main columns */}
-          <div className="lg:col-span-8 space-y-8">
+        {/* Display grids or Exam Calendar */}
+        {selectedCategory === 'Exam Calendar' ? (
+          <SarkariCalendar allItems={[...latestJobs, ...admitCards, ...latestResults, ...answerKeys, ...admissions, ...documents]} />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            {/* Govt jobs feed */}
-            {showGovt && (
-              <JobList
-                title="Latest Govt Jobs"
-                subtitle="Central & state government vacancies"
-                icon={Briefcase}
-                color="bg-blue-600"
-                items={filteredGovtJobs}
-                limit={12}
-                emptyText="No government job listings match your query."
-              />
-            )}
+            {/* Main columns */}
+            <div className="lg:col-span-8 space-y-8">
+              
+              {/* Govt jobs feed */}
+              {showGovt && (
+                <JobList
+                  title="Latest Govt Jobs"
+                  subtitle="Central & state government vacancies"
+                  icon={Briefcase}
+                  color="bg-blue-600"
+                  items={filteredGovtJobs}
+                  limit={12}
+                  emptyText="No government job listings match your query."
+                />
+              )}
 
-            {/* Results feed */}
-            {showResults && (
-              <JobList
-                title="Sarkari Results"
-                subtitle="Latest exam results declared"
-                icon={BookOpen}
-                color="bg-green-600"
-                items={filteredResults}
-                limit={12}
-                emptyText="No declared results match your query."
-              />
-            )}
+              {/* Results feed */}
+              {showResults && (
+                <JobList
+                  title="Sarkari Results"
+                  subtitle="Latest exam results declared"
+                  icon={BookOpen}
+                  color="bg-green-600"
+                  items={filteredResults}
+                  limit={12}
+                  emptyText="No declared results match your query."
+                />
+              )}
 
-            {/* Admit cards feed */}
-            {showAdmitCards && (
-              <JobList
-                title="Admit Cards"
-                subtitle="Download hall tickets & exam dates"
-                icon={Calendar}
-                color="bg-orange-500"
-                items={filteredAdmitCards}
-                limit={12}
-                emptyText="No admit cards match your query."
-              />
-            )}
+              {/* Admit cards feed */}
+              {showAdmitCards && (
+                <JobList
+                  title="Admit Cards"
+                  subtitle="Download hall tickets & exam dates"
+                  icon={Calendar}
+                  color="bg-orange-500"
+                  items={filteredAdmitCards}
+                  limit={12}
+                  emptyText="No admit cards match your query."
+                />
+              )}
+
+            </div>
+
+            {/* Right sidebar */}
+            <div className="lg:col-span-4 space-y-8">
+              
+              {/* Live SSC notifications */}
+              {showGovt && filteredSSCNotices.length > 0 && (
+                <JobList
+                  title="Live SSC Notices"
+                  subtitle="Staff Selection Commission live alerts"
+                  icon={Bell}
+                  color="bg-purple-600"
+                  variant="list"
+                  items={filteredSSCNotices}
+                  limit={8}
+                />
+              )}
+
+              {/* Private sector jobs */}
+              {showPrivate && (
+                <JobList
+                  title="Private Jobs"
+                  subtitle="Top hiring companies matching skills"
+                  icon={Building2}
+                  color="bg-indigo-650"
+                  variant="private"
+                  items={filteredPrivateJobs}
+                  limit={6}
+                  emptyText="No private sector jobs match this query."
+                />
+              )}
+
+            </div>
 
           </div>
-
-          {/* Right sidebar */}
-          <div className="lg:col-span-4 space-y-8">
-            
-            {/* Live SSC notifications */}
-            {showGovt && filteredSSCNotices.length > 0 && (
-              <JobList
-                title="Live SSC Notices"
-                subtitle="Staff Selection Commission live alerts"
-                icon={Bell}
-                color="bg-purple-600"
-                variant="list"
-                items={filteredSSCNotices}
-                limit={8}
-              />
-            )}
-
-            {/* Private sector jobs */}
-            {showPrivate && (
-              <JobList
-                title="Private Jobs"
-                subtitle="Top hiring companies matching skills"
-                icon={Building2}
-                color="bg-indigo-650"
-                variant="private"
-                items={filteredPrivateJobs}
-                limit={6}
-                emptyText="No private sector jobs match this query."
-              />
-            )}
-
-          </div>
-
-        </div>
+        )}
 
         {/* Admissions, Answer Keys, Documents - grid splits */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
