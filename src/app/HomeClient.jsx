@@ -249,6 +249,25 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             </div>
           )}
 
+          {/* Direct navigation card for Govt Tech Jobs */}
+          <div className="mt-8 max-w-md mx-auto bg-blue-50/50 border border-blue-100/70 rounded-2xl p-4 flex items-center justify-between shadow-sm animate-fade-in-up">
+            <div className="flex items-center gap-3 text-left">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-650 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm">
+                <Sparkles className="w-5 h-5 text-amber-300" />
+              </div>
+              <div>
+                <h4 className="font-bold text-blue-950 text-xs sm:text-sm">Technical & IT Government Jobs</h4>
+                <p className="text-[11px] sm:text-xs text-blue-800/80">Explore software & programmer vacancies.</p>
+              </div>
+            </div>
+            <Link 
+              href="/it-govt-jobs" 
+              className="bg-black text-white text-xs font-semibold px-4 py-2.5 rounded-full hover:bg-gray-800 transition-all shadow-sm shrink-0 ml-2"
+            >
+              Explore
+            </Link>
+          </div>
+
           {/* Quick search chips */}
           <div className="mt-12 flex flex-wrap items-center justify-center gap-2 max-w-2xl mx-auto">
             <span className="text-xs text-gray-400 font-medium">Trending Searches:</span>

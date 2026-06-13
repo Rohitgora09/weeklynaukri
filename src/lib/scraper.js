@@ -221,6 +221,19 @@ export async function fetchSarkariResultData(force = false) {
 
   const mapper = item => {
     const { tag, color } = getTagInfo(item.category);
+    let dates = null;
+    if (item.full_details_json) {
+      try {
+        const details = typeof item.full_details_json === 'string'
+          ? JSON.parse(item.full_details_json)
+          : item.full_details_json;
+        if (details.dates) {
+          dates = details.dates;
+        }
+      } catch (e) {
+        console.warn(`Bad full_details_json for ${item.url_slug || item.job_id}:`, e.message);
+      }
+    }
     return {
       id: item.job_id,
       slug: item.url_slug,
@@ -229,7 +242,8 @@ export async function fetchSarkariResultData(force = false) {
       org: item.org,
       tag,
       tagColor: color,
-      date: 'Recent'
+      date: 'Recent',
+      dates: dates
     };
   };
 
@@ -360,20 +374,34 @@ export async function fetchSarkariResultData(force = false) {
     await page.close();
 
     console.log(`Scraped SarkariResult. Updating Supabase cache tables...`);
-    const now = new Date().toISOString();
+    const runStartedAt = new Date().toISOString();
     const categories = ['latestJobs', 'admitCards', 'results', 'answerKeys', 'admissions', 'documents'];
 
-    await supabase
+    // 1. Fetch existing items in active categories to preserve full_details_json
+    const { data: existing, error: existingError } = await supabase
       .from('scraper_cache')
-      .delete()
+      .select('url_slug, full_details_json')
       .in('category', categories);
 
+    const detailsMap = new Map();
+    if (!existingError && existing) {
+      existing.forEach(row => {
+        if (row.full_details_json) {
+          detailsMap.set(row.url_slug, row.full_details_json);
+        }
+      });
+    }
+
     const insertRows = [];
+    const activeCategories = [];
+
     const prepareRows = (items, categoryName) => {
-      if (!items) return;
+      if (!items || items.length === 0) return;
+      activeCategories.push(categoryName);
       items.forEach(item => {
         const id = stableId('sr-', item.title);
         const slug = slugify(item.title) + '-' + id;
+        const preservedDetails = detailsMap.get(slug) || null;
         insertRows.push({
           url_slug: slug,
           job_id: id,
@@ -381,7 +409,8 @@ export async function fetchSarkariResultData(force = false) {
           org: item.org,
           category: categoryName,
           source_url: item.link,
-          scraped_at: now
+          full_details_json: preservedDetails,
+          scraped_at: runStartedAt
         });
       });
     };
@@ -402,11 +431,24 @@ export async function fetchSarkariResultData(force = false) {
       }
     });
 
+    // 2. Bulk upsert freshly scraped rows
     if (uniqueRows.length > 0) {
-      const { error: insertError } = await supabase
+      const { error: upsertError } = await supabase
         .from('scraper_cache')
-        .insert(uniqueRows);
-      if (insertError) throw insertError;
+        .upsert(uniqueRows, { onConflict: 'url_slug' });
+      if (upsertError) throw upsertError;
+    }
+
+    // 3. Delete stale rows only for categories that scraped successfully in this run
+    if (activeCategories.length > 0) {
+      const { error: pruneError } = await supabase
+        .from('scraper_cache')
+        .delete()
+        .in('category', activeCategories)
+        .lt('scraped_at', runStartedAt);
+      if (pruneError) {
+        console.error("Error pruning stale cache:", pruneError.message);
+      }
     }
 
     const getGroup = (category) => uniqueRows.filter(r => r.category === category).map(mapper);

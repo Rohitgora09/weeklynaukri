@@ -48,6 +48,7 @@ export default function Navbar({ onCategorySelect }) {
       <div className="hidden md:flex items-center gap-8">
         {[
           { label: 'Govt Jobs', value: 'Govt Jobs' },
+          { label: 'Govt Tech Jobs', path: '/it-govt-jobs' },
           { label: 'Private Jobs', value: 'Private Jobs' },
           { label: 'Results', value: 'Results' },
           { label: 'Admit Cards', value: 'Admit Cards' },
@@ -118,6 +119,7 @@ export default function Navbar({ onCategorySelect }) {
         <div className="absolute top-full left-0 right-0 md:hidden bg-white border-b border-gray-200 px-6 py-4 flex flex-col gap-4 shadow-lg animate-fade-in-down z-40">
           {[
             { label: 'Govt Jobs', value: 'Govt Jobs' },
+            { label: 'Govt Tech Jobs', path: '/it-govt-jobs' },
             { label: 'Private Jobs', value: 'Private Jobs' },
             { label: 'Results', value: 'Results' },
             { label: 'Admit Cards', value: 'Admit Cards' },

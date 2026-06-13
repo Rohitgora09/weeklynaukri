@@ -1,46 +1,69 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, CalendarDays, ExternalLink, Clock, Calendar } from 'lucide-react';
 
-// Robust date parsing utility
+// Robust date parsing utility (timezone-safe and handles various styles)
 function parseSarkariDate(dateStr) {
   if (!dateStr || typeof dateStr !== 'string') return null;
   const clean = dateStr.trim();
   
-  // Try dd/mm/yyyy or dd-mm-yyyy
-  const dmy = clean.match(/^(\d{1,2})[\/\-](\d{2})[\/\-](\d{4})$/);
+  const months = {
+    jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+    jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+  };
+
+  // 1. Try dd/mm/yyyy or dd-mm-yyyy (most common Indian date format)
+  const dmy = clean.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
   if (dmy) {
     return new Date(parseInt(dmy[3]), parseInt(dmy[2]) - 1, parseInt(dmy[1]));
   }
   
-  // Try "dd MMM YYYY" like "15 Jun 2026" or "15 June 2026"
-  const m = clean.match(/^(\d{1,2})\s+([A-Za-z]{3,10})\s+(\d{4})/);
+  // 2. Try yyyy-mm-dd or yyyy/mm/dd (standard ISO style)
+  const ymd = clean.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+  if (ymd) {
+    return new Date(parseInt(ymd[1]), parseInt(ymd[2]) - 1, parseInt(ymd[3]));
+  }
+  
+  // 3. Try "dd MMM YYYY" like "15 Jun 2026" or "15 June 2026"
+  const m = clean.match(/(\d{1,2})\s+([A-Za-z]{3,10})\s+(\d{4})/);
   if (m) {
     const day = parseInt(m[1]);
     const monthStr = m[2].toLowerCase().slice(0, 3);
     const year = parseInt(m[3]);
-    
-    const months = {
-      jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
-      jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
-    };
-    
+    const month = months[monthStr];
+    if (month !== undefined) {
+      return new Date(year, month, day);
+    }
+  }
+
+  // 4. Try "MMM dd, YYYY" like "June 20, 2026"
+  const mdy = clean.match(/([A-Za-z]{3,10})\s+(\d{1,2}),?\s+(\d{4})/);
+  if (mdy) {
+    const monthStr = mdy[1].toLowerCase().slice(0, 3);
+    const day = parseInt(mdy[2]);
+    const year = parseInt(mdy[3]);
     const month = months[monthStr];
     if (month !== undefined) {
       return new Date(year, month, day);
     }
   }
   
-  // Fallback to native JS Date parser
-  const parsed = new Date(clean);
-  return isNaN(parsed.getTime()) ? null : parsed;
+  // No fallback to native new Date(clean) to avoid timezone/locale parsing ambiguities.
+  return null;
 }
 
 export default function SarkariCalendar({ allItems }) {
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 5, 1)); // Initialize in June 2026
+  const [currentDate, setCurrentDate] = useState(new Date(2026, 5, 1)); // Server-side render fallback (June 2026)
   const [selectedDay, setSelectedDay] = useState(null);
+
+  // Client-side initialization to dynamic current date on mount to avoid hydration mismatch
+  useEffect(() => {
+    const today = new Date();
+    setCurrentDate(today);
+    setSelectedDay(today);
+  }, []);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
