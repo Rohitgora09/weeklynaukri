@@ -4,7 +4,10 @@ import Card from '../../components/ui/Card';
 
 export const metadata = {
   title: 'Privacy Policy — WeeklyNaukri.com',
-  description: 'Read the privacy policy of WeeklyNaukri.com to learn how we protect your personal details.'
+  description: 'Read the privacy policy of WeeklyNaukri.com to learn how we protect your personal details.',
+  alternates: {
+    canonical: '/privacy-policy',
+  },
 };
 
 export default function PrivacyPolicy() {

@@ -13,7 +13,10 @@ export const metadata = {
     'Software Developer Govt Jobs',
     'Public Sector IT Jobs',
     'Sarkari Result IT'
-  ]
+  ],
+  alternates: {
+    canonical: '/it-govt-jobs',
+  },
 };
 
 const techKeywords = [

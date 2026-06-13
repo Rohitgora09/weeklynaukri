@@ -4,7 +4,10 @@ import Card from '../../components/ui/Card';
 
 export const metadata = {
   title: 'About Us — WeeklyNaukri.com',
-  description: 'Learn more about WeeklyNaukri.com, India\'s #1 weekly government and private job notification portal.'
+  description: 'Learn more about WeeklyNaukri.com, India\'s #1 weekly government and private job notification portal.',
+  alternates: {
+    canonical: '/about',
+  },
 };
 
 export default function AboutUs() {
