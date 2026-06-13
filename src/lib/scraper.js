@@ -1,6 +1,10 @@
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { supabase } from './supabase.js';
 import { slugify } from '../utils/slugify.js';
+
+puppeteer.use(StealthPlugin());
+
 
 let sharedBrowser = null;
 let isScrapingLock = false; // Lock flag to prevent parallel overlapping scraper warmups
@@ -30,8 +34,7 @@ async function getBrowser() {
       '--disable-dev-shm-usage',
       '--disable-gpu',
       '--no-first-run',
-      '--no-zygote',
-      '--single-process' // Optimize RAM usage on low-spec VPS
+      '--no-zygote'
     ]
   });
 
@@ -520,6 +523,52 @@ export async function fetchSarkariJobDetails(url) {
 }
 
 // 4. Fetch Private Sector IT/Software Jobs from Freshersworld
+// Helper to fetch IT corporate jobs from Indeed India using Puppeteer Stealth
+async function fetchIndeedJobs(browser) {
+  try {
+    const page = await browser.newPage();
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    
+    console.log("Navigating to Indeed India for corporate private jobs...");
+    const url = 'https://in.indeed.com/jobs?q=TCS+OR+Wipro+OR+Infosys+OR+Cognizant&l=India';
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    
+    await new Promise(resolve => setTimeout(resolve, 4000));
+    
+    const results = await page.evaluate(() => {
+      const cards = Array.from(document.querySelectorAll('.job_seen_beacon'));
+      return cards.map(card => {
+        const titleEl = card.querySelector('a.jcs-JobTitle, h3.jobTitle a');
+        const companyEl = card.querySelector('[data-testid="company-name"]');
+        const locEl = card.querySelector('[data-testid="text-location"]');
+        
+        return {
+          title: titleEl ? titleEl.textContent.trim() : null,
+          url: titleEl ? titleEl.href : null,
+          company: companyEl ? companyEl.textContent.trim() : null,
+          location: locEl ? locEl.textContent.trim() : null,
+        };
+      });
+    });
+    
+    await page.close();
+    
+    const targetCompanies = ['wipro', 'infosys', 'tcs', 'tata consultancy', 'cognizant'];
+    const filtered = results.filter(job => {
+      if (!job.company || !job.title || !job.url) return false;
+      const comp = job.company.toLowerCase();
+      return targetCompanies.some(target => comp.includes(target));
+    });
+    
+    console.log(`Indeed scraper fetched ${filtered.length} target company jobs.`);
+    return filtered;
+  } catch (err) {
+    console.error("Indeed Scrape Error:", err.message);
+    return [];
+  }
+}
+
+// 4. Fetch Private Sector IT/Software Jobs from Freshersworld & Indeed
 export async function fetchPrivateJobs(force = false) {
   const CACHE_DURATION_MS = 15 * 60 * 1000; // 15 minutes cache
   
@@ -577,16 +626,18 @@ export async function fetchPrivateJobs(force = false) {
   let browser;
   try {
     browser = await getBrowser();
-    const page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+
+    // 1. Fetch Freshersworld Jobs
+    const fwPage = await browser.newPage();
+    await fwPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
     
     console.log("Navigating to Freshersworld IT jobs...");
-    await page.goto('https://www.freshersworld.com/jobs/jobsearch/it-software-jobs', { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await fwPage.goto('https://www.freshersworld.com/jobs/jobsearch/it-software-jobs', { waitUntil: 'domcontentloaded', timeout: 60000 });
     
     // Wait slightly to make sure content loads
     await new Promise(resolve => setTimeout(resolve, 4000));
 
-    const rawJobs = await page.evaluate(() => {
+    const rawJobs = await fwPage.evaluate(() => {
       const results = [];
       const cards = Array.from(document.querySelectorAll('.job-container'));
       cards.forEach(card => {
@@ -616,9 +667,21 @@ export async function fetchPrivateJobs(force = false) {
       return results.slice(0, 15);
     });
 
-    await page.close();
+    await fwPage.close();
 
-    console.log(`Scraped ${rawJobs.length} private jobs. Saving to Supabase...`);
+    // 2. Fetch Indeed Corporate Jobs
+    const indeedJobs = await fetchIndeedJobs(browser);
+    const mappedIndeedJobs = indeedJobs.map(job => ({
+      title: job.title,
+      company: job.company,
+      location: job.location || 'India',
+      experience: '0-3 Years',
+      url: job.url
+    }));
+
+    // Combine both sources
+    const combinedJobs = [...mappedIndeedJobs, ...rawJobs];
+    console.log(`Scraped ${combinedJobs.length} private jobs (Indeed: ${mappedIndeedJobs.length}, Freshersworld: ${rawJobs.length}). Saving to Supabase...`);
     const now = new Date().toISOString();
 
     const getMockSalary = (title) => {
@@ -640,7 +703,7 @@ export async function fetchPrivateJobs(force = false) {
       .delete()
       .eq('category', 'privateJobs');
 
-    const insertRows = rawJobs.map(job => {
+    const insertRows = combinedJobs.map(job => {
       const id = stableId('pvt-', job.title + '-' + job.company);
       const slug = slugify(job.title) + '-' + id;
       const salary = getMockSalary(job.title);
