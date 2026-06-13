@@ -8,6 +8,7 @@ import {
   documents, 
   privateJobs 
 } from '../../data/jobs';
+import { mockTestSeriesList } from '../../data/mockTests';
 
 export const revalidate = 3600; // Cache sitemap for 1 hour
 
@@ -19,7 +20,8 @@ export async function GET() {
       '/privacy-policy',
       '/about',
       '/referrals',
-      '/it-govt-jobs'
+      '/it-govt-jobs',
+      '/test-series'
     ];
 
     // Get all static job identifiers
@@ -57,7 +59,13 @@ export async function GET() {
       priority: '0.9'
     }));
 
-    const allUrls = [...staticUrls, ...staticJobUrls, ...dynamicJobUrls];
+    const testSeriesUrls = mockTestSeriesList.map(series => ({
+      loc: `https://weeklynaukri.com/test-series/${series.id}`,
+      changefreq: 'weekly',
+      priority: '0.8'
+    }));
+
+    const allUrls = [...staticUrls, ...staticJobUrls, ...dynamicJobUrls, ...testSeriesUrls];
 
     const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
