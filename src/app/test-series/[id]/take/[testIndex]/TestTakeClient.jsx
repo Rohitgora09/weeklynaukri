@@ -293,10 +293,10 @@ export default function TestTakeClient({ series, test }) {
         {/* Left Side: Question Area */}
         <main className="flex-1 flex flex-col overflow-hidden bg-white">
           
-          {/* Section Indicator */}
+          {/* Question Indicator */}
           <div className="bg-gray-50 border-b border-gray-150 px-6 py-3 shrink-0 flex items-center justify-between">
-            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-              Section: <strong className="text-blue-900">{currentQuestion?.section}</strong>
+            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider text-blue-900">
+              Mock Exam Console
             </span>
             <span className="text-xs font-semibold text-gray-400">
               Q. {currentIdx + 1} of {test.questions.length}

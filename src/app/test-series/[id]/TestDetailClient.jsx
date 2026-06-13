@@ -69,15 +69,7 @@ export default function TestDetailClient({ series }) {
                     <span className="flex items-center gap-1"><Award className="w-3.5 h-3.5 text-gray-400" /> {series.totalMarks} Marks</span>
                   </div>
 
-                  {test.sections && (
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {test.sections.map((sec, sIdx) => (
-                        <span key={sIdx} className="text-[9px] bg-gray-50 text-gray-500 font-semibold px-2 py-0.5 rounded-md border border-gray-200/40">
-                          {sec}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+
                 </div>
 
                 <div className="shrink-0 flex items-center justify-start sm:justify-end">
