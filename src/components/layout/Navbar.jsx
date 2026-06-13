@@ -49,6 +49,7 @@ export default function Navbar({ onCategorySelect }) {
         {[
           { label: 'Govt Jobs', value: 'Govt Jobs' },
           { label: 'Govt Tech Jobs', path: '/it-govt-jobs' },
+          { label: 'Test Series', path: '/test-series' },
           { label: 'Private Jobs', value: 'Private Jobs' },
           { label: 'Results', value: 'Results' },
           { label: 'Admit Cards', value: 'Admit Cards' },
@@ -120,6 +121,7 @@ export default function Navbar({ onCategorySelect }) {
           {[
             { label: 'Govt Jobs', value: 'Govt Jobs' },
             { label: 'Govt Tech Jobs', path: '/it-govt-jobs' },
+            { label: 'Test Series', path: '/test-series' },
             { label: 'Private Jobs', value: 'Private Jobs' },
             { label: 'Results', value: 'Results' },
             { label: 'Admit Cards', value: 'Admit Cards' },
