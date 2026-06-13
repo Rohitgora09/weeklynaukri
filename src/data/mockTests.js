@@ -5,7 +5,7 @@ export const mockTestSeriesList = [
     org: 'Staff Selection Commission',
     category: 'SSC',
     description: 'Tier-1 mock tests with strict 15-minute sectional timers. Switch to next section occurs automatically.',
-    totalTests: 2,
+    totalTests: 1,
     durationMinutes: 60, // 15 mins * 4 sections
     totalQuestions: 60,
     totalMarks: 120,
