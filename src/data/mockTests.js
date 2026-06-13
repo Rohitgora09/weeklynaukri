@@ -6,100 +6,100 @@ export const mockTestSeriesList = [
     category: 'SSC',
     description: 'Tier-1 mock tests with strict 15-minute sectional timers. Switch to next section occurs automatically.',
     totalTests: 2,
-    durationMinutes: 45, // 15 mins * 3 sections
+    durationMinutes: 60, // 15 mins * 4 sections
     totalQuestions: 10,
     totalMarks: 20,
     marksPerQuestion: 2,
     negativeMark: 0.5,
     isSectionalTime: true,
     sectionDurationMinutes: 15,
-    sections: ['Mathematics', 'English', 'GK & GS'],
+    sections: ['General Intelligence and Reasoning', 'General Awareness', 'Quantitative Aptitude', 'English Comprehension'],
     tests: [
       {
         index: 0,
         title: 'Full Mock Test - 1',
         isFree: true,
-        durationMinutes: 45,
+        durationMinutes: 60,
         questions: [
           {
             id: 'ssc-q1',
-            section: 'Mathematics',
-            questionText: 'A shopkeeper sells an item at a 15% discount. If the marked price of the item is ₹800, what is the selling price?',
-            options: ['₹680', '₹720', '₹640', '₹700'],
+            section: 'General Intelligence and Reasoning',
+            questionText: 'In a certain code language, "PENCIL" is written as "RCTEKN". How will "BROKEN" be written in that code language?',
+            options: ['DTQMGP', 'DTQMGO', 'CTQLFO', 'CTQMGN'],
             correctIndex: 0,
-            explanation: 'Discount = 15% of ₹800 = (15/100) * 800 = ₹120.\nSelling Price = Marked Price - Discount = 800 - 120 = ₹680.'
+            explanation: 'The pattern is shifting each letter forward by 2 positions (+2):\nB(+2)=D, R(+2)=T, O(+2)=Q, K(+2)=M, E(+2)=G, N(+2)=P.\nTherefore, "BROKEN" becomes "DTQMGP".'
           },
           {
             id: 'ssc-q2',
-            section: 'Mathematics',
-            questionText: 'The average of five consecutive even numbers is 24. Find the largest of these numbers.',
-            options: ['26', '30', '28', '24'],
-            correctIndex: 2,
-            explanation: 'Let the numbers be x-4, x-2, x, x+2, x+4. Their average is x = 24. The largest number is x + 4 = 24 + 4 = 28.'
+            section: 'General Intelligence and Reasoning',
+            questionText: 'Find the missing number in the series: 4, 9, 20, 43, 90, ?',
+            options: ['180', '185', '186', '187'],
+            correctIndex: 1,
+            explanation: 'The pattern is: (Previous number * 2) + consecutive increasing numbers starting from 1:\n- (4 * 2) + 1 = 9\n- (9 * 2) + 2 = 20\n- (20 * 2) + 3 = 43\n- (43 * 2) + 4 = 90\n- (90 * 2) + 5 = 185.'
           },
           {
             id: 'ssc-q3',
-            section: 'Mathematics',
-            questionText: 'If the cost price of 15 articles is equal to the selling price of 12 articles, find the gain percentage.',
-            options: ['20%', '25%', '15%', '30%'],
-            correctIndex: 1,
-            explanation: 'Let the cost price of one article be C. The cost price of 15 articles = 15C.\nThe selling price of 12 articles = 12S.\nSince 15C = 12S, we have S / C = 15 / 12 = 5 / 4.\nGain = S - C = 5 - 4 = 1.\nGain percentage = (Gain / Cost Price) * 100 = (1 / 4) * 100 = 25%.'
-          },
-          {
-            id: 'ssc-q4',
-            section: 'English',
-            questionText: 'Choose the word that is most nearly opposite in meaning to: OPAQUE',
-            options: ['Transparent', 'Cloudy', 'Dark', 'Frosted'],
-            correctIndex: 0,
-            explanation: 'Opaque means not letting light through. The opposite is Transparent, which allows light and clear vision through it.'
-          },
-          {
-            id: 'ssc-q5',
-            section: 'English',
-            questionText: 'Identify the segment containing a grammatical error: "Neither of the two books were interesting."',
-            options: ['Neither', 'of the two books', 'were', 'interesting'],
-            correctIndex: 2,
-            explanation: '"Neither" is singular, so it requires a singular verb. "were" should be replaced with "was".'
-          },
-          {
-            id: 'ssc-q6',
-            section: 'English',
-            questionText: 'Select the most appropriate synonym of the given word:\n\nABOLISH',
-            options: ['Establish', 'Eliminate', 'Build', 'Support'],
-            correctIndex: 1,
-            explanation: 'Abolish means to formally put an end to a system, practice, or institution. Its synonym is Eliminate.'
-          },
-          {
-            id: 'ssc-q7',
-            section: 'GK & GS',
-            questionText: 'Who was the first Indian woman to win an Olympic medal?',
-            options: ['Karnam Malleswari', 'P.V. Sindhu', 'Saina Nehwal', 'Mary Kom'],
-            correctIndex: 0,
-            explanation: 'Karnam Malleswari won a bronze medal in weightlifting at the 2000 Sydney Olympics, becoming the first Indian woman to win an Olympic medal.'
-          },
-          {
-            id: 'ssc-q8',
-            section: 'GK & GS',
-            questionText: 'Which article of the Indian Constitution is related to the Equality of Opportunity in matters of public employment?',
-            options: ['Article 14', 'Article 15', 'Article 16', 'Article 17'],
-            correctIndex: 2,
-            explanation: 'Article 16 of the Constitution of India guarantees equality of opportunity in matters of public employment for all citizens.'
-          },
-          {
-            id: 'ssc-q9',
-            section: 'GK & GS',
+            section: 'General Awareness',
             questionText: 'Which gas is the chief constituent of Biogas (Gobar gas)?',
             options: ['Methane', 'Ethane', 'Propane', 'Carbon Dioxide'],
             correctIndex: 0,
             explanation: 'Biogas primarily consists of Methane (about 50-75%) and Carbon Dioxide (25-50%), with trace amounts of other gases. Methane is the combustible part, making it a valuable fuel source.'
           },
           {
-            id: 'ssc-q10',
-            section: 'GK & GS',
+            id: 'ssc-q4',
+            section: 'General Awareness',
             questionText: 'Who is known as the Father of the Indian Constitution?',
             options: ['Dr. B. R. Ambedkar', 'Mahatma Gandhi', 'Jawaharlal Nehru', 'Dr. Rajendra Prasad'],
             correctIndex: 0,
             explanation: 'Dr. B. R. Ambedkar is recognized as the Father of the Indian Constitution for his pivotal role as the Chairman of the Drafting Committee.'
+          },
+          {
+            id: 'ssc-q9',
+            section: 'General Awareness',
+            questionText: 'Who was the first Indian woman to win an Olympic medal?',
+            options: ['Karnam Malleswari', 'P.V. Sindhu', 'Saina Nehwal', 'Mary Kom'],
+            correctIndex: 0,
+            explanation: 'Karnam Malleswari won a bronze medal in weightlifting at the 2000 Sydney Olympics, becoming the first Indian woman to win an Olympic medal.'
+          },
+          {
+            id: 'ssc-q10',
+            section: 'General Awareness',
+            questionText: 'Which article of the Indian Constitution is related to the Equality of Opportunity in matters of public employment?',
+            options: ['Article 14', 'Article 15', 'Article 16', 'Article 17'],
+            correctIndex: 2,
+            explanation: 'Article 16 of the Constitution of India guarantees equality of opportunity in matters of public employment for all citizens.'
+          },
+          {
+            id: 'ssc-q5',
+            section: 'Quantitative Aptitude',
+            questionText: 'A shopkeeper sells an item at a 15% discount. If the marked price of the item is ₹800, what is the selling price?',
+            options: ['₹680', '₹720', '₹640', '₹700'],
+            correctIndex: 0,
+            explanation: 'Discount = 15% of ₹800 = (15/100) * 800 = ₹120.\nSelling Price = Marked Price - Discount = 800 - 120 = ₹680.'
+          },
+          {
+            id: 'ssc-q6',
+            section: 'Quantitative Aptitude',
+            questionText: 'The average of five consecutive even numbers is 24. Find the largest of these numbers.',
+            options: ['26', '30', '28', '24'],
+            correctIndex: 2,
+            explanation: 'Let the numbers be x-4, x-2, x, x+2, x+4. Their average is x = 24. The largest number is x + 4 = 24 + 4 = 28.'
+          },
+          {
+            id: 'ssc-q7',
+            section: 'English Comprehension',
+            questionText: 'Choose the word that is most nearly opposite in meaning to: OPAQUE',
+            options: ['Transparent', 'Cloudy', 'Dark', 'Frosted'],
+            correctIndex: 0,
+            explanation: 'Opaque means not letting light through. The opposite is Transparent, which allows light and clear vision through it.'
+          },
+          {
+            id: 'ssc-q8',
+            section: 'English Comprehension',
+            questionText: 'Identify the segment containing a grammatical error: "Neither of the two books were interesting."',
+            options: ['Neither', 'of the two books', 'were', 'interesting'],
+            correctIndex: 2,
+            explanation: '"Neither" is singular, so it requires a singular verb. "were" should be replaced with "was".'
           }
         ]
       }

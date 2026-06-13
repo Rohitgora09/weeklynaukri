@@ -49,7 +49,9 @@ export default function TestTakeClient({ series, test }) {
       if (savedState) {
         const state = JSON.parse(savedState);
         const savedActiveIdx = state.activeSectionIdx !== undefined ? state.activeSectionIdx : 0;
-        const savedEndTime = state.sectionEndTimestamp;
+        const savedEndTime = typeof state.sectionEndTimestamp === 'number' && !isNaN(state.sectionEndTimestamp)
+          ? state.sectionEndTimestamp 
+          : (Date.now() + series.sectionDurationMinutes * 60 * 1000);
 
         let currentActiveIdx = savedActiveIdx;
         let currentEndTime = savedEndTime;
@@ -310,6 +312,9 @@ export default function TestTakeClient({ series, test }) {
 
   // Format time remaining
   const formatTime = (seconds) => {
+    if (isNaN(seconds) || seconds === null || seconds === undefined) {
+      return "00:00";
+    }
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
