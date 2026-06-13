@@ -45,6 +45,7 @@ export default function Footer({ onFooterSearch }) {
               <li><button onClick={() => handleLinkClick('All Categories', 'Mock Test')} className="hover:text-black cursor-pointer transition-colors bg-transparent border-none p-0 text-sm text-gray-600 text-left">Mock Tests</button></li>
               <li><button onClick={() => handleLinkClick('Admit Cards', '')} className="hover:text-black cursor-pointer transition-colors bg-transparent border-none p-0 text-sm text-gray-600 text-left">Admit Cards</button></li>
               <li><button onClick={() => handleLinkClick('Answer Keys', '')} className="hover:text-black cursor-pointer transition-colors bg-transparent border-none p-0 text-sm text-gray-600 text-left">Answer Keys</button></li>
+              <li><Link href="/remote-jobs-guide" className="hover:text-black cursor-pointer transition-colors">Remote Jobs Guide</Link></li>
             </ul>
           </nav>
           <nav aria-label="Social links and contact">

@@ -21,7 +21,8 @@ export async function GET() {
       '/about',
       '/referrals',
       '/it-govt-jobs',
-      '/test-series'
+      '/test-series',
+      '/remote-jobs-guide'
     ];
 
     const staticUrls = staticPages.map(page => ({
