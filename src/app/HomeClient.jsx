@@ -17,7 +17,8 @@ import {
   BookOpen,
   Calendar,
   ExternalLink,
-  Menu
+  Menu,
+  SearchX
 } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
@@ -81,6 +82,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
   const [resumeError, setResumeError] = useState('');
 
   const debounceTimer = useRef(null);
+  const modalRef = useRef(null);
 
   // Track page views on clients
   useEffect(() => {
@@ -97,6 +99,49 @@ export default function HomeClient({ initialJobs, initialNotices }) {
       }).catch(() => {});
     } catch (e) {}
   }, []);
+
+  // Focus trap for modal (Accessibility)
+  useEffect(() => {
+    if (!isResumeModalOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsResumeModalOpen(false);
+        return;
+      }
+
+      if (e.key !== 'Tab' || !modalRef.current) return;
+      
+      const focusable = modalRef.current.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      
+      if (focusable.length === 0) return;
+      
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    // Auto-focus the first focusable element in the modal
+    const timer = setTimeout(() => {
+      const firstFocusable = modalRef.current?.querySelector('button, [href], input');
+      firstFocusable?.focus();
+    }, 100);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      clearTimeout(timer);
+    };
+  }, [isResumeModalOpen]);
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -206,76 +251,94 @@ export default function HomeClient({ initialJobs, initialNotices }) {
     });
   }
 
+  // Check if search returned no results across all visible sections
+  const hasNoResults = q && selectedCategory !== 'Exam Calendar' && (
+    (showGovt ? filteredGovtJobs.length === 0 : true) &&
+    (showPrivate ? filteredPrivateJobs.length === 0 : true) &&
+    (showResults ? filteredResults.length === 0 : true) &&
+    (showAdmitCards ? filteredAdmitCards.length === 0 : true) &&
+    (showAnswerKeys ? filteredAnswerKeys.length === 0 : true)
+  );
+
+  const categoryTabs = ['All Categories', 'Govt Jobs', 'Private Jobs', 'Results', 'Admit Cards', 'Answer Keys', 'Exam Calendar'];
+
   return (
     <div className="bg-white min-h-screen flex flex-col w-full">
       <Navbar onCategorySelect={handleCategorySelect} />
 
       {/* Hero Banner Section */}
-      <section className="bg-gradient-to-b from-blue-50/50 to-white px-6 py-12 md:py-20 text-center w-full">
+      <section aria-label="Hero - Find Government and Private Jobs" className="bg-gradient-to-b from-blue-50/60 via-blue-50/30 to-white px-6 py-14 md:py-24 text-center w-full">
         <div className="max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-6">
-            <Sparkles className="w-3.5 h-3.5" /> India's Most Trusted Sarkari Result Portal
+          <div className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-800 px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-6 animate-stagger-1">
+            <Sparkles className="w-3.5 h-3.5" aria-hidden="true" /> India's Most Trusted Sarkari Result Portal
           </div>
           
-          <h1 className="text-4xl md:text-6xl font-extrabold text-blue-950 leading-tight tracking-tight mb-6">
+          <h1 className="text-4xl md:text-6xl font-extrabold text-blue-950 leading-tight tracking-tight mb-6 animate-stagger-2">
             Find the Latest <br />
             <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Government Jobs & Private Sectors</span>
           </h1>
           
-          <p className="text-gray-600 text-base md:text-lg mb-8 max-w-2xl mx-auto">
+          <p className="text-gray-700 text-base md:text-lg mb-10 max-w-2xl mx-auto leading-relaxed animate-stagger-3">
             Get instant updates on the latest govt jobs, sarkari results, admit cards, answer keys, and exam syllabus from all sectors.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-stagger-4">
             <button
               onClick={() => document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' })}
-              className="bg-black text-white px-8 py-3.5 rounded-full font-medium hover:bg-gray-800 hover:-translate-y-0.5 transition-all shadow-md shadow-black/10 cursor-pointer"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 rounded-full font-semibold text-base hover:from-blue-700 hover:to-indigo-700 hover:-translate-y-0.5 transition-all shadow-lg shadow-blue-600/25 cursor-pointer animate-cta-pulse flex items-center gap-2"
+              aria-label="Explore all available job openings"
             >
               Explore Job Openings
+              <ArrowRight className="w-5 h-5" aria-hidden="true" />
             </button>
             
             <button
               onClick={() => setIsResumeModalOpen(true)}
-              className="bg-white text-gray-800 border border-gray-200 px-8 py-3.5 rounded-full font-medium hover:bg-gray-50 hover:-translate-y-0.5 transition-all shadow-sm flex items-center gap-2 cursor-pointer"
+              className="bg-white text-gray-800 border-2 border-gray-200 px-8 py-4 rounded-full font-semibold text-base hover:bg-blue-50 hover:border-blue-300 hover:-translate-y-0.5 transition-all shadow-sm flex items-center gap-2 cursor-pointer"
+              aria-label="Upload your resume to find matching jobs using AI"
             >
-              <UploadCloud className="w-4 h-4 text-blue-500" /> Match with AI Resume
+              <UploadCloud className="w-5 h-5 text-blue-600" aria-hidden="true" /> Match with AI Resume
             </button>
           </div>
 
           {resumeKeywords.length > 0 && (
-            <div className="mt-6 inline-flex items-center gap-2 bg-green-50 text-green-700 border border-green-200 px-4 py-2 rounded-xl text-xs">
+            <div className="mt-6 inline-flex items-center gap-2 bg-green-50 text-green-800 border border-green-200 px-4 py-2 rounded-xl text-xs" role="status">
               <span>Matched private jobs by skills: <strong>{resumeKeywords.join(', ')}</strong></span>
-              <button onClick={() => setResumeKeywords([])} className="hover:text-green-950 font-bold ml-1"><X className="w-3.5 h-3.5" /></button>
+              <button onClick={() => setResumeKeywords([])} className="hover:text-green-950 font-bold ml-1 cursor-pointer bg-transparent border-none p-0" aria-label="Clear resume skill matches">
+                <X className="w-3.5 h-3.5" aria-hidden="true" />
+              </button>
             </div>
           )}
 
           {/* Direct navigation card for Govt Tech Jobs */}
-          <div className="mt-8 max-w-md mx-auto bg-blue-50/50 border border-blue-100/70 rounded-2xl p-4 flex items-center justify-between shadow-sm animate-fade-in-up">
+          <div className="mt-10 max-w-md mx-auto bg-blue-50/50 border border-blue-200/70 rounded-2xl p-5 flex items-center justify-between shadow-sm animate-fade-in-up">
             <div className="flex items-center gap-3 text-left">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-650 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm">
-                <Sparkles className="w-5 h-5 text-amber-300" />
+                <Sparkles className="w-5 h-5 text-amber-300" aria-hidden="true" />
               </div>
               <div>
-                <h4 className="font-bold text-blue-950 text-xs sm:text-sm">Technical & IT Government Jobs</h4>
+                <h2 className="font-bold text-blue-950 text-xs sm:text-sm">Technical & IT Government Jobs</h2>
                 <p className="text-[11px] sm:text-xs text-blue-800/80">Explore software & programmer vacancies.</p>
               </div>
             </div>
             <Link 
               href="/it-govt-jobs" 
-              className="bg-black text-white text-xs font-semibold px-4 py-2.5 rounded-full hover:bg-gray-800 transition-all shadow-sm shrink-0 ml-2"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-semibold px-4 py-2.5 rounded-full hover:from-blue-700 hover:to-indigo-700 transition-all shadow-sm shrink-0 ml-2"
+              aria-label="Explore Technical and IT Government Jobs"
             >
               Explore
             </Link>
           </div>
 
           {/* Quick search chips */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-2 max-w-2xl mx-auto">
-            <span className="text-xs text-gray-400 font-medium">Trending Searches:</span>
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-2.5 max-w-2xl mx-auto" role="group" aria-label="Trending search suggestions">
+            <span className="text-xs text-gray-500 font-medium">Trending Searches:</span>
             {['SSC CGL', 'UPSC Prelims', 'Railway Group D', 'Bank PO', 'Agneepath Scheme', 'State PSC'].map(chip => (
               <button
                 key={chip}
                 onClick={() => handleChipClick(chip)}
-                className="bg-gray-50 border border-gray-200/60 hover:bg-gray-100 hover:border-gray-300 text-xs text-gray-600 px-3.5 py-1.5 rounded-full transition-all cursor-pointer"
+                className="bg-gray-50 border border-gray-200 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 text-xs text-gray-700 px-3.5 py-1.5 rounded-full transition-all cursor-pointer font-medium"
+                aria-label={`Search for ${chip} jobs`}
               >
                 {chip}
               </button>
@@ -285,39 +348,67 @@ export default function HomeClient({ initialJobs, initialNotices }) {
       </section>
 
       {/* Job Search Core Section */}
-      <section id="search-section" className="max-w-7xl mx-auto px-6 py-12 w-full flex-1">
+      <section id="search-section" aria-label="Job search and listings" className="max-w-7xl mx-auto px-6 py-12 w-full flex-1">
         {/* Search Bar Input */}
         {selectedCategory !== 'Exam Calendar' && (
-          <div className="relative max-w-2xl mx-auto mb-12">
+          <div className="relative max-w-2xl mx-auto mb-12" role="search" aria-label="Search jobs">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search className="w-5 h-5 text-gray-400" />
+              <Search className="w-5 h-5 text-gray-400" aria-hidden="true" />
             </div>
             <input
               type="text"
               placeholder="Search by post name, department, location, or exam..."
               defaultValue={searchQuery}
               onChange={handleSearchChange}
-              className="w-full pl-12 pr-4 py-4 rounded-full border border-gray-200/80 shadow-md shadow-gray-100/50 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 bg-gray-50/50 hover:bg-gray-50 transition-all text-sm font-medium"
+              aria-label="Search for jobs by post name, department, location, or exam"
+              className="w-full pl-12 pr-4 py-4 rounded-full border border-gray-300 shadow-md shadow-gray-100/50 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 bg-gray-50/50 hover:bg-gray-50 transition-all text-sm font-medium"
             />
           </div>
         )}
 
         {/* Tab Selection Filter */}
-        <div className="flex border-b border-gray-100 mb-8 overflow-x-auto gap-1">
-          {['All Categories', 'Govt Jobs', 'Private Jobs', 'Results', 'Admit Cards', 'Answer Keys', 'Exam Calendar'].map(tab => (
+        <div className="flex border-b border-gray-200 mb-8 overflow-x-auto gap-1" role="tablist" aria-label="Job category tabs">
+          {categoryTabs.map(tab => (
             <button
               key={tab}
               onClick={() => setSelectedCategory(tab)}
-              className={`px-6 py-3 font-semibold text-sm border-b-2 transition-all whitespace-nowrap cursor-pointer ${
+              role="tab"
+              aria-selected={selectedCategory === tab}
+              aria-controls={`panel-${tab.replace(/\s/g, '-').toLowerCase()}`}
+              className={`px-6 py-3 font-semibold text-sm border-b-2 transition-all whitespace-nowrap cursor-pointer rounded-t-lg ${
                 selectedCategory === tab 
-                  ? 'border-black text-black' 
-                  : 'border-transparent text-gray-400 hover:text-gray-650'
+                  ? 'border-blue-600 text-blue-700 bg-blue-50/50' 
+                  : 'border-transparent text-gray-500 hover:text-gray-800 hover:bg-gray-50'
               }`}
             >
               {tab}
             </button>
           ))}
         </div>
+
+        {/* No results state */}
+        {hasNoResults && (
+          <div className="flex flex-col items-center justify-center py-16 text-center" role="status" aria-live="polite">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+              <SearchX className="w-8 h-8 text-gray-400" aria-hidden="true" />
+            </div>
+            <h2 className="text-lg font-semibold text-gray-800 mb-2">No results found</h2>
+            <p className="text-sm text-gray-500 max-w-md">
+              We couldn't find any listings matching "<strong className="text-gray-800">{searchQuery}</strong>". Try a different keyword or browse all categories.
+            </p>
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedCategory('All Categories');
+                const input = document.querySelector('input[aria-label]');
+                if (input) input.value = '';
+              }}
+              className="mt-4 text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors cursor-pointer bg-transparent border-none"
+            >
+              Clear search & show all
+            </button>
+          </div>
+        )}
 
         {/* Display grids or Exam Calendar */}
         {selectedCategory === 'Exam Calendar' ? (
@@ -372,10 +463,11 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             />
           </div>
         ) : (
+          !hasNoResults && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
             {/* Main columns */}
-            <div className="lg:col-span-8 space-y-8">
+            <div className="lg:col-span-8 space-y-10">
               
               {/* Govt jobs feed */}
               {showGovt && (
@@ -419,7 +511,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             </div>
 
             {/* Right sidebar */}
-            <div className="lg:col-span-4 space-y-8">
+            <div className="lg:col-span-4 space-y-10">
               
               {/* Live SSC notifications */}
               {showGovt && filteredSSCNotices.length > 0 && (
@@ -451,6 +543,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             </div>
 
           </div>
+          )
         )}
 
         {/* Admissions, Answer Keys, Documents - grid splits */}
@@ -488,18 +581,18 @@ export default function HomeClient({ initialJobs, initialNotices }) {
         
         {/* Stats metrics card banner */}
         <LazySection>
-          <div className="mt-16 bg-gradient-to-r from-blue-950 to-blue-900 rounded-2xl p-8 md:p-12 shadow-xl shadow-blue-900/10 text-center text-white">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="mt-16 bg-gradient-to-r from-blue-950 to-blue-900 rounded-2xl p-8 md:p-12 shadow-xl shadow-blue-900/10 text-center text-white" aria-label="Platform statistics">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {[
                 { value: '50,000+', label: 'Active Job Listings', icon: Briefcase },
                 { value: '18.3K+', label: 'Happy Users', icon: Users },
                 { value: '1,200+', label: 'Govt Departments', icon: Building2 },
                 { value: '95%', label: 'Match Accuracy', icon: TrendingUp },
               ].map((stat, i) => (
-                <div key={i}>
-                  <stat.icon className="w-6 h-6 text-amber-400 mx-auto mb-2" />
-                  <span className="block text-2xl md:text-3xl font-semibold">{stat.value}</span>
-                  <span className="text-xs text-blue-200 mt-1">{stat.label}</span>
+                <div key={i} className="flex flex-col items-center">
+                  <stat.icon className="w-6 h-6 text-amber-400 mb-2" aria-hidden="true" />
+                  <span className="block text-2xl md:text-3xl font-bold" aria-label={`${stat.value} ${stat.label}`}>{stat.value}</span>
+                  <span className="text-xs text-blue-200 mt-1 font-medium">{stat.label}</span>
                 </div>
               ))}
             </div>
@@ -511,39 +604,52 @@ export default function HomeClient({ initialJobs, initialNotices }) {
 
       {/* AI Resume Upload Match Modal */}
       {isResumeModalOpen && (
-        <div className="fixed inset-0 bg-black/65 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div 
+          className="fixed inset-0 bg-black/65 backdrop-blur-sm z-50 flex items-center justify-center p-4" 
+          role="dialog" 
+          aria-modal="true" 
+          aria-labelledby="resume-modal-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setIsResumeModalOpen(false); }}
+        >
           <Card padding="p-6 relative w-full max-w-md animate-fade-in-up" hover={false}>
-            <button 
-              onClick={() => setIsResumeModalOpen(false)} 
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            
-            <div className="text-center mb-6">
-              <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3 text-amber-600">
-                <Sparkles className="w-6 h-6" />
+            <div ref={modalRef}>
+              <button 
+                onClick={() => setIsResumeModalOpen(false)} 
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors cursor-pointer bg-transparent border-none p-1 rounded-lg"
+                aria-label="Close resume upload dialog"
+              >
+                <X className="w-5 h-5" aria-hidden="true" />
+              </button>
+              
+              <div className="text-center mb-6">
+                <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3 text-amber-600">
+                  <Sparkles className="w-6 h-6" aria-hidden="true" />
+                </div>
+                <h3 id="resume-modal-title" className="text-xl font-bold text-gray-900">AI Resume Match</h3>
+                <p className="text-sm text-gray-600 mt-1">Upload your PDF resume to instantly find private sector jobs matching your skills.</p>
               </div>
-              <h3 className="text-xl font-bold text-gray-900">AI Resume Match</h3>
-              <p className="text-sm text-gray-500 mt-1">Upload your PDF resume to instantly find private sector jobs matching your skills.</p>
-            </div>
-            
-            <label className="border-2 border-dashed border-gray-300 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors group">
-              <input type="file" accept=".pdf" className="hidden" onChange={handleFileUpload} disabled={isParsing} />
-              {isParsing ? (
-                <>
-                  <Loader2 className="w-8 h-8 text-blue-600 animate-spin mb-3" />
-                  <span className="text-sm font-medium text-gray-700">Analyzing skills...</span>
-                </>
-              ) : (
-                <>
-                  <UploadCloud className="w-8 h-8 text-gray-400 group-hover:text-blue-600 transition-colors mb-3" />
-                  <span className="text-sm font-medium text-gray-700">Click to upload PDF</span>
-                  <span className="text-xs text-gray-500 mt-1">Max file size: 5MB</span>
-                </>
+              
+              <label className="border-2 border-dashed border-gray-300 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-50/50 hover:border-blue-300 transition-all group">
+                <input type="file" accept=".pdf" className="hidden" onChange={handleFileUpload} disabled={isParsing} aria-label="Upload PDF resume file" />
+                {isParsing ? (
+                  <>
+                    <Loader2 className="w-8 h-8 text-blue-600 animate-spin mb-3" role="status" aria-label="Analyzing resume" />
+                    <span className="text-sm font-medium text-gray-800">Analyzing skills...</span>
+                  </>
+                ) : (
+                  <>
+                    <UploadCloud className="w-8 h-8 text-gray-400 group-hover:text-blue-600 transition-colors mb-3" aria-hidden="true" />
+                    <span className="text-sm font-medium text-gray-800">Click to upload PDF</span>
+                    <span className="text-xs text-gray-500 mt-1">Max file size: 5MB</span>
+                  </>
+                )}
+              </label>
+              {resumeError && (
+                <div className="mt-3 text-center" role="alert">
+                  <p className="text-sm text-red-600 font-medium">{resumeError}</p>
+                </div>
               )}
-            </label>
-            {resumeError && <p className="text-sm text-red-500 mt-3 text-center">{resumeError}</p>}
+            </div>
           </Card>
         </div>
       )}

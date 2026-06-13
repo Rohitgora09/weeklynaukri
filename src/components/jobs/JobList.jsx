@@ -15,15 +15,15 @@ export default function JobList({
 
   return (
     <Card padding="p-6 h-full flex flex-col">
-      <div className="flex items-center gap-3 mb-4">
+      <div className="flex items-center gap-3 mb-5">
         {Icon && (
-          <div className={`w-10 h-10 ${color} text-white rounded-xl flex items-center justify-center shrink-0`}>
-            <Icon className="w-5 h-5" />
+          <div className={`w-10 h-10 ${color} text-white rounded-xl flex items-center justify-center shrink-0 shadow-sm`}>
+            <Icon className="w-5 h-5" aria-hidden="true" />
           </div>
         )}
         <div>
-          <h3 className="font-bold text-gray-900">{title}</h3>
-          {subtitle && <p className="text-xs text-gray-400">{subtitle}</p>}
+          <h2 className="font-bold text-gray-900 text-lg leading-snug">{title}</h2>
+          {subtitle && <p className="text-xs text-gray-500 mt-0.5">{subtitle}</p>}
         </div>
       </div>
 

@@ -1,11 +1,89 @@
 @import "tailwindcss";
 
+/* ── Design System Tokens ─────────────────────────────────── */
+:root {
+  --space-xs: 0.25rem;    /* 4px */
+  --space-sm: 0.5rem;     /* 8px */
+  --space-md: 1rem;       /* 16px */
+  --space-lg: 1.5rem;     /* 24px */
+  --space-xl: 2rem;       /* 32px */
+  --space-2xl: 3rem;      /* 48px */
+  --space-section: 4rem;  /* 64px — between major page sections */
+  --space-card: 1.5rem;   /* 24px — internal card padding */
+  --space-element: 0.75rem; /* 12px — between sibling elements */
+
+  --color-focus: #3b82f6; /* blue-500 */
+  --color-cta: #4f46e5;   /* indigo-600 */
+  --radius-card: 1rem;
+  --radius-pill: 9999px;
+}
+
+/* ── Base Reset & Typography ──────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: #3b82f6;
+  color: white;
+}
+
+/* ── Skip to Content (Accessibility) ─────────────────────── */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-focus);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.875rem;
+  font-weight: 600;
+  z-index: 9999;
+  transition: top 0.2s ease;
+  text-decoration: none;
+}
+
+.skip-to-content:focus {
+  top: 1rem;
+  outline: none;
+}
+
+/* ── Global Focus Ring (Accessibility) ────────────────────── */
+*:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Remove inner focus ring on buttons that already have focus-visible */
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+input:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ── CTA Glow Animation ──────────────────────────────────── */
+@keyframes ctaPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(79, 70, 229, 0);
+  }
+}
+
+.animate-cta-pulse {
+  animation: ctaPulse 2.5s ease-in-out infinite;
 }
 
 /* ── Fade In Up ───────────────────────────────────────────── */
@@ -23,6 +101,23 @@ body {
 .animate-fade-in-up {
   animation: fadeInUp 0.6s ease-out forwards;
 }
+
+/* ── Staggered Fade In ───────────────────────────────────── */
+@keyframes staggerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-stagger-1 { animation: staggerFadeIn 0.5s ease-out 0.1s both; }
+.animate-stagger-2 { animation: staggerFadeIn 0.5s ease-out 0.2s both; }
+.animate-stagger-3 { animation: staggerFadeIn 0.5s ease-out 0.3s both; }
+.animate-stagger-4 { animation: staggerFadeIn 0.5s ease-out 0.4s both; }
 
 /* ── Fade In Overlay ──────────────────────────────────────── */
 @keyframes fadeInOverlay {
@@ -78,4 +173,16 @@ body {
 
 .animate-marquee:hover, .animate-marquee-reverse:hover {
   animation-play-state: paused;
+}
+
+/* ── Reduced Motion (Accessibility) ──────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

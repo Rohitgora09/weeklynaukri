@@ -114,7 +114,10 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className="font-sans antialiased text-gray-900 bg-white">
-        {children}
+        <a href="#main-content" className="skip-to-content">Skip to main content</a>
+        <main id="main-content">
+          {children}
+        </main>
       </body>
     </html>
   );
