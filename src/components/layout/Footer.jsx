@@ -55,6 +55,7 @@ export default function Footer({ onFooterSearch }) {
               <li><a href="https://youtube.com/@weeklynaukri" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">YouTube</a></li>
               <li><a href="https://instagram.com/weeklynaukri" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">Instagram</a></li>
               <li><Link href="/contact" className="hover:text-black cursor-pointer transition-colors">Contact Us</Link></li>
+              <li><Link href="/faq" className="hover:text-black cursor-pointer transition-colors">FAQ</Link></li>
               <li><Link href="/privacy-policy" className="hover:text-black cursor-pointer transition-colors">Privacy Policy</Link></li>
             </ul>
           </nav>
