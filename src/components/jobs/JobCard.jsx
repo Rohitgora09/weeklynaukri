@@ -82,7 +82,7 @@ export default function JobCard({
 
   // Default Grid Card (e.g. results, admit cards, answer keys)
   return (
-    <Link href={targetHref} className="bg-gray-50 rounded-xl p-4 hover:bg-blue-50/50 border border-transparent hover:border-blue-100 transition-all duration-200 cursor-pointer group block w-full">
+    <Link href={targetHref} aria-label={`View details for ${title}`} className="bg-gray-50 rounded-xl p-4 hover:bg-blue-50/50 border border-transparent hover:border-blue-100 transition-all duration-200 cursor-pointer group block w-full">
       {tag && <Tag color={tagColor} className="mb-2">{tag}</Tag>}
       <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-950 transition-colors line-clamp-2 min-h-[40px]">
         {title}
@@ -93,7 +93,8 @@ export default function JobCard({
           <Calendar className="w-3 h-3" /> {date}
         </p>
         <span className="inline-flex items-center gap-1 text-[10px] text-blue-700 font-semibold uppercase tracking-wider group-hover:translate-x-0.5 transition-transform">
-          Details <ExternalLink className="w-2.5 h-2.5" />
+          <span className="sr-only">View details for {title}</span>
+          <span aria-hidden="true">Details</span> <ExternalLink className="w-2.5 h-2.5" aria-hidden="true" />
         </span>
       </div>
     </Link>
