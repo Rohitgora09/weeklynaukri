@@ -24,5 +24,30 @@ export default async function TestDetailPage({ params }) {
     notFound();
   }
 
-  return <TestDetailClient series={series} />;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Quiz",
+    "name": series.title,
+    "description": series.description || `Attempt free online full mock tests for ${series.title}. Check solutions, syllabus coverage, correct options, and negative marking scoring rules.`,
+    "learningResourceType": "Practice Test",
+    "publisher": {
+      "@type": "Organization",
+      "name": "WeeklyNaukri.com",
+      "url": "https://weeklynaukri.com",
+      "logo": "https://weeklynaukri.com/logo.png"
+    },
+    "assesses": series.sections.join(", "),
+    "educationalUse": "Practice",
+    "typicalAgeRange": "18-30"
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <TestDetailClient series={series} />
+    </>
+  );
 }
