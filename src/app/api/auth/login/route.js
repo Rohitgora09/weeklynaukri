@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '../../../../lib/supabase';
-import { comparePassword, generateToken } from '../../../../lib/auth';
+import { comparePassword, generateToken, checkRateLimit } from '../../../../lib/auth';
 
 export async function POST(request) {
   try {
+    const ip = request.headers.get('x-forwarded-for') || request.ip || '127.0.0.1';
+    const rateLimit = checkRateLimit(ip, 'login');
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ success: false, error: `Too many login attempts. Try again in ${rateLimit.retryAfter} seconds.` }, { status: 429 });
+    }
+
     const { email, password } = await request.json();
 
     if (!email || !password) {

@@ -13,6 +13,9 @@ export async function generateMetadata({ params }) {
   return {
     title: `${series.title} Online Practice Exam - WeeklyNaukri`,
     description: `Attempt free online full mock tests for ${series.title}. Check solutions, syllabus coverage, correct options, and negative marking scoring rules.`,
+    alternates: {
+      canonical: `https://weeklynaukri.com/test-series/${id}`
+    }
   };
 }
 

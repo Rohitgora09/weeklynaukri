@@ -17,6 +17,11 @@ export async function POST(request) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
+    // Validate PDF magic bytes (%PDF-) to ensure it's actually a PDF file
+    if (buffer.length < 5 || buffer.toString('utf8', 0, 5) !== '%PDF-') {
+      return NextResponse.json({ success: false, error: 'Invalid file format. Only PDF files are allowed.' }, { status: 400 });
+    }
+
     // Dynamic import to bypass build-time module evaluation side-effects of pdf-parse
     const pdfParseModule = await import('pdf-parse');
     const pdfParse = pdfParseModule.default || pdfParseModule;

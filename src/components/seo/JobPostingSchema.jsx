@@ -127,6 +127,50 @@ export default function JobPostingSchema({ job }) {
     ],
   };
 
+  // 3. Auto-Generated FAQPage Schema (For AI visibility)
+  let faqSchema = null;
+  if (isJob && (job.dates?.applyEnd || job.vacancies)) {
+    const questions = [];
+    if (job.dates?.applyEnd) {
+      questions.push({
+        '@type': 'Question',
+        name: `What is the last date to apply for ${job.title}?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `The last date to apply online is ${job.dates.applyEnd}. Make sure to submit your application and pay any required fees before this deadline.`
+        }
+      });
+    }
+    if (job.vacancies) {
+      questions.push({
+        '@type': 'Question',
+        name: `How many vacancies are available for ${job.title}?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `There are a total of ${job.vacancies} vacancies available for this recruitment.`
+        }
+      });
+    }
+    if (job.ageLimit?.min || job.ageLimit?.max) {
+      questions.push({
+        '@type': 'Question',
+        name: `What is the age limit for ${job.title}?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `The age limit is typically ${job.ageLimit?.min || 'minimum'} to ${job.ageLimit?.max || 'maximum'}. Please check the official notification for age relaxation rules.`
+        }
+      });
+    }
+
+    if (questions.length > 0) {
+      faqSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: questions
+      };
+    }
+  }
+
   return (
     <>
       <script
@@ -137,6 +181,12 @@ export default function JobPostingSchema({ job }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
     </>
   );
 }

@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '../../../../lib/supabase';
-import { verifyOTP } from '../../../../lib/auth';
+import { verifyOTP, checkRateLimit } from '../../../../lib/auth';
 
 export async function POST(request) {
   try {
+    const ip = request.headers.get('x-forwarded-for') || request.ip || '127.0.0.1';
+    const rateLimit = checkRateLimit(ip, 'otp');
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ success: false, error: `Too many OTP verification attempts. Try again in ${rateLimit.retryAfter} seconds.` }, { status: 429 });
+    }
+
     const { email, otp } = await request.json();
 
     if (!email || !otp) {

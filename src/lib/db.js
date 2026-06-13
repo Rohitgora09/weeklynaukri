@@ -66,6 +66,22 @@ db.exec(`
     scraped_at TEXT NOT NULL,
     full_details_json TEXT
   );
+
+  CREATE TABLE IF NOT EXISTS otp_requests (
+    email TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    password_hash TEXT NOT NULL,
+    otp TEXT NOT NULL,
+    expires_at INTEGER NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS rate_limits (
+    ip TEXT PRIMARY KEY,
+    login_attempts INTEGER DEFAULT 0,
+    login_reset_time INTEGER DEFAULT 0,
+    otp_attempts INTEGER DEFAULT 0,
+    otp_reset_time INTEGER DEFAULT 0
+  );
 `);
 
 // Seed an administrator account ONLY when explicit credentials are provided via env.

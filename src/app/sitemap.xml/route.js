@@ -24,22 +24,10 @@ export async function GET() {
       '/test-series'
     ];
 
-    // Get all static job identifiers
-    const allStaticJobs = [
-      ...latestJobs, ...latestResults, ...admitCards, 
-      ...answerKeys, ...admissions, ...documents, ...privateJobs
-    ];
-
     const staticUrls = staticPages.map(page => ({
       loc: `https://weeklynaukri.com${page}`,
       changefreq: page === '' ? 'daily' : 'monthly',
       priority: page === '' ? '1.0' : '0.5'
-    }));
-
-    const staticJobUrls = allStaticJobs.map(job => ({
-      loc: `https://weeklynaukri.com/job/${job.id}`,
-      changefreq: 'weekly',
-      priority: '0.8'
     }));
 
     // Get all dynamic scraped jobs from Supabase Cache
@@ -65,7 +53,7 @@ export async function GET() {
       priority: '0.8'
     }));
 
-    const allUrls = [...staticUrls, ...staticJobUrls, ...dynamicJobUrls, ...testSeriesUrls];
+    const allUrls = [...staticUrls, ...dynamicJobUrls, ...testSeriesUrls];
 
     const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
