@@ -148,14 +148,23 @@ export async function fetchSSCNotices(force = false) {
       };
     });
 
-    if (insertRows.length > 0) {
+    const uniqueRows = [];
+    const seen = new Set();
+    insertRows.forEach(row => {
+      if (!seen.has(row.url_slug)) {
+        seen.add(row.url_slug);
+        uniqueRows.push(row);
+      }
+    });
+
+    if (uniqueRows.length > 0) {
       const { error: insertError } = await supabase
         .from('scraper_cache')
-        .insert(insertRows);
+        .insert(uniqueRows);
       if (insertError) throw insertError;
     }
 
-    return insertRows.map(item => ({
+    return uniqueRows.map(item => ({
       id: item.job_id,
       slug: item.url_slug,
       title: item.title,
@@ -381,14 +390,23 @@ export async function fetchSarkariResultData(force = false) {
     prepareRows(rawData.admissions, 'admissions');
     prepareRows(rawData.documents, 'documents');
 
-    if (insertRows.length > 0) {
+    const uniqueRows = [];
+    const seen = new Set();
+    insertRows.forEach(row => {
+      if (!seen.has(row.url_slug)) {
+        seen.add(row.url_slug);
+        uniqueRows.push(row);
+      }
+    });
+
+    if (uniqueRows.length > 0) {
       const { error: insertError } = await supabase
         .from('scraper_cache')
-        .insert(insertRows);
+        .insert(uniqueRows);
       if (insertError) throw insertError;
     }
 
-    const getGroup = (category) => insertRows.filter(r => r.category === category).map(mapper);
+    const getGroup = (category) => uniqueRows.filter(r => r.category === category).map(mapper);
     return {
       latestJobs: getGroup('latestJobs'),
       admitCards: getGroup('admitCards'),
@@ -650,14 +668,23 @@ export async function fetchPrivateJobs(force = false) {
       };
     });
 
-    if (insertRows.length > 0) {
+    const uniqueRows = [];
+    const seen = new Set();
+    insertRows.forEach(row => {
+      if (!seen.has(row.url_slug)) {
+        seen.add(row.url_slug);
+        uniqueRows.push(row);
+      }
+    });
+
+    if (uniqueRows.length > 0) {
       const { error: insertError } = await supabase
         .from('scraper_cache')
-        .insert(insertRows);
+        .insert(uniqueRows);
       if (insertError) throw insertError;
     }
 
-    return insertRows.map(mapper);
+    return uniqueRows.map(mapper);
 
   } catch (error) {
     console.error("Error scraping private jobs:", error.message);
