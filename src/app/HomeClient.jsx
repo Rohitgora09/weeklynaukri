@@ -50,26 +50,38 @@ export default function HomeClient({ initialJobs, initialNotices }) {
     { id: 'p4', title: 'UI/UX Designer', company: 'DesignCraft Studios', location: 'Pune / Remote', salary: '₹8L - ₹12L', tag: 'New', tagColor: 'orange' }
   ]);
   
-  const [answerKeys, setAnswerKeys] = useState([
-    { id: 'ans1', title: 'SSC GD Constable Answer Key 2026', date: '10 Jun 2026' },
-    { id: 'ans2', title: 'UPSC Civil Services Prelims Answer Key 2026', date: '08 Jun 2026' },
-    { id: 'ans3', title: 'IBPS PO Main Answer Key 2026', date: '05 Jun 2026' },
-    { id: 'ans4', title: 'RRB NTPC CBT 1 Official Answer Key 2026', date: '01 Jun 2026' }
-  ]);
+  const [answerKeys, setAnswerKeys] = useState(
+    initialJobs.answerKeys && initialJobs.answerKeys.length > 0 
+      ? initialJobs.answerKeys 
+      : [
+          { id: 'ans1', title: 'SSC GD Constable Answer Key 2026', date: '10 Jun 2026' },
+          { id: 'ans2', title: 'UPSC Civil Services Prelims Answer Key 2026', date: '08 Jun 2026' },
+          { id: 'ans3', title: 'IBPS PO Main Answer Key 2026', date: '05 Jun 2026' },
+          { id: 'ans4', title: 'RRB NTPC CBT 1 Official Answer Key 2026', date: '01 Jun 2026' }
+        ]
+  );
 
-  const [admissions, setAdmissions] = useState([
-    { id: 'adm1', title: 'Delhi University UG Admission 2026', date: '05 Jun 2026' },
-    { id: 'adm2', title: 'IIT JEE Advanced Registration 2026', date: '30 May 2026' },
-    { id: 'adm3', title: 'NEET UG Counselling Choice Filling 2026', date: '25 May 2026' },
-    { id: 'adm4', title: 'IGNOU Admission Form July Cycle 2026', date: '20 May 2026' }
-  ]);
+  const [admissions, setAdmissions] = useState(
+    initialJobs.admissions && initialJobs.admissions.length > 0 
+      ? initialJobs.admissions 
+      : [
+          { id: 'adm1', title: 'Delhi University UG Admission 2026', date: '05 Jun 2026' },
+          { id: 'adm2', title: 'IIT JEE Advanced Registration 2026', date: '30 May 2026' },
+          { id: 'adm3', title: 'NEET UG Counselling Choice Filling 2026', date: '25 May 2026' },
+          { id: 'adm4', title: 'IGNOU Admission Form July Cycle 2026', date: '20 May 2026' }
+        ]
+  );
 
-  const [documents, setDocuments] = useState([
-    { id: 'doc1', title: 'UP Scholarship Online Form 2026', date: '12 Jun 2026' },
-    { id: 'doc2', title: 'Aadhar Card Mobile Number Link Guide', date: '08 Jun 2026' },
-    { id: 'doc3', title: 'Pan Card Online Correction Portal 2026', date: '01 Jun 2026' },
-    { id: 'doc4', title: 'Voter ID Card Online Registration 2026', date: '24 May 2026' }
-  ]);
+  const [documents, setDocuments] = useState(
+    initialJobs.documents && initialJobs.documents.length > 0 
+      ? initialJobs.documents 
+      : [
+          { id: 'doc1', title: 'UP Scholarship Online Form 2026', date: '12 Jun 2026' },
+          { id: 'doc2', title: 'Aadhar Card Mobile Number Link Guide', date: '08 Jun 2026' },
+          { id: 'doc3', title: 'Pan Card Online Correction Portal 2026', date: '01 Jun 2026' },
+          { id: 'doc4', title: 'Voter ID Card Online Registration 2026', date: '24 May 2026' }
+        ]
+  );
 
   // AI Resume Match States
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);

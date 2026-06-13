@@ -180,29 +180,51 @@ export async function fetchSSCNotices(force = false) {
 export async function fetchSarkariResultData(force = false) {
   const CACHE_DURATION_MS = 15 * 60 * 1000;
 
+  const getTagInfo = (category) => {
+    switch (category) {
+      case 'latestJobs': return { tag: 'New', color: 'purple' };
+      case 'results': return { tag: 'Declared', color: 'green' };
+      case 'admitCards': return { tag: 'Available', color: 'orange' };
+      case 'answerKeys': return { tag: 'Out', color: 'blue' };
+      case 'admissions': return { tag: 'Open', color: 'indigo' };
+      case 'documents': return { tag: 'Active', color: 'teal' };
+      default: return { tag: 'Available', color: 'gray' };
+    }
+  };
+
+  const mapper = item => {
+    const { tag, color } = getTagInfo(item.category);
+    return {
+      id: item.job_id,
+      slug: item.url_slug,
+      title: item.title,
+      link: item.source_url,
+      org: item.org,
+      tag,
+      tagColor: color,
+      date: 'Recent'
+    };
+  };
+
   if (!force) {
     const cachedJobs = db.prepare("SELECT * FROM scraper_cache WHERE category = 'latestJobs'").all();
     const cachedAdmit = db.prepare("SELECT * FROM scraper_cache WHERE category = 'admitCards'").all();
     const cachedResults = db.prepare("SELECT * FROM scraper_cache WHERE category = 'results'").all();
+    const cachedAnswerKeys = db.prepare("SELECT * FROM scraper_cache WHERE category = 'answerKeys'").all();
+    const cachedAdmissions = db.prepare("SELECT * FROM scraper_cache WHERE category = 'admissions'").all();
+    const cachedDocuments = db.prepare("SELECT * FROM scraper_cache WHERE category = 'documents'").all();
 
     if (cachedJobs.length > 0 && cachedAdmit.length > 0 && cachedResults.length > 0) {
       const newestTime = new Date(cachedJobs[0].scraped_at).getTime();
       if (Date.now() - newestTime < CACHE_DURATION_MS) {
         console.log("Returning SQLite cached SarkariResult data");
-        const mapper = item => ({
-          id: item.job_id,
-          slug: item.url_slug,
-          title: item.title,
-          link: item.source_url,
-          org: item.org,
-          tag: item.category === 'latestJobs' ? 'New' : (item.category === 'results' ? 'Declared' : 'Available'),
-          tagColor: item.category === 'latestJobs' ? 'purple' : (item.category === 'results' ? 'green' : 'orange'),
-          date: 'Recent'
-        });
         return {
           latestJobs: cachedJobs.map(mapper),
           admitCards: cachedAdmit.map(mapper),
-          results: cachedResults.map(mapper)
+          results: cachedResults.map(mapper),
+          answerKeys: cachedAnswerKeys.map(mapper),
+          admissions: cachedAdmissions.map(mapper),
+          documents: cachedDocuments.map(mapper)
         };
       }
     }
@@ -210,7 +232,14 @@ export async function fetchSarkariResultData(force = false) {
 
   if (isScrapingLock) {
     console.log("Scraper lock active, skipping live SarkariResult fetch");
-    return { latestJobs: [], admitCards: [], results: [] };
+    return {
+      latestJobs: [],
+      admitCards: [],
+      results: [],
+      answerKeys: [],
+      admissions: [],
+      documents: []
+    };
   }
 
   isScrapingLock = true;
@@ -224,31 +253,57 @@ export async function fetchSarkariResultData(force = false) {
     await page.goto('https://sarkariresult.com.cm/', { waitUntil: 'domcontentloaded', timeout: 60000 });
 
     const rawData = await page.evaluate(() => {
-      const results = { results: [], admitCards: [], latestJobs: [] };
-      const links = Array.from(document.querySelectorAll('a'));
+      const results = { results: [], admitCards: [], latestJobs: [], answerKeys: [], admissions: [], documents: [] };
       
-      let currentList = 'results'; 
-      links.forEach(a => {
-        const text = a.innerText.trim();
-        const href = a.href;
+      const headers = Array.from(document.querySelectorAll('.gb-headline-text, h1, h2, h3, p'));
+      headers.forEach(header => {
+        const text = header.textContent.trim().toLowerCase();
+        let category = null;
         
-        if (text === "View More") {
-          if (href.includes('/result/')) currentList = 'admitCards';
-          else if (href.includes('/admit-card/')) currentList = 'latestJobs';
-          else if (href.includes('/latest-jobs/')) currentList = 'answerKeys';
-          else currentList = 'other';
-          return;
-        }
-
-        if (text.length < 10) return;
-        if (text.includes("Join WhatsApp") || text.includes("SarkariResult Tools") || href.includes("youtube.com")) return;
-
-        if (['results', 'admitCards', 'latestJobs'].includes(currentList)) {
-          if (text.length > 15) {
-            results[currentList].push({
-              title: text,
-              link: href,
-              org: text.split(' ').slice(0, 3).join(' ')
+        if (text === 'results') category = 'results';
+        else if (text === 'admit cards') category = 'admitCards';
+        else if (text === 'latest jobs') category = 'latestJobs';
+        else if (text === 'answer key') category = 'answerKeys';
+        else if (text === 'admission') category = 'admissions';
+        else if (text === 'documents') category = 'documents';
+        
+        if (category) {
+          let current = header;
+          let foundUl = null;
+          
+          for (let i = 0; i < 15; i++) {
+            if (!current) break;
+            
+            const ul = current.tagName === 'UL' ? current : current.querySelector?.('ul');
+            if (ul && (ul.classList.contains('wp-block-latest-posts') || ul.classList.contains('wp-block-latest-posts__list'))) {
+              foundUl = ul;
+              break;
+            }
+            
+            if (current.nextElementSibling) {
+              current = current.nextElementSibling;
+            } else {
+              current = current.parentElement;
+              if (current && current.nextElementSibling) {
+                current = current.nextElementSibling;
+              } else {
+                current = null;
+              }
+            }
+          }
+          
+          if (foundUl) {
+            const links = Array.from(foundUl.querySelectorAll('a'));
+            links.forEach(a => {
+              const aText = a.textContent.trim();
+              const href = a.href;
+              if (aText && href && aText.length > 5 && !aText.toLowerCase().includes('view more')) {
+                results[category].push({
+                  title: aText,
+                  link: href,
+                  org: aText.split(' ').slice(0, 3).join(' ')
+                });
+              }
             });
           }
         }
@@ -262,14 +317,15 @@ export async function fetchSarkariResultData(force = false) {
     const now = new Date().toISOString();
 
     db.transaction(() => {
-      db.prepare("DELETE FROM scraper_cache WHERE category IN ('latestJobs', 'admitCards', 'results')").run();
+      db.prepare("DELETE FROM scraper_cache WHERE category IN ('latestJobs', 'admitCards', 'results', 'answerKeys', 'admissions', 'documents')").run();
       
       const insert = db.prepare(`
-        INSERT INTO scraper_cache (url_slug, job_id, title, org, category, source_url, scraped_at)
+        INSERT OR IGNORE INTO scraper_cache (url_slug, job_id, title, org, category, source_url, scraped_at)
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `);
 
       const saveItems = (items, categoryName) => {
+        if (!items) return;
         items.forEach(item => {
           const id = stableId('sr-', item.title);
           const slug = slugify(item.title) + '-' + id;
@@ -280,42 +336,29 @@ export async function fetchSarkariResultData(force = false) {
       saveItems(rawData.latestJobs, 'latestJobs');
       saveItems(rawData.admitCards, 'admitCards');
       saveItems(rawData.results, 'results');
+      saveItems(rawData.answerKeys, 'answerKeys');
+      saveItems(rawData.admissions, 'admissions');
+      saveItems(rawData.documents, 'documents');
     })();
-
-    // Read back clean structures
-    const mapper = item => ({
-      id: item.job_id,
-      slug: item.url_slug,
-      title: item.title,
-      link: item.source_url,
-      org: item.org,
-      tag: item.category === 'latestJobs' ? 'New' : (item.category === 'results' ? 'Declared' : 'Available'),
-      tagColor: item.category === 'latestJobs' ? 'purple' : (item.category === 'results' ? 'green' : 'orange'),
-      date: 'Recent'
-    });
 
     return {
       latestJobs: db.prepare("SELECT * FROM scraper_cache WHERE category = 'latestJobs'").all().map(mapper),
       admitCards: db.prepare("SELECT * FROM scraper_cache WHERE category = 'admitCards'").all().map(mapper),
-      results: db.prepare("SELECT * FROM scraper_cache WHERE category = 'results'").all().map(mapper)
+      results: db.prepare("SELECT * FROM scraper_cache WHERE category = 'results'").all().map(mapper),
+      answerKeys: db.prepare("SELECT * FROM scraper_cache WHERE category = 'answerKeys'").all().map(mapper),
+      admissions: db.prepare("SELECT * FROM scraper_cache WHERE category = 'admissions'").all().map(mapper),
+      documents: db.prepare("SELECT * FROM scraper_cache WHERE category = 'documents'").all().map(mapper)
     };
 
   } catch (error) {
     console.error("Error scraping SarkariResult data:", error.message);
-    const mapper = item => ({
-      id: item.job_id,
-      slug: item.url_slug,
-      title: item.title,
-      link: item.source_url,
-      org: item.org,
-      tag: item.category === 'latestJobs' ? 'New' : (item.category === 'results' ? 'Declared' : 'Available'),
-      tagColor: item.category === 'latestJobs' ? 'purple' : (item.category === 'results' ? 'green' : 'orange'),
-      date: 'Recent'
-    });
     return {
       latestJobs: db.prepare("SELECT * FROM scraper_cache WHERE category = 'latestJobs'").all().map(mapper),
       admitCards: db.prepare("SELECT * FROM scraper_cache WHERE category = 'admitCards'").all().map(mapper),
-      results: db.prepare("SELECT * FROM scraper_cache WHERE category = 'results'").all().map(mapper)
+      results: db.prepare("SELECT * FROM scraper_cache WHERE category = 'results'").all().map(mapper),
+      answerKeys: db.prepare("SELECT * FROM scraper_cache WHERE category = 'answerKeys'").all().map(mapper),
+      admissions: db.prepare("SELECT * FROM scraper_cache WHERE category = 'admissions'").all().map(mapper),
+      documents: db.prepare("SELECT * FROM scraper_cache WHERE category = 'documents'").all().map(mapper)
     };
   } finally {
     isScrapingLock = false;
