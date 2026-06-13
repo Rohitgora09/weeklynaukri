@@ -68,18 +68,24 @@ db.exec(`
   );
 `);
 
-// Seed initial administrator and default data if users table is empty
+// Seed an administrator account ONLY when explicit credentials are provided via env.
+// Never seed a hardcoded default password.
 const checkUsers = db.prepare('SELECT COUNT(*) as count FROM users');
 if (checkUsers.get().count === 0) {
-  console.log("Seeding SQLite database with default administrator...");
-  const saltRounds = 10;
-  const hash = bcrypt.hashSync('admin123', saltRounds);
-  const now = new Date().toISOString();
-  
-  db.prepare(`
-    INSERT OR IGNORE INTO users (name, email, password_hash, role, verified, created_at)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `).run('Administrator', 'admin@weeklynaukri.com', hash, 'admin', 1, now);
+  const seedEmail = process.env.SEED_ADMIN_EMAIL;
+  const seedPassword = process.env.SEED_ADMIN_PASSWORD;
+
+  if (seedEmail && seedPassword) {
+    console.log("Seeding SQLite database with administrator from environment...");
+    const hash = bcrypt.hashSync(seedPassword, 10);
+    const now = new Date().toISOString();
+    db.prepare(`
+      INSERT OR IGNORE INTO users (name, email, password_hash, role, verified, created_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).run('Administrator', seedEmail.toLowerCase(), hash, 'admin', 1, now);
+  } else {
+    console.warn("No SEED_ADMIN_EMAIL/SEED_ADMIN_PASSWORD set; skipping admin seed.");
+  }
 }
 
 // Seed initial referrals if empty

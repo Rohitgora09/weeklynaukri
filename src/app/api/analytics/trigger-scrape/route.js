@@ -1,6 +1,15 @@
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
 import { fetchSSCNotices, fetchSarkariResultData } from '../../../../lib/scraper';
 import { verifyToken } from '../../../../lib/auth';
+
+// Constant-time string comparison to avoid timing attacks
+function safeEqual(a, b) {
+  const bufA = Buffer.from(String(a));
+  const bufB = Buffer.from(String(b));
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+}
 
 export async function POST(request) {
   try {
@@ -8,8 +17,8 @@ export async function POST(request) {
     const adminPasswordHeader = request.headers.get('x-admin-password');
     let isAuthorized = false;
 
-    const expectedPassword = process.env.ADMIN_PASSWORD || 'admin123';
-    if (adminPasswordHeader && adminPasswordHeader === expectedPassword) {
+    const expectedPassword = process.env.ADMIN_PASSWORD;
+    if (expectedPassword && adminPasswordHeader && safeEqual(adminPasswordHeader, expectedPassword)) {
       isAuthorized = true;
     }
 
