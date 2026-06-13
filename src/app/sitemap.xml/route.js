@@ -18,7 +18,8 @@ export async function GET() {
       '/contact',
       '/privacy-policy',
       '/about',
-      '/referrals'
+      '/referrals',
+      '/it-govt-jobs'
     ];
 
     // Get all static job identifiers

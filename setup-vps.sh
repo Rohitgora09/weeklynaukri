@@ -87,7 +87,13 @@ NGINX_CONF="/etc/nginx/sites-available/weeklynaukri"
 sudo tee "$NGINX_CONF" > /dev/null << 'EOF'
 server {
     listen 80;
-    server_name weeklynaukri.com www.weeklynaukri.com;
+    server_name www.weeklynaukri.com;
+    return 301 $scheme://weeklynaukri.com$request_uri;
+}
+
+server {
+    listen 80;
+    server_name weeklynaukri.com;
 
     # Reverse proxy all requests to Next.js server on port 3000
     location / {
