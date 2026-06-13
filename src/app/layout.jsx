@@ -31,11 +31,12 @@ export const metadata = {
     'Sarkari Exam',
     'Free Job Alert'
   ],
+  metadataBase: new URL('https://weeklynaukri.com'),
   icons: {
     icon: '/favicon.svg',
   },
   alternates: {
-    canonical: 'https://weeklynaukri.com/',
+    canonical: '/',
   },
   openGraph: {
     type: 'website',
