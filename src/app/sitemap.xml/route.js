@@ -42,7 +42,7 @@ export async function GET() {
     // Get all dynamic scraped jobs from Supabase Cache
     const { data: dynamicJobsData, error: dynamicJobsError } = await supabase
       .from('scraper_cache')
-      .select('url_slug')
+      .select('url_slug, scraped_at')
       .order('scraped_at', { ascending: false });
 
     if (dynamicJobsError) throw dynamicJobsError;
@@ -51,6 +51,7 @@ export async function GET() {
 
     const dynamicJobUrls = dynamicJobs.map(job => ({
       loc: `https://weeklynaukri.com/job/${job.url_slug}`,
+      lastmod: job.scraped_at ? new Date(job.scraped_at).toISOString().split('T')[0] : null,
       changefreq: 'weekly',
       priority: '0.9'
     }));
@@ -60,7 +61,7 @@ export async function GET() {
     const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${allUrls.map(url => `  <url>
-    <loc>${url.loc}</loc>
+    <loc>${url.loc}</loc>${url.lastmod ? `\n    <lastmod>${url.lastmod}</lastmod>` : ''}
     <changefreq>${url.changefreq}</changefreq>
     <priority>${url.priority}</priority>
   </url>`).join('\n')}

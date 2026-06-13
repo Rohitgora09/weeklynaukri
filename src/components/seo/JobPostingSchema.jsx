@@ -38,8 +38,8 @@ function formatIsoDate(dateStr) {
 export default function JobPostingSchema({ job }) {
   if (!job) return null;
 
-  const isDetailedJob = !!job.fee;
-  const pageDescription = isDetailedJob
+  const isJob = job.category === 'latestJobs' || job.category === 'privateJobs';
+  const pageDescription = isJob
     ? `${job.org || ''} ${job.title || ''} 2026 — ${job.vacancies || ''} Posts. Last Date: ${job.dates?.applyEnd || 'Check Notification'}. Apply online, download notification, eligibility, age limit and more at WeeklyNaukri.com.`
     : `${job.title || ''} — Check status, download link, and official notification at WeeklyNaukri.com.`;
 
@@ -47,42 +47,93 @@ export default function JobPostingSchema({ job }) {
   
   const postedDate = formatIsoDate(job.dates?.applyStart) || new Date().toISOString().split('T')[0];
   const expiryDate = formatIsoDate(job.dates?.applyEnd || job.lastDate);
+  const fallbackExpiry = new Date(new Date(postedDate).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const finalExpiry = expiryDate || fallbackExpiry;
 
-  const schema = {
+  // 1. Primary Rich Schema (JobPosting vs NewsArticle)
+  const primarySchema = isJob ? {
     '@context': 'https://schema.org',
-    '@type': isDetailedJob ? 'JobPosting' : 'WebPage',
-    ...(isDetailedJob ? {
-      title: job.title,
-      description: pageDescription,
-      hiringOrganization: {
-        '@type': 'Organization',
-        name: job.org || job.company || 'Government Department',
+    '@type': 'JobPosting',
+    title: job.title,
+    description: pageDescription,
+    hiringOrganization: {
+      '@type': 'Organization',
+      name: job.org || job.company || 'Government Department',
+    },
+    datePosted: postedDate,
+    validThrough: finalExpiry,
+    employmentType: 'FULL_TIME',
+    jobLocation: {
+      '@type': 'Place',
+      address: {
+        '@type': 'PostalAddress',
+        addressCountry: 'IN',
       },
-      datePosted: postedDate,
-      ...(expiryDate ? { validThrough: expiryDate } : {}),
-      employmentType: 'FULL_TIME',
-      jobLocation: {
-        '@type': 'Place',
-        address: {
-          '@type': 'PostalAddress',
-          addressCountry: 'IN',
-        },
+    },
+  } : {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: job.title,
+    datePublished: postedDate,
+    dateModified: postedDate,
+    description: pageDescription,
+    author: {
+      '@type': 'Organization',
+      name: 'WeeklyNaukri.com',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'WeeklyNaukri.com',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://weeklynaukri.com/favicon.svg',
       },
-    } : {
-      name: job.title,
-      description: pageDescription,
-      url: pageUrl,
-      publisher: {
-        '@type': 'Organization',
-        name: 'WeeklyNaukri.com',
+    },
+  };
+
+  // 2. BreadcrumbList Trail Schema
+  let categoryName = 'Govt Jobs';
+  if (job.category === 'privateJobs') categoryName = 'Private Jobs';
+  else if (job.category === 'results') categoryName = 'Sarkari Results';
+  else if (job.category === 'admitCards') categoryName = 'Admit Cards';
+  else if (job.category === 'answerKeys') categoryName = 'Answer Keys';
+  else if (job.category === 'notices') categoryName = 'Notices';
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://weeklynaukri.com',
       },
-    }),
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: categoryName,
+        item: 'https://weeklynaukri.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: job.title,
+        item: pageUrl,
+      },
+    ],
   };
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(primarySchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+    </>
   );
 }
