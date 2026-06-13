@@ -218,12 +218,12 @@ export default function HomeClient({ initialJobs, initialNotices }) {
           </div>
           
           <h1 className="text-4xl md:text-6xl font-extrabold text-blue-950 leading-tight tracking-tight mb-6">
-            Your Gateway to Indian <br />
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Government & Private Jobs</span>
+            Find the Latest <br />
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Government Jobs & Private Sectors</span>
           </h1>
           
           <p className="text-gray-600 text-base md:text-lg mb-8 max-w-2xl mx-auto">
-            Get instant updates on latest government job openings, sarkari results, admit cards, answer keys, and exam syllabus from all sectors.
+            Get instant updates on the latest govt jobs, sarkari results, admit cards, answer keys, and exam syllabus from all sectors.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

@@ -1,5 +1,6 @@
 import '../index.css';
 import { Inter } from 'next/font/google';
+import Script from 'next/script';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -14,8 +15,8 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: 'Sarkari Result | Weekly Naukri | Latest Govt & Private Jobs 2026',
-  description: "WeeklyNaukri.com (Weekly Naukri) is India's premier Sarkari Result portal. Get the latest updates on Sarkari Naukri, Govt Jobs, Private Jobs, Results, Admit Cards, and Answer Keys.",
+  title: 'Government Jobs: Latest Govt Jobs & Sarkari Result 2026 - Weekly Naukri',
+  description: "WeeklyNaukri.com (Weekly Naukri) is India's leading portal for active Government Jobs, technical IT govt vacancies, and Sarkari Results. Find latest govt job openings.",
   keywords: [
     'Sarkari Result',
     'Sarkari Naukri',
@@ -56,17 +57,18 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${inter.variable}`}>
       <head>
         {/* Google Analytics (gtag.js) */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-N7B0CBR4R6" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-N7B0CBR4R6');
-            `,
-          }}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-N7B0CBR4R6"
+          strategy="afterInteractive"
         />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-N7B0CBR4R6');
+          `}
+        </Script>
         {/* WebSite and Organization JSON-LD Schema */}
         <script
           type="application/ld+json"
