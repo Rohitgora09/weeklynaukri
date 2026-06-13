@@ -1,4 +1,4 @@
-import { fetchSSCNotices, fetchSarkariResultData } from './scraper.js';
+import { fetchSSCNotices, fetchSarkariResultData, fetchPrivateJobs } from './scraper.js';
 
 const WARM_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
@@ -8,6 +8,7 @@ async function runScraperWorker() {
     const start = Date.now();
     await fetchSSCNotices(true);
     await fetchSarkariResultData(true);
+    await fetchPrivateJobs(true);
     console.log(`[${new Date().toISOString()}] Scraper Worker: Completed scraping cycle in ${Math.round((Date.now() - start) / 1000)}s`);
   } catch (err) {
     console.error(`[${new Date().toISOString()}] Scraper Worker: Cycle failed:`, err.message);

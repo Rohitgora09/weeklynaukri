@@ -50,7 +50,11 @@ export default function HomeClient({ initialJobs, initialNotices }) {
   const [liveSSCNotices, setLiveSSCNotices] = useState(initialNotices || []);
   
   // Custom mock data for admissions/documents/answer keys/private sectors (mapped to correct global job data IDs to avoid 404s)
-  const [privateJobs, setPrivateJobs] = useState(fallbackPrivateJobs);
+  const [privateJobs, setPrivateJobs] = useState(
+    initialJobs.privateJobs && initialJobs.privateJobs.length > 0 
+      ? initialJobs.privateJobs 
+      : fallbackPrivateJobs
+  );
   
   const [answerKeys, setAnswerKeys] = useState(
     initialJobs.answerKeys && initialJobs.answerKeys.length > 0 

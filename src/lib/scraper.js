@@ -431,3 +431,150 @@ export async function fetchSarkariJobDetails(url) {
     return null;
   }
 }
+
+// 4. Fetch Private Sector IT/Software Jobs from Freshersworld
+export async function fetchPrivateJobs(force = false) {
+  const CACHE_DURATION_MS = 15 * 60 * 1000; // 15 minutes cache
+  
+  const mapper = item => {
+    let details = {};
+    if (item.full_details_json) {
+      try { details = JSON.parse(item.full_details_json); } catch (e) {}
+    }
+    return {
+      id: item.job_id,
+      slug: item.url_slug,
+      title: item.title,
+      org: item.org,
+      company: item.org,
+      location: details.location || 'Bangalore',
+      salary: details.salary || '₹5-8 LPA',
+      tag: 'Hot',
+      tagColor: 'green',
+      link: item.source_url,
+      date: 'Recent'
+    };
+  };
+
+  if (!force) {
+    const cached = db.prepare(`
+      SELECT * FROM scraper_cache 
+      WHERE category = 'privateJobs' 
+      ORDER BY scraped_at DESC
+    `).all();
+
+    if (cached.length > 0) {
+      const newestTime = new Date(cached[0].scraped_at).getTime();
+      if (Date.now() - newestTime < CACHE_DURATION_MS) {
+        console.log("Returning SQLite cached private jobs");
+        return cached.map(mapper);
+      }
+    }
+  }
+
+  if (isScrapingLock) {
+    console.log("Scraper lock active, skipping private jobs live fetch");
+    return db.prepare("SELECT * FROM scraper_cache WHERE category = 'privateJobs' ORDER BY scraped_at DESC").all().map(mapper);
+  }
+
+  isScrapingLock = true;
+  let browser;
+  try {
+    browser = await getBrowser();
+    const page = await browser.newPage();
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    
+    console.log("Navigating to Freshersworld IT jobs...");
+    await page.goto('https://www.freshersworld.com/jobs/jobsearch/it-software-jobs', { waitUntil: 'domcontentloaded', timeout: 60000 });
+    
+    // Wait slightly to make sure content loads
+    await new Promise(resolve => setTimeout(resolve, 4000));
+
+    const rawJobs = await page.evaluate(() => {
+      const results = [];
+      const cards = Array.from(document.querySelectorAll('.job-container'));
+      cards.forEach(card => {
+        const titleEl = card.querySelector('.seo_title');
+        const companyEl = card.querySelector('.company-name');
+        const locEl = card.querySelector('.job-location');
+        const expEl = card.querySelector('.experience');
+        const url = card.getAttribute('job_display_url');
+        
+        if (titleEl && companyEl && url) {
+          let titleText = titleEl.textContent.trim();
+          titleText = titleText.replace(/Jobs Opening in.*/i, '').replace(/Job Opening.*/i, '').trim();
+          
+          const companyText = companyEl.textContent.trim();
+          const locationText = locEl ? locEl.textContent.trim().replace(/\s*\.\.\.\s*$/, '') : 'Bangalore';
+          const experienceText = expEl ? expEl.textContent.trim() : '0-2 Years';
+          
+          results.push({
+            title: titleText,
+            company: companyText,
+            location: locationText,
+            experience: experienceText,
+            url: url
+          });
+        }
+      });
+      return results.slice(0, 15);
+    });
+
+    await page.close();
+
+    console.log(`Scraped ${rawJobs.length} private jobs. Saving to SQLite...`);
+    const now = new Date().toISOString();
+
+    const getMockSalary = (title) => {
+      const t = title.toLowerCase();
+      if (t.includes('senior') || t.includes('lead') || t.includes('architect')) {
+        return `₹${8 + Math.floor(Math.random()*4)} - ₹${14 + Math.floor(Math.random()*6)} LPA`;
+      }
+      if (t.includes('qa') || t.includes('test') || t.includes('tester') || t.includes('support')) {
+        return `₹${3 + Math.floor(Math.random()*2)} - ₹${5 + Math.floor(Math.random()*3)} LPA`;
+      }
+      if (t.includes('designer') || t.includes('ui') || t.includes('ux') || t.includes('graphics')) {
+        return `₹${4 + Math.floor(Math.random()*2)} - ₹${7 + Math.floor(Math.random()*3)} LPA`;
+      }
+      return `₹${4 + Math.floor(Math.random()*3)} - ₹${8 + Math.floor(Math.random()*4)} LPA`;
+    };
+
+    db.transaction(() => {
+      db.prepare("DELETE FROM scraper_cache WHERE category = 'privateJobs'").run();
+      
+      const insert = db.prepare(`
+        INSERT OR IGNORE INTO scraper_cache (url_slug, job_id, title, org, category, source_url, full_details_json, scraped_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+
+      rawJobs.forEach(job => {
+        const id = stableId('pvt-', job.title + '-' + job.company);
+        const slug = slugify(job.title) + '-' + id;
+        const salary = getMockSalary(job.title);
+        
+        const details = {
+          location: job.location,
+          salary: salary,
+          eligibility: `${job.experience}, B.Tech/B.E/MCA/B.Sc/BCA or equivalent degree.`,
+          dates: { applyStart: 'Immediately', applyEnd: 'Within 30 Days', examDate: 'N/A' },
+          fee: { general: '₹0', scSt: '₹0', women: '₹0' },
+          ageLimit: { min: '18 Years', max: 'No limit', relaxation: 'N/A' },
+          vacancies: 'Multiple',
+          links: { apply: job.url, notification: job.url, official: job.url }
+        };
+
+        insert.run(slug, id, job.title, job.company, 'privateJobs', job.url, JSON.stringify(details), now);
+      });
+    })();
+
+    const updated = db.prepare("SELECT * FROM scraper_cache WHERE category = 'privateJobs' ORDER BY scraped_at DESC").all();
+    return updated.map(mapper);
+
+  } catch (error) {
+    console.error("Error scraping private jobs:", error.message);
+    const stale = db.prepare("SELECT * FROM scraper_cache WHERE category = 'privateJobs' ORDER BY scraped_at DESC").all();
+    return stale.map(mapper);
+  } finally {
+    isScrapingLock = false;
+  }
+}

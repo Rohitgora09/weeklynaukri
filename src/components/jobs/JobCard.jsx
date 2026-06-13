@@ -19,24 +19,46 @@ export default function JobCard({
   const targetHref = slug ? `/job/${slug}` : `/job/${id}`;
 
   if (variant === 'private') {
+    const firstLetter = company ? company.charAt(0).toUpperCase() : 'J';
+    const colors = [
+      'from-blue-500 to-indigo-600',
+      'from-purple-500 to-pink-600',
+      'from-emerald-500 to-teal-600',
+      'from-amber-500 to-orange-600',
+      'from-rose-500 to-red-600'
+    ];
+    const colorIndex = firstLetter.charCodeAt(0) % colors.length;
+    const gradient = colors[colorIndex];
+
     return (
-      <Link href={targetHref} className="flex items-center justify-between py-3 group cursor-pointer hover:bg-gray-50 -mx-4 px-4 rounded-xl transition-colors w-full">
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors truncate">
-            {title}
-          </p>
-          <div className="flex items-center gap-3 mt-0.5">
-            <span className="text-xs text-gray-500 flex items-center gap-1">
-              <Building2 className="w-3 h-3" /> {company}
-            </span>
-            <span className="text-xs text-gray-500 flex items-center gap-1">
-              <MapPin className="w-3 h-3" /> {location}
-            </span>
+      <Link href={targetHref} className="flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-2xl border border-gray-150 hover:border-blue-200 bg-white hover:bg-blue-50/5 hover:shadow-lg hover:shadow-blue-900/[0.02] transition-all duration-300 gap-4 group cursor-pointer w-full mb-3 last:mb-0">
+        <div className="flex items-start gap-4 flex-1 min-w-0">
+          <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${gradient} text-white flex items-center justify-center font-extrabold text-lg shadow-md shrink-0`}>
+            {firstLetter}
+          </div>
+          <div className="flex-1 min-w-0">
+            <h4 className="text-base font-bold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+              {title}
+            </h4>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2 text-xs text-gray-500">
+              <span className="flex items-center gap-1.5 font-semibold text-gray-750">
+                <Building2 className="w-3.5 h-3.5 text-gray-400" /> {company}
+              </span>
+              <span className="w-1 h-1 bg-gray-300 rounded-full hidden sm:inline"></span>
+              <span className="flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-gray-400" /> {location}
+              </span>
+            </div>
           </div>
         </div>
-        <span className="text-[11px] font-semibold text-blue-700 ml-3 whitespace-nowrap">
-          {salary}
-        </span>
+        <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center shrink-0 border-t sm:border-t-0 border-gray-50 pt-3 sm:pt-0 gap-2">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-wide">
+            {salary}
+          </span>
+          <span className="text-[10px] text-gray-400 font-medium">
+            No Exam Required
+          </span>
+        </div>
       </Link>
     );
   }

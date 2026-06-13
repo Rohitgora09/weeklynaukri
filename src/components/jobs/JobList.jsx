@@ -43,7 +43,7 @@ export default function JobList({
             ))}
           </div>
         ) : (
-          <div className="space-y-0 divide-y divide-gray-100">
+          <div className={variant === 'private' ? "space-y-1" : "space-y-0 divide-y divide-gray-100"}>
             {displayedItems.map((item, idx) => (
               <JobCard
                 key={item.id || idx}
