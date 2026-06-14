@@ -598,6 +598,29 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             </div>
           </div>
         </LazySection>
+
+        {/* SEO Text Block / Info Section for Search Engines & Users */}
+        <div className="mt-16 border-t border-gray-100 pt-16 text-left max-w-4xl mx-auto">
+          <h2 className="text-2xl font-bold text-blue-950 mb-6">WeeklyNaukri - India's Premier Sarkari Result & Latest Govt Jobs Portal</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-gray-600 leading-relaxed">
+            <div>
+              <p className="mb-4">
+                Welcome to <strong>WeeklyNaukri.com</strong>, your ultimate destination for all government exam updates, private sector jobs, results, admit cards, and answer keys. We specialize in aggregating active notifications for <strong>Sarkari Naukri</strong> (government jobs) and major IT/private jobs across India, making it easier for aspirants to find their dream careers.
+              </p>
+              <p>
+                Our team crawls official recruitment portals of central and state bodies including the Staff Selection Commission (SSC), Union Public Service Commission (UPSC), Railway Recruitment Boards (RRB), Institute of Banking Personnel Selection (IBPS), Defence recruitment, and State PSCs. Every listing is thoroughly verified to provide accurate details on eligibility criteria, vacancies, important dates, and direct apply links.
+              </p>
+            </div>
+            <div>
+              <p className="mb-4">
+                Looking for the latest <strong>Sarkari Result</strong>? We provide instantaneous updates on examination results, scorecards, merit lists, and cut-off marks as soon as they are declared. You can also download official <strong>admit cards</strong> and hall tickets for upcoming competitive examinations, ensuring you never miss an exam deadline.
+              </p>
+              <p>
+                In addition to government jobs, WeeklyNaukri offers a unique referral portal for top IT and corporate vacancies, helping engineering and management graduates land private sector jobs. Explore our free mock test series and comprehensive exam calendars to stay ahead in your preparation journey.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
       <Footer onFooterSearch={handleFooterSearch} />

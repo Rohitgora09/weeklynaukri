@@ -43,8 +43,10 @@ export default function Footer({ onFooterSearch }) {
               <li><button onClick={() => handleLinkClick('All Categories', 'Syllabus')} className="hover:text-black cursor-pointer transition-colors bg-transparent border-none p-0 text-sm text-gray-600 text-left">Syllabus</button></li>
               <li><button onClick={() => handleLinkClick('All Categories', 'Previous Paper')} className="hover:text-black cursor-pointer transition-colors bg-transparent border-none p-0 text-sm text-gray-600 text-left">Previous Papers</button></li>
               <li><button onClick={() => handleLinkClick('All Categories', 'Mock Test')} className="hover:text-black cursor-pointer transition-colors bg-transparent border-none p-0 text-sm text-gray-600 text-left">Mock Tests</button></li>
-              <li><button onClick={() => handleLinkClick('Admit Cards', '')} className="hover:text-black cursor-pointer transition-colors bg-transparent border-none p-0 text-sm text-gray-600 text-left">Admit Cards</button></li>
-              <li><button onClick={() => handleLinkClick('Answer Keys', '')} className="hover:text-black cursor-pointer transition-colors bg-transparent border-none p-0 text-sm text-gray-600 text-left">Answer Keys</button></li>
+              <li><Link href="/admit-cards" className="hover:text-black cursor-pointer transition-colors">Admit Cards</Link></li>
+              <li><Link href="/answer-keys" className="hover:text-black cursor-pointer transition-colors">Answer Keys</Link></li>
+              <li><Link href="/results" className="hover:text-black cursor-pointer transition-colors">Sarkari Results</Link></li>
+              <li><Link href="/latest-jobs" className="hover:text-black cursor-pointer transition-colors">Latest Govt Jobs</Link></li>
               <li><Link href="/remote-jobs-guide" className="hover:text-black cursor-pointer transition-colors">Remote Jobs Guide</Link></li>
             </ul>
           </nav>

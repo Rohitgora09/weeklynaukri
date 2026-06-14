@@ -39,12 +39,12 @@ export default function Navbar({ onCategorySelect }) {
   };
 
   const navItems = [
-    { label: 'Govt Jobs', value: 'Govt Jobs' },
+    { label: 'Govt Jobs', path: '/latest-jobs' },
     { label: 'Govt Tech Jobs', path: '/it-govt-jobs' },
     { label: 'Test Series', path: '/test-series' },
     { label: 'Private Jobs', value: 'Private Jobs' },
-    { label: 'Results', value: 'Results' },
-    { label: 'Admit Cards', value: 'Admit Cards' },
+    { label: 'Results', path: '/results' },
+    { label: 'Admit Cards', path: '/admit-cards' },
     { label: 'Referrals', path: '/referrals' },
   ];
 

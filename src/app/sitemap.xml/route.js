@@ -23,7 +23,11 @@ export async function GET() {
       '/it-govt-jobs',
       '/test-series',
       '/faq',
-      '/remote-jobs-guide'
+      '/remote-jobs-guide',
+      '/results',
+      '/admit-cards',
+      '/answer-keys',
+      '/latest-jobs'
     ];
 
     const staticUrls = staticPages.map(page => ({
