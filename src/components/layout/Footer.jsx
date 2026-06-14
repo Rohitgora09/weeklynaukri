@@ -54,8 +54,8 @@ export default function Footer({ onFooterSearch }) {
           <nav aria-label="Social links and contact">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Connect</h3>
             <ul className="space-y-2.5 text-sm text-gray-600">
-              <li><a href="https://t.me/weeklynaukri" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">Telegram</a></li>
-              <li><a href="https://wa.me/919999999999" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">WhatsApp</a></li>
+              <li><a href="https://t.me/weekly_naukri" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">Telegram</a></li>
+              <li><a href="https://chat.whatsapp.com/GeHRdlojdjU7hurA2QCIT7" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">WhatsApp</a></li>
               <li><a href="https://youtube.com/@weeklynaukri" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">YouTube</a></li>
               <li><a href="https://instagram.com/weeklynaukri" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">Instagram</a></li>
               <li><Link href="/contact" className="hover:text-black cursor-pointer transition-colors">Contact Us</Link></li>

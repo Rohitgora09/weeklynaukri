@@ -429,6 +429,36 @@ export default function HomeClient({ initialJobs, initialNotices }) {
         </div>
       </section>
 
+      {/* Community Alert Bar */}
+      <div className="max-w-7xl mx-auto px-6 mt-8 mb-4 w-full">
+        <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 border border-blue-100 rounded-2xl px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left shadow-sm">
+          <div className="flex items-center gap-3">
+            <span className="text-xl shrink-0" role="img" aria-label="megaphone">📢</span>
+            <p className="text-sm text-gray-700 font-semibold leading-normal">
+              Join our channels for instant Sarkari Result &amp; Job Alerts!
+            </p>
+          </div>
+          <div className="flex items-center gap-3 shrink-0 w-full md:w-auto justify-center">
+            <a
+              href="https://chat.whatsapp.com/GeHRdlojdjU7hurA2QCIT7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-5 py-2.5 rounded-full transition-all flex items-center gap-1.5 shadow-sm hover:-translate-y-0.5 cursor-pointer"
+            >
+              WhatsApp Group
+            </a>
+            <a
+              href="https://t.me/weekly_naukri"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-5 py-2.5 rounded-full transition-all flex items-center gap-1.5 shadow-sm hover:-translate-y-0.5 cursor-pointer"
+            >
+              Telegram Channel
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* Job Search Core Section */}
       <section id="search-section" aria-label="Job search and listings" className="max-w-7xl mx-auto px-6 py-12 w-full flex-1">
         {/* Search Bar Input */}

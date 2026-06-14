@@ -453,6 +453,32 @@ export default async function JobDetailsPage({ params }) {
           </div>
         )}
 
+        {/* Community Alerts Widget */}
+        <div className="mt-8 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 border border-blue-100 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-center sm:text-left">
+            <h4 className="font-bold text-gray-800 text-sm flex items-center gap-1.5 justify-center sm:justify-start">📢 Never Miss an Update!</h4>
+            <p className="text-xs text-gray-500 mt-1">Get the next Sarkari Result &amp; Job Alert directly on your phone.</p>
+          </div>
+          <div className="flex gap-3 shrink-0 w-full sm:w-auto justify-center">
+            <a
+              href="https://chat.whatsapp.com/GeHRdlojdjU7hurA2QCIT7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
+            >
+              Join WhatsApp
+            </a>
+            <a
+              href="https://t.me/weekly_naukri"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
+            >
+              Join Telegram
+            </a>
+          </div>
+        </div>
+
         {/* Recent Government Job Openings Widget (SEO Internal Linking to eliminate orphan pages) */}
         {recentJobs.length > 0 && (
           <div className="mt-12 border border-gray-200 bg-gray-50/30 rounded-2xl p-6 md:p-8">

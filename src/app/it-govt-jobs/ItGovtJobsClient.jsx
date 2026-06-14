@@ -199,6 +199,31 @@ export default function ItGovtJobsClient({ initialJobs, initialNotices }) {
               <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
             </Card>
 
+            <Card className="p-6 border border-gray-150 rounded-3xl bg-blue-50/10 shadow-sm">
+              <h3 className="font-bold text-gray-800 text-sm mb-2 flex items-center gap-2">📢 Instant Tech Alerts</h3>
+              <p className="text-xs text-gray-600 mb-5 leading-relaxed">
+                Join our community channels to get immediate notifications on software and technical govt vacancies.
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <a
+                  href="https://chat.whatsapp.com/GeHRdlojdjU7hurA2QCIT7"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2.5 rounded-xl text-center shadow-sm block transition-all"
+                >
+                  WhatsApp
+                </a>
+                <a
+                  href="https://t.me/weekly_naukri"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold py-2.5 rounded-xl text-center shadow-sm block transition-all"
+                >
+                  Telegram
+                </a>
+              </div>
+            </Card>
+
             <Card className="p-6 border border-gray-100 shadow-sm rounded-3xl bg-amber-50/20">
               <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-amber-600" /> Key Tech Organizations
