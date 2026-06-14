@@ -76,9 +76,32 @@ async function getJobData(slug) {
     }
   }
 
+  // For private jobs, do not attempt to deep-scrape details on-demand
+  if (cached.category === 'privateJobs') {
+    return {
+      isStatic: false,
+      job: {
+        id: cached.job_id,
+        slug: cached.url_slug,
+        title: cached.title,
+        org: cached.org || 'WeeklyNaukri.Com',
+        status: 'Available',
+        date: 'Recent',
+        source_url: cached.source_url,
+        category: cached.category,
+        links: { apply: cached.source_url, notification: cached.source_url, official: cached.source_url }
+      }
+    };
+  }
+
   // If details aren't deep-cached yet, fetch them on-demand
-  console.log(`Deep scraping details on-demand for url: ${cached.source_url}`);
-  const details = await fetchSarkariJobDetails(cached.source_url);
+  let details = null;
+  try {
+    console.log(`Deep scraping details on-demand for url: ${cached.source_url}`);
+    details = await fetchSarkariJobDetails(cached.source_url);
+  } catch (err) {
+    console.error("Error deep scraping details on-demand:", err.message);
+  }
   
   if (!details) {
     // Return summary only if scraping fails

@@ -235,7 +235,7 @@ export async function fetchSarkariResultData(force = false) {
         const details = typeof item.full_details_json === 'string'
           ? JSON.parse(item.full_details_json)
           : item.full_details_json;
-        if (details.dates) {
+        if (details && details.dates) {
           dates = details.dates;
         }
       } catch (e) {
@@ -633,9 +633,12 @@ export async function fetchPrivateJobs(force = false) {
     let details = {};
     if (item.full_details_json) {
       try {
-        details = typeof item.full_details_json === 'string'
+        const parsed = typeof item.full_details_json === 'string'
           ? JSON.parse(item.full_details_json)
           : item.full_details_json;
+        if (parsed) {
+          details = parsed;
+        }
       } catch (e) {}
     }
     return {
