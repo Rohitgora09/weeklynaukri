@@ -15,22 +15,8 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: 'Govt Jobs: Latest Sarkari Result 2026 - Weekly Naukri',
+  title: 'Govt Jobs: Latest Sarkari Result 2026 — Weekly Naukri',
   description: "WeeklyNaukri.com is India's leading portal for active Government Jobs, IT vacancies, and Sarkari Results. Find latest openings.",
-  keywords: [
-    'Sarkari Result',
-    'Sarkari Naukri',
-    'Naukri Result',
-    'Weekly Naukri',
-    'WeeklyNaukri',
-    'Government Jobs',
-    'Latest Govt Jobs',
-    'Private Jobs',
-    'Admit Card',
-    'Answer Key',
-    'Sarkari Exam',
-    'Free Job Alert'
-  ],
   metadataBase: new URL('https://weeklynaukri.com'),
   icons: {
     icon: '/favicon.svg',
@@ -43,7 +29,7 @@ export const metadata = {
     locale: 'en_IN',
     url: 'https://weeklynaukri.com/',
     siteName: 'WeeklyNaukri.com',
-    title: 'Sarkari Result | Weekly Naukri | Latest Govt & Private Jobs 2026',
+    title: 'Govt Jobs: Latest Sarkari Result 2026 — Weekly Naukri',
     description: "WeeklyNaukri.com is India's leading portal for active Government Jobs, IT vacancies, and Sarkari Results. Find latest openings.",
     images: [
       {
@@ -56,7 +42,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Sarkari Result | Weekly Naukri | Latest Govt & Private Jobs 2026',
+    title: 'Govt Jobs: Latest Sarkari Result 2026 — Weekly Naukri',
     description: "WeeklyNaukri.com is India's leading portal for active Government Jobs, IT vacancies, and Sarkari Results. Find latest openings.",
     images: ['/og-image.png'],
   }
