@@ -548,5 +548,139 @@ export const blogPosts = [
       <h3>Which Path is Right for You?</h3>
       <p>Choose <strong>Private IT</strong> if you are motivated by rapid salary escalation, cutting-edge corporate stacks, and flexible work styles (like remote work). Choose <strong>Government IT</strong> if you prioritize lifetime job security, fixed hours, retirement pensions, and serving national interests.</p>
     `
+  },
+  {
+    id: 'up-police-constable-2026-prep-guide',
+    title: 'UP Police Constable Exam 2026: Complete Syllabus, Pattern & Prep Guide',
+    slug: 'up-police-constable-2026-prep-guide',
+    excerpt: 'Looking to clear the UP Police Constable 2026 exam? Get the complete subject-wise syllabus, CBT exam pattern, physical eligibility requirements, and expert study tips here.',
+    publishedDate: '14 Jun 2026',
+    author: 'WeeklyNaukri Editorial',
+    readTime: '8 min read',
+    tags: ['UP Police', 'Sarkari Job', 'Study Guides'],
+    image: 'https://images.unsplash.com/photo-1599740831146-80f835230f4a?w=800&auto=format&fit=crop&q=60',
+    content: `
+      <p>The Uttar Pradesh Police Recruitment and Promotion Board (UPPRPB) conducts one of the largest state-level examinations for the post of Police Constable. With thousands of vacancies announced, millions of candidates apply to join the ranks of the UP Police force, making it highly competitive.</p>
+      
+      <p>To qualify for this premium state job, you must understand the complete selection stages, negative marking patterns, and physical test benchmarks. In this comprehensive guide, we detail the subject-wise syllabus, exam pattern, physical eligibility standards, and proven study tips to clear the UP Police Constable 2026 exam.</p>
+
+      <h3>1. Selection Stages & Exam Pattern</h3>
+      <p>The selection process for UP Police Constable consists of three key stages:</p>
+      <ol>
+        <li><strong>Written Examination (CBT/OMR):</strong> Object-type exam carrying 300 marks.</li>
+        <li><strong>Document Verification & Physical Standard Test (PST):</strong> Fulfilling biometric height, chest, and weight requirements.</li>
+        <li><strong>Physical Efficiency Test (PET):</strong> Running test to qualify under the specified time limit.</li>
+      </ol>
+
+      <h4>Written Exam Pattern</h4>
+      <p>The written examination has 150 questions in total, with each question carrying 2 marks. There is a negative marking of <strong>0.5 marks</strong> for each wrong answer.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Questions</th>
+            <th>Marks</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>General Knowledge (GK)</td>
+            <td>38</td>
+            <td>76</td>
+            <td rowspan="4" style="vertical-align: middle; text-align: center; font-weight: bold;">2 Hours (120 Mins)</td>
+          </tr>
+          <tr>
+            <td>General Hindi</td>
+            <td>37</td>
+            <td>74</td>
+          </tr>
+          <tr>
+            <td>Numerical & Mental Ability (Math)</td>
+            <td>38</td>
+            <td>76</td>
+          </tr>
+          <tr>
+            <td>Mental Aptitude, IQ & Reasoning Ability</td>
+            <td>37</td>
+            <td>74</td>
+          </tr>
+          <tr style="font-weight: bold; background-color: #f3f4f6;">
+            <td>Total</td>
+            <td>150</td>
+            <td>300</td>
+            <td>120 Mins</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>2. Detailed Subject-wise Syllabus</h3>
+      
+      <h4>A. General Knowledge</h4>
+      <p>Covers History of India, Indian Constitution, Economy, Agriculture, Science, UP State GK (culture, social customs, revenue, police administration), Environmental Studies, and Current Affairs.</p>
+
+      <h4>B. General Hindi</h4>
+      <p>Tests basic vocabulary, grammar rules, antonyms, synonyms, sentence corrections, idioms, and reading comprehension. General Hindi is highly scoring and critical for the merit cutoff.</p>
+
+      <h4>C. Numerical & Mental Ability</h4>
+      <p>Arithmetic topics such as Number System, Simplification, Decimals, Fractions, Percentage, Profit & Loss, Discount, Simple and Compound Interest, Partnership, Time & Work, and Mensuration.</p>
+
+      <h4>D. Mental Aptitude, IQ & Reasoning Ability</h4>
+      <p>Covers analogical reasoning, coding-decoding, blood relations, visual memory, spatial orientation, mental toughness, public interest, public order, and communal harmony.</p>
+
+      <h3>3. Physical Standard Test (PST) Requirements</h3>
+      <p>Candidates must satisfy the following physical standard parameters to advance to the final running test:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Height (Min)</th>
+            <th>Chest (Min)</th>
+            <th>Weight (Min)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Male (General/OBC/SC)</td>
+            <td>168 cm</td>
+            <td>79 cm (unexpanded) / 84 cm (expanded)</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>Male (ST)</td>
+            <td>160 cm</td>
+            <td>77 cm (unexpanded) / 82 cm (expanded)</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>Female (General/OBC/SC)</td>
+            <td>152 cm</td>
+            <td>—</td>
+            <td>40 kg</td>
+          </tr>
+          <tr>
+            <td>Female (ST)</td>
+            <td>147 cm</td>
+            <td>—</td>
+            <td>40 kg</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4. Physical Efficiency Test (PET) Benchmarks</h3>
+      <p>The running test is qualifying in nature, but failing to finish in the given time leads to immediate rejection:</p>
+      <ul>
+        <li><strong>Male Candidates:</strong> 4.8 km run to be completed in under <strong>25 minutes</strong>.</li>
+        <li><strong>Female Candidates:</strong> 2.4 km run to be completed in under <strong>14 minutes</strong>.</li>
+      </ul>
+
+      <h3>5. Proven Preparation Tips to Clear the Cutoff</h3>
+      <ul>
+        <li><strong>Master General Hindi:</strong> Solve at least 30 Hindi grammar questions daily. Getting 33+ correct answers here is common among toppers.</li>
+        <li><strong>Focus on UP State GK:</strong> Read dedicated Uttar Pradesh GK capsules covering geographical boundaries, state police structures, and dynamic schemes.</li>
+        <li><strong>Monitor Active UP Job Notifications:</strong> Check for upcoming police vacancy tables, hall ticket schedules, and results updates on the official **[UP Government Jobs 2026 Hub](https://weeklynaukri.com/up-govt-jobs-2026)**.</li>
+        <li><strong>Solve Mock Exams Regularly:</strong> Evaluate your speed under strict time limits. You can check out active job alerts at **[Latest Govt Jobs](https://weeklynaukri.com/latest-jobs)** and check your scorecard on our **[Sarkari Results](https://weeklynaukri.com/results)** or download exam hall tickets via **[Admit Cards](https://weeklynaukri.com/admit-cards)**.</li>
+      </ul>
+    `
   }
 ];
