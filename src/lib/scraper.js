@@ -437,7 +437,7 @@ export async function fetchSarkariResultData(force = false) {
     prepareRows(rawData.admissions, 'admissions');
     prepareRows(rawData.documents, 'documents');
 
-    // Deduplicate by BOTH url_slug and job_id to prevent PK constraint errors
+    // Deduplicate by both url_slug and job_id within the batch
     const uniqueRows = [];
     const seenSlugs = new Set();
     const seenIds = new Set();
@@ -449,24 +449,23 @@ export async function fetchSarkariResultData(force = false) {
       }
     });
 
-    // 2. Bulk upsert freshly scraped rows — conflict on job_id (the actual PK)
-    if (uniqueRows.length > 0) {
-      const { error: upsertError } = await supabase
-        .from('scraper_cache')
-        .upsert(uniqueRows, { onConflict: 'job_id' });
-      if (upsertError) throw upsertError;
-    }
-
-    // 3. Delete stale rows only for categories that scraped successfully in this run
+    // 2. Delete old rows for active categories, then insert fresh rows
+    //    (delete-then-insert avoids all upsert constraint issues)
     if (activeCategories.length > 0) {
-      const { error: pruneError } = await supabase
+      const { error: deleteError } = await supabase
         .from('scraper_cache')
         .delete()
-        .in('category', activeCategories)
-        .lt('scraped_at', runStartedAt);
-      if (pruneError) {
-        console.error("Error pruning stale cache:", pruneError.message);
+        .in('category', activeCategories);
+      if (deleteError) {
+        console.error("Error deleting old cache rows:", deleteError.message);
       }
+    }
+
+    if (uniqueRows.length > 0) {
+      const { error: insertError } = await supabase
+        .from('scraper_cache')
+        .insert(uniqueRows);
+      if (insertError) throw insertError;
     }
 
     const getGroup = (category) => uniqueRows.filter(r => r.category === category).map(mapper);
@@ -812,10 +811,15 @@ export async function fetchPrivateJobs(force = false) {
     });
 
     if (uniqueRows.length > 0) {
-      // Use upsert on job_id (PK) instead of insert to handle hash collisions gracefully
+      // Delete old private jobs first, then insert fresh batch
+      await supabase
+        .from('scraper_cache')
+        .delete()
+        .eq('category', 'privateJobs');
+
       const { error: insertError } = await supabase
         .from('scraper_cache')
-        .upsert(uniqueRows, { onConflict: 'job_id' });
+        .insert(uniqueRows);
       if (insertError) throw insertError;
     }
 
