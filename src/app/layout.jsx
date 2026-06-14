@@ -45,11 +45,20 @@ export const metadata = {
     siteName: 'WeeklyNaukri.com',
     title: 'Sarkari Result | Weekly Naukri | Latest Govt & Private Jobs 2026',
     description: "WeeklyNaukri.com is India's leading portal for active Government Jobs, IT vacancies, and Sarkari Results. Find latest openings.",
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Weekly Naukri - Latest Govt & Private Jobs 2026',
+      }
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Sarkari Result | Weekly Naukri | Latest Govt & Private Jobs 2026',
     description: "WeeklyNaukri.com is India's leading portal for active Government Jobs, IT vacancies, and Sarkari Results. Find latest openings.",
+    images: ['/og-image.png'],
   }
 };
 
