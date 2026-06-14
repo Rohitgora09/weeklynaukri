@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Polyfill for WebSocket on older Node.js versions (Node < 22)
 // Since we don't use Supabase Realtime subscriptions, we can safely mock the constructor.
@@ -11,7 +12,11 @@ if (typeof globalThis.WebSocket === 'undefined') {
 // Parse and load .env.local manually for standalone scripts running outside Next.js
 if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
   try {
-    const envPath = path.resolve(process.cwd(), '.env.local');
+    let envPath = path.resolve(process.cwd(), '.env.local');
+    if (!fs.existsSync(envPath)) {
+      const __dirname = path.dirname(fileURLToPath(import.meta.url));
+      envPath = path.resolve(__dirname, '../../.env.local');
+    }
     if (fs.existsSync(envPath)) {
       const envContent = fs.readFileSync(envPath, 'utf8');
       envContent.split('\n').forEach(line => {
