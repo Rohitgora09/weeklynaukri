@@ -356,7 +356,7 @@ export default async function RrbAlpPage() {
         </div>
 
         {/* FAQ Section */}
-        <div className="mt-12">
+        <div className="mt-12 contain-layout-paint">
           <h3 className="font-extrabold text-blue-950 text-lg mb-6 uppercase tracking-wider border-b border-gray-100 pb-3">
             Frequently Asked Questions (FAQs)
           </h3>

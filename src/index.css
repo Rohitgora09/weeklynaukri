@@ -186,3 +186,10 @@ input:focus:not(:focus-visible) {
     scroll-behavior: auto !important;
   }
 }
+
+/* ── Rendering Performance (FCP & INP) ────────────────────── */
+.contain-layout-paint {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 500px;
+}
+

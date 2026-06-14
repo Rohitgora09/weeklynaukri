@@ -213,7 +213,7 @@ export default function AnswerKeysClient({ initialJobs, answerKeys }) {
         </div>
 
         {/* FAQ Section */}
-        <div className="mt-16 max-w-3xl mx-auto">
+        <div className="mt-16 max-w-3xl mx-auto contain-layout-paint">
           <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {faqData.map((faq, index) => (

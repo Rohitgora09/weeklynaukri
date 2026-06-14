@@ -179,7 +179,7 @@ export default function LatestJobsClient({ initialJobs }) {
             </Card>
 
             {/* FAQ Section */}
-            <Card className="p-6 border border-gray-100 shadow-sm rounded-3xl bg-indigo-50/20">
+            <Card className="p-6 border border-gray-100 shadow-sm rounded-3xl bg-indigo-50/20 contain-layout-paint">
               <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <ArrowRight className="w-4 h-4 text-indigo-600" /> Frequently Asked Questions
               </h3>

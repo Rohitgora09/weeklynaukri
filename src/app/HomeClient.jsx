@@ -66,7 +66,11 @@ function LazySection({ children, height = '300px', forceVisible = false }) {
   const activeVisible = isVisible || forceVisible;
 
   return (
-    <div ref={ref} className="w-full min-h-[50px]">
+    <div 
+      ref={ref} 
+      className="w-full" 
+      style={{ minHeight: activeVisible ? 'auto' : height }}
+    >
       {activeVisible ? children : (
         <div 
           style={{ height }} 
@@ -596,7 +600,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
 
               {/* Results feed */}
               {showResults && (
-                <LazySection height="400px" forceVisible={forceLazyVisible}>
+                <LazySection height="1000px" forceVisible={forceLazyVisible}>
                   <JobList
                     title="Sarkari Results"
                     subtitle="Latest exam results declared"
@@ -611,7 +615,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
 
               {/* Admit cards feed */}
               {showAdmitCards && (
-                <LazySection height="400px" forceVisible={forceLazyVisible}>
+                <LazySection height="1000px" forceVisible={forceLazyVisible}>
                   <JobList
                     title="Admit Cards"
                     subtitle="Download hall tickets & exam dates"
@@ -631,7 +635,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
               
               {/* Live SSC notifications */}
               {showGovt && filteredSSCNotices.length > 0 && (
-                <LazySection height="350px" forceVisible={forceLazyVisible}>
+                <LazySection height="550px" forceVisible={forceLazyVisible}>
                   <JobList
                     title="Live SSC Notices"
                     subtitle="Staff Selection Commission live alerts"
@@ -646,7 +650,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
 
               {/* Private sector jobs */}
               {showPrivate && (
-                <LazySection height="400px" forceVisible={forceLazyVisible}>
+                <LazySection height="780px" forceVisible={forceLazyVisible}>
                   <JobList
                     title="Private Jobs"
                     subtitle="Top hiring companies matching skills"
@@ -667,7 +671,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
         )}
 
         {/* Admissions, Answer Keys, Documents - grid splits */}
-        <LazySection height="300px" forceVisible={forceLazyVisible}>
+        <LazySection height="380px" forceVisible={forceLazyVisible}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
             {showAdmissions && filteredAdmissions.length > 0 && (
               <JobList
@@ -702,7 +706,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
         </LazySection>
         
         {/* Stats metrics card banner */}
-        <LazySection height="150px" forceVisible={forceLazyVisible}>
+        <LazySection height="220px" forceVisible={forceLazyVisible}>
           <div className="mt-16 bg-gradient-to-r from-blue-950 to-blue-900 rounded-2xl p-8 md:p-12 shadow-xl shadow-blue-900/10 text-center text-white" aria-label="Platform statistics">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {[
@@ -722,7 +726,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
         </LazySection>
 
         {/* SEO Text Block / Info Section for Search Engines & Users */}
-        <div className="mt-16 border-t border-gray-100 pt-16 text-left max-w-4xl mx-auto">
+        <div className="mt-16 border-t border-gray-100 pt-16 text-left max-w-4xl mx-auto contain-layout-paint">
           <h2 className="text-2xl font-bold text-blue-950 mb-6">WeeklyNaukri - India's Premier Sarkari Result & Latest Govt Jobs Portal</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-gray-600 leading-relaxed">
             <div>
@@ -745,7 +749,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
         </div>
       </section>
 
-      <LazySection height="350px" forceVisible={forceLazyVisible}>
+      <LazySection height="400px" forceVisible={forceLazyVisible}>
         <Footer onFooterSearch={handleFooterSearch} />
       </LazySection>
 

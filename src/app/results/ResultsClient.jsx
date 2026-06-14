@@ -216,7 +216,7 @@ export default function ResultsClient({ initialResults }) {
         </div>
 
         {/* FAQ Section */}
-        <div className="max-w-3xl mx-auto mt-16">
+        <div className="max-w-3xl mx-auto mt-16 contain-layout-paint">
           <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {faqData.map((faq, index) => (

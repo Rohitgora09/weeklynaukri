@@ -16,7 +16,7 @@ export default function Footer({ onFooterSearch }) {
   };
 
   return (
-    <footer role="contentinfo" aria-label="Site footer" className="bg-gray-50 border-t border-gray-200 pt-16 pb-8 mt-16 w-full">
+    <footer role="contentinfo" aria-label="Site footer" className="bg-gray-50 border-t border-gray-200 pt-16 pb-8 mt-16 w-full contain-layout-paint">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
           <div>
