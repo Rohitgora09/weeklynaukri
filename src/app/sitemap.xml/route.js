@@ -22,6 +22,7 @@ export async function GET() {
       '/referrals',
       '/it-govt-jobs',
       '/test-series',
+      '/faq',
       '/remote-jobs-guide'
     ];
 
