@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { 
   ArrowLeft, 
   Share2, 
@@ -149,9 +149,7 @@ export async function generateMetadata({ params }) {
   const data = await getJobData(slug);
   
   if (!data) {
-    return {
-      title: 'Job Not Found — WeeklyNaukri.com'
-    };
+    redirect('/');
   }
 
   const { job } = data;
@@ -208,7 +206,7 @@ export default async function JobDetailsPage({ params }) {
   const data = await getJobData(slug);
 
   if (!data) {
-    notFound();
+    redirect('/');
   }
 
   const { job } = data;
