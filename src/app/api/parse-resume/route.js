@@ -1,7 +1,23 @@
 import { NextResponse } from 'next/server';
+import { verifyToken, checkRateLimit } from '../../../lib/auth';
 
 export async function POST(request) {
   try {
+    // 1. Require a valid JWT — must be logged in to parse a resume
+    const authHeader = request.headers.get('authorization');
+    const token = authHeader?.replace('Bearer ', '');
+    const user = token ? verifyToken(token) : null;
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'You must be logged in to use the resume matcher.' }, { status: 401 });
+    }
+
+    // 2. Rate limit by IP — max 5 uploads per 5 minutes
+    const ip = request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for') || '127.0.0.1';
+    const rateLimit = checkRateLimit(ip, 'login');
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ success: false, error: `Too many upload attempts. Try again in ${rateLimit.retryAfter} seconds.` }, { status: 429 });
+    }
+
     const formData = await request.formData();
     const file = formData.get('resume');
 

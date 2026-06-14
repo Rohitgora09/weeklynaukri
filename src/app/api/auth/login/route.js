@@ -4,7 +4,8 @@ import { comparePassword, generateToken, checkRateLimit } from '../../../../lib/
 
 export async function POST(request) {
   try {
-    const ip = request.headers.get('x-forwarded-for') || request.ip || '127.0.0.1';
+    // Use x-real-ip (set by Nginx from $remote_addr) — cannot be spoofed by clients
+    const ip = request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for') || '127.0.0.1';
     const rateLimit = checkRateLimit(ip, 'login');
     if (!rateLimit.allowed) {
       return NextResponse.json({ success: false, error: `Too many login attempts. Try again in ${rateLimit.retryAfter} seconds.` }, { status: 429 });

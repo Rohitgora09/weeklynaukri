@@ -2,6 +2,14 @@ import { NextResponse } from 'next/server';
 import { getStats } from '../../../../lib/analytics';
 import { supabase } from '../../../../lib/supabase';
 import { verifyToken } from '../../../../lib/auth';
+import crypto from 'crypto';
+
+function safeEqual(a, b) {
+  const bufA = Buffer.from(String(a));
+  const bufB = Buffer.from(String(b));
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+}
 
 const nodeStartTime = Date.now(); // Track process uptime
 
@@ -14,8 +22,8 @@ export async function GET(request) {
     let isAuthorized = false;
  
     // Check x-admin-password
-    const expectedPassword = process.env.ADMIN_PASSWORD || 'admin123';
-    if (adminPasswordHeader && adminPasswordHeader === expectedPassword) {
+    const expectedPassword = process.env.ADMIN_PASSWORD;
+    if (expectedPassword && adminPasswordHeader && safeEqual(adminPasswordHeader, expectedPassword)) {
       isAuthorized = true;
     }
 
@@ -47,11 +55,6 @@ export async function GET(request) {
       success: true,
       stats,
       uptime: Date.now() - nodeStartTime,
-      system: {
-        nodeVersion: process.version,
-        platform: process.platform,
-        memoryUsage: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + ' MB'
-      },
       counts: {
         referrals: referralsCount || 0,
         users: usersCount || 0
