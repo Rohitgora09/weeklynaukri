@@ -34,7 +34,8 @@ export async function GET() {
       '/ssc-cgl-2026',
       '/rrb-alp-2026',
       '/it-government-jobs-2026',
-      '/up-govt-jobs-2026'
+      '/up-govt-jobs-2026',
+      '/exam-calendar'
     ];
 
     const staticUrls = staticPages.map(page => ({

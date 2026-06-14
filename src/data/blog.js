@@ -467,5 +467,86 @@ export const blogPosts = [
 
       <p>Looking for active software and IT engineering jobs in the government sector? Browse the dedicated **IT Government Jobs** page on WeeklyNaukri.com to find and apply to the latest openings directly!</p>
     `
+  },
+  {
+    id: 'govt-jobs-cs-graduates-2026',
+    title: 'Top Government Jobs for CS & IT Graduates in 2026',
+    slug: 'govt-jobs-cs-graduates-2026',
+    excerpt: 'Explore the best government job opportunities for Computer Science and IT engineering graduates in 2026. Learn about NIC, ISRO, DRDO, PSUs, and Bank IT Officer roles.',
+    publishedDate: '14 Jun 2026',
+    author: 'WeeklyNaukri Editorial',
+    readTime: '6 min read',
+    tags: ['Govt Jobs', 'CS Graduates', 'Technical Jobs'],
+    image: 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&auto=format&fit=crop&q=60',
+    content: `
+      <p>Computer Science (CS) and Information Technology (IT) graduates in India have access to outstanding career opportunities in the public sector. Unlike traditional administrative roles, these technical positions allow engineers to work on massive national databases, satellite communication systems, and cyber security infrastructures.</p>
+
+      <h3>1. High-Priority Government IT Sectors in 2026</h3>
+      <p>Here are the top organizations hiring CS/IT graduates this year:</p>
+      <ul>
+        <li><strong>National Informatics Centre (NIC):</strong> Recruits Scientist-B and Scientific Officer roles for building digital government applications. Requires B.E./B.Tech or MCA.</li>
+        <li><strong>ISRO & DRDO:</strong> Recruit Scientist-B and Engineer SC grades. Hiring is heavily based on valid GATE CS scores followed by interviews.</li>
+        <li><strong>Public Sector Banks (SBI & IBPS SO):</strong> Specialist Officer (IT Officer Scale-I) vacancies are announced annually. Responsibilities include managing banking apps and cyber defense.</li>
+        <li><strong>Public Sector Undertakings (PSUs):</strong> Companies like IOCL, HPCL, and POSOCO recruit graduate engineers through the GATE CS paper.</li>
+      </ul>
+
+      <h3>2. Why Choose a Government IT Career?</h3>
+      <p>Government technical roles offer benefits that compete strongly with private enterprises:</p>
+      <ul>
+        <li><strong>Job Stability:</strong> Immune to corporate layoffs or global recessions.</li>
+        <li><strong>Work-Life Balance:</strong> Standard working hours and generous holidays.</li>
+        <li><strong>National Impact:</strong> Building systems used by millions of citizens daily.</li>
+      </ul>
+    `
+  },
+  {
+    id: 'private-vs-govt-it-jobs-2026',
+    title: 'Private vs Government IT Jobs in India: 2026 Comparison',
+    slug: 'private-vs-govt-it-jobs-2026',
+    excerpt: 'CS graduate choosing between corporate software companies and technical government roles? Read our detailed 2026 comparison of salaries, job security, growth, and work-life balance.',
+    publishedDate: '14 Jun 2026',
+    author: 'WeeklyNaukri Editorial',
+    readTime: '7 min read',
+    tags: ['Career Guide', 'Private vs Govt', 'IT Careers'],
+    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=60',
+    content: `
+      <p>For fresh Computer Science graduates in India, deciding between a corporate software job (private sector) and a technical government role (public sector) is a major milestone. Both career paths offer distinct advantages and lifestyle choices.</p>
+
+      <h3>Comparison Matrix (2026 Edition)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Criteria</th>
+            <th>Private Sector IT</th>
+            <th>Government IT Sector</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Starting Salary</strong></td>
+            <td>₹4 LPA (service companies) to ₹20+ LPA (product startups/FAANG)</td>
+            <td>₹70,000 - ₹95,000 gross per month (Pay Level 10 for Scientist-B)</td>
+          </tr>
+          <tr>
+            <td><strong>Job Security</strong></td>
+            <td>Low (market lay-offs, performance pressure)</td>
+            <td>Very High (permanent status)</td>
+          </tr>
+          <tr>
+            <td><strong>Growth Rate</strong></td>
+            <td>Rapid (performance and switch-based salary jumps)</td>
+            <td>Time-bound promotions (7th Pay Commission scales)</td>
+          </tr>
+          <tr>
+            <td><strong>Work-Life Balance</strong></td>
+            <td>Moderate to Low (project deadlines, on-call shifts)</td>
+            <td>High (fixed working hours, no weekend work)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Which Path is Right for You?</h3>
+      <p>Choose <strong>Private IT</strong> if you are motivated by rapid salary escalation, cutting-edge corporate stacks, and flexible work styles (like remote work). Choose <strong>Government IT</strong> if you prioritize lifetime job security, fixed hours, retirement pensions, and serving national interests.</p>
+    `
   }
 ];
