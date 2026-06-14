@@ -15,8 +15,8 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: 'Government Jobs: Latest Govt Jobs & Sarkari Result 2026 - Weekly Naukri',
-  description: "WeeklyNaukri.com (Weekly Naukri) is India's leading portal for active Government Jobs, technical IT govt vacancies, and Sarkari Results. Find latest govt job openings.",
+  title: 'Govt Jobs: Latest Sarkari Result 2026 - Weekly Naukri',
+  description: "WeeklyNaukri.com is India's leading portal for active Government Jobs, IT vacancies, and Sarkari Results. Find latest openings.",
   keywords: [
     'Sarkari Result',
     'Sarkari Naukri',
@@ -44,12 +44,12 @@ export const metadata = {
     url: 'https://weeklynaukri.com/',
     siteName: 'WeeklyNaukri.com',
     title: 'Sarkari Result | Weekly Naukri | Latest Govt & Private Jobs 2026',
-    description: "WeeklyNaukri.com (Weekly Naukri) is India's premier Sarkari Result portal. Get the latest updates on Sarkari Naukri, Govt Jobs, Private Jobs, Results, Admit Cards, and Answer Keys.",
+    description: "WeeklyNaukri.com is India's leading portal for active Government Jobs, IT vacancies, and Sarkari Results. Find latest openings.",
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Sarkari Result | Weekly Naukri | Latest Govt & Private Jobs 2026',
-    description: "WeeklyNaukri.com (Weekly Naukri) is India's premier Sarkari Result portal. Get the latest updates on Sarkari Naukri, Govt Jobs, Private Jobs, Results, Admit Cards, and Answer Keys.",
+    description: "WeeklyNaukri.com is India's leading portal for active Government Jobs, IT vacancies, and Sarkari Results. Find latest openings.",
   }
 };
 
@@ -113,7 +113,7 @@ export default function RootLayout({ children }) {
                   "logo": {
                     "@type": "ImageObject",
                     "@id": "https://weeklynaukri.com/#logo",
-                    "url": "https://weeklynaukri.com/favicon.svg",
+                    "url": "https://weeklynaukri.com/logo.png",
                     "caption": "Weekly Naukri Logo"
                   },
                   "image": {

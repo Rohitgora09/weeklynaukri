@@ -59,6 +59,7 @@ export default function JobPostingSchema({ job }) {
     hiringOrganization: {
       '@type': 'Organization',
       name: job.org || job.company || 'Government Department',
+      logo: 'https://weeklynaukri.com/logo.png',
     },
     datePosted: postedDate,
     validThrough: finalExpiry,
@@ -67,6 +68,10 @@ export default function JobPostingSchema({ job }) {
       '@type': 'Place',
       address: {
         '@type': 'PostalAddress',
+        streetAddress: 'Government Department Location',
+        addressLocality: 'New Delhi',
+        addressRegion: 'Delhi',
+        postalCode: '110001',
         addressCountry: 'IN',
       },
     },
@@ -102,6 +107,13 @@ export default function JobPostingSchema({ job }) {
   else if (job.category === 'answerKeys') categoryName = 'Answer Keys';
   else if (job.category === 'notices') categoryName = 'Notices';
 
+  let categoryUrl = 'https://weeklynaukri.com';
+  if (job.category === 'latestJobs') categoryUrl = 'https://weeklynaukri.com/latest-jobs';
+  else if (job.category === 'privateJobs') categoryUrl = 'https://weeklynaukri.com/referrals';
+  else if (job.category === 'results') categoryUrl = 'https://weeklynaukri.com/results';
+  else if (job.category === 'admitCards') categoryUrl = 'https://weeklynaukri.com/admit-cards';
+  else if (job.category === 'answerKeys') categoryUrl = 'https://weeklynaukri.com/answer-keys';
+
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -116,7 +128,7 @@ export default function JobPostingSchema({ job }) {
         '@type': 'ListItem',
         position: 2,
         name: categoryName,
-        item: 'https://weeklynaukri.com',
+        item: categoryUrl,
       },
       {
         '@type': 'ListItem',

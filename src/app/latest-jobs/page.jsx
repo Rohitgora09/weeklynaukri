@@ -4,8 +4,8 @@ import LatestJobsClient from './LatestJobsClient';
 export const revalidate = 0;
 
 export const metadata = {
-  title: 'Latest Govt Jobs 2026: Sarkari Naukri Vacancy Updates — WeeklyNaukri',
-  description: 'Apply for the latest government jobs in India. Find Sarkari Naukri vacancies from SSC, UPSC, Railway, Bank, Defence, and State recruitment boards with direct apply links at WeeklyNaukri.com.',
+  title: 'Latest Govt Jobs 2026: Sarkari Naukri — WeeklyNaukri',
+  description: 'Apply for latest government jobs in India. Find Sarkari Naukri vacancies from SSC, UPSC, Railway, and Bank with direct links at WeeklyNaukri.',
   keywords: [
     'Latest Govt Jobs',
     'Sarkari Naukri',
@@ -20,8 +20,8 @@ export const metadata = {
     canonical: '/latest-jobs',
   },
   openGraph: {
-    title: 'Latest Govt Jobs 2026: Sarkari Naukri Vacancy Updates — WeeklyNaukri',
-    description: 'Apply for the latest government jobs in India. Find Sarkari Naukri vacancies from SSC, UPSC, Railway, Bank, Defence, and State recruitment boards with direct apply links at WeeklyNaukri.com.',
+    title: 'Latest Govt Jobs 2026: Sarkari Naukri — WeeklyNaukri',
+    description: 'Apply for latest government jobs in India. Find Sarkari Naukri vacancies from SSC, UPSC, Railway, and Bank with direct links at WeeklyNaukri.',
     url: '/latest-jobs',
     type: 'website',
   },

@@ -4,7 +4,7 @@ import ItGovtJobsClient from './ItGovtJobsClient';
 export const revalidate = 0;
 
 export const metadata = {
-  title: 'IT Government Jobs: Latest Technical Govt Jobs in India - Weekly Naukri',
+  title: 'IT Government Jobs: Technical Govt Jobs — Weekly Naukri',
   description: 'Apply to the latest IT government jobs, software developer, system admin, and technical vacancies in public sector undertakings. Find active direct apply links.',
   keywords: [
     'IT Government Jobs',
@@ -18,7 +18,7 @@ export const metadata = {
     canonical: '/it-govt-jobs',
   },
   openGraph: {
-    title: 'IT Government Jobs: Latest Technical Govt Jobs in India - Weekly Naukri',
+    title: 'IT Government Jobs: Technical Govt Jobs — Weekly Naukri',
     description: 'Apply to the latest IT government jobs, software developer, system admin, and technical vacancies in public sector undertakings. Find active direct apply links.',
     url: '/it-govt-jobs',
     type: 'website',

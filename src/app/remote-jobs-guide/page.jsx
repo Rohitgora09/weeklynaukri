@@ -5,14 +5,14 @@ import Link from 'next/link';
 import { Briefcase, ArrowRight, CheckCircle, Search, Sparkles } from 'lucide-react';
 
 export const metadata = {
-  title: 'Remote Jobs in India: Guide to ZipRecruiter, LinkedIn & Referrals',
-  description: 'Looking for work-from-home or remote jobs in India? Learn how to successfully use ZipRecruiter, LinkedIn, and WeeklyNaukri community referrals to land your dream role.',
+  title: 'Remote Jobs in India: Job Guide & Referrals — WeeklyNaukri',
+  description: 'Looking for remote jobs in India? Learn to use ZipRecruiter, LinkedIn, and WeeklyNaukri community referrals to land your role.',
   alternates: {
     canonical: '/remote-jobs-guide',
   },
   openGraph: {
-    title: 'Remote Jobs in India: Guide to ZipRecruiter, LinkedIn & Referrals',
-    description: 'Looking for work-from-home or remote jobs in India? Learn how to successfully use ZipRecruiter, LinkedIn, and WeeklyNaukri community referrals to land your dream role.',
+    title: 'Remote Jobs in India: Job Guide & Referrals — WeeklyNaukri',
+    description: 'Looking for remote jobs in India? Learn to use ZipRecruiter, LinkedIn, and WeeklyNaukri community referrals to land your role.',
     url: '/remote-jobs-guide',
     type: 'website',
   },

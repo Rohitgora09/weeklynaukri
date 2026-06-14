@@ -41,7 +41,7 @@ export default function TestDetailClient({ series }) {
             <span className="text-xs text-blue-200 font-medium">{series.org}</span>
           </div>
           
-          <h2 className="text-2xl md:text-3xl font-extrabold leading-tight mb-3">{series.title}</h2>
+          <h1 className="text-2xl md:text-3xl font-extrabold leading-tight mb-3">{series.title}</h1>
           <p className="text-blue-100 text-sm max-w-3xl leading-relaxed">{series.description}</p>
         </div>
 

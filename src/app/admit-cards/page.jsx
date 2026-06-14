@@ -4,8 +4,8 @@ import AdmitCardsClient from './AdmitCardsClient';
 export const revalidate = 0;
 
 export const metadata = {
-  title: 'Admit Card 2026: Download Latest Sarkari Exam Admit Cards — WeeklyNaukri',
-  description: 'Download latest admit cards for SSC, UPSC, Railway, Bank, and State government exams. Get direct hall ticket download links and exam date updates at WeeklyNaukri.com.',
+  title: 'Admit Card 2026: Download Sarkari Admit Cards — WeeklyNaukri',
+  description: 'Download latest admit cards for SSC, UPSC, Railway, and Bank exams. Get direct hall ticket download links and exam date updates at WeeklyNaukri.com.',
   keywords: [
     'Admit Card',
     'Admit Card 2026',
@@ -19,8 +19,8 @@ export const metadata = {
     canonical: '/admit-cards',
   },
   openGraph: {
-    title: 'Admit Card 2026: Download Latest Sarkari Exam Admit Cards — WeeklyNaukri',
-    description: 'Download latest admit cards for SSC, UPSC, Railway, Bank, and State government exams. Get direct hall ticket download links and exam date updates at WeeklyNaukri.com.',
+    title: 'Admit Card 2026: Download Sarkari Admit Cards — WeeklyNaukri',
+    description: 'Download latest admit cards for SSC, UPSC, Railway, and Bank exams. Get direct hall ticket download links and exam date updates at WeeklyNaukri.com.',
     url: '/admit-cards',
     type: 'website',
   },
