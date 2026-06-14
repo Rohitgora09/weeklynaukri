@@ -49,6 +49,7 @@ export default function Footer({ onFooterSearch }) {
               <li><Link href="/latest-jobs" className="hover:text-black cursor-pointer transition-colors">Latest Govt Jobs</Link></li>
               <li><Link href="/blog" className="hover:text-black cursor-pointer transition-colors">Career Blog</Link></li>
               <li><Link href="/remote-jobs-guide" className="hover:text-black cursor-pointer transition-colors">Remote Jobs Guide</Link></li>
+              <li><Link href="/sitemap" className="hover:text-black cursor-pointer transition-colors">Sitemap</Link></li>
             </ul>
           </nav>
           <nav aria-label="Social links and contact">

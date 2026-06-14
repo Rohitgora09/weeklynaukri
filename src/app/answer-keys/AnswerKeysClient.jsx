@@ -46,7 +46,7 @@ export default function AnswerKeysClient({ initialJobs, answerKeys }) {
     window.location.href = '/';
   };
 
-  const allAnswerKeys = answerKeys || [];
+  const allAnswerKeys = [...(initialJobs?.answerKeys || []), ...(answerKeys || [])];
 
   const filterItems = (items) => {
     if (!searchQuery.toLowerCase().trim()) return items;
