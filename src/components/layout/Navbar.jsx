@@ -46,6 +46,7 @@ export default function Navbar({ onCategorySelect }) {
     { label: 'Results', path: '/results' },
     { label: 'Admit Cards', path: '/admit-cards' },
     { label: 'Referrals', path: '/referrals' },
+    { label: 'Blog', path: '/blog' },
   ];
 
   return (

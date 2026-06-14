@@ -47,6 +47,7 @@ export default function Footer({ onFooterSearch }) {
               <li><Link href="/answer-keys" className="hover:text-black cursor-pointer transition-colors">Answer Keys</Link></li>
               <li><Link href="/results" className="hover:text-black cursor-pointer transition-colors">Sarkari Results</Link></li>
               <li><Link href="/latest-jobs" className="hover:text-black cursor-pointer transition-colors">Latest Govt Jobs</Link></li>
+              <li><Link href="/blog" className="hover:text-black cursor-pointer transition-colors">Career Blog</Link></li>
               <li><Link href="/remote-jobs-guide" className="hover:text-black cursor-pointer transition-colors">Remote Jobs Guide</Link></li>
             </ul>
           </nav>

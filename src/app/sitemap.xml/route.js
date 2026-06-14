@@ -9,6 +9,8 @@ import {
   privateJobs 
 } from '../../data/jobs';
 import { mockTestSeriesList } from '../../data/mockTests';
+import { blogPosts } from '../../data/blog';
+
 
 export const revalidate = 3600; // Cache sitemap for 1 hour
 
@@ -27,7 +29,8 @@ export async function GET() {
       '/results',
       '/admit-cards',
       '/answer-keys',
-      '/latest-jobs'
+      '/latest-jobs',
+      '/blog'
     ];
 
     const staticUrls = staticPages.map(page => ({
@@ -59,7 +62,13 @@ export async function GET() {
       priority: '0.8'
     }));
 
-    const allUrls = [...staticUrls, ...dynamicJobUrls, ...testSeriesUrls];
+    const blogUrls = blogPosts.map(post => ({
+      loc: `https://weeklynaukri.com/blog/${post.slug}`,
+      changefreq: 'weekly',
+      priority: '0.7'
+    }));
+
+    const allUrls = [...staticUrls, ...dynamicJobUrls, ...testSeriesUrls, ...blogUrls];
 
     const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

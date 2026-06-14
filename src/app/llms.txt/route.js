@@ -22,6 +22,7 @@ export async function GET() {
 - [IT Government Jobs](https://weeklynaukri.com/it-govt-jobs): Technical and software government vacancies.
 - [Test Series](https://weeklynaukri.com/test-series): Exam preparation mock tests for SSC CGL, RRB NTPC, IBPS PO.
 - [Referrals](https://weeklynaukri.com/referrals): Community job referrals from employees at top IT companies.
+- [Career Blog](https://weeklynaukri.com/blog): Exam preparation strategies, study plans, syllabus guides, and career advice for cracking competitive exams.
 - [Remote Jobs Guide](https://weeklynaukri.com/remote-jobs-guide): Guide to finding remote and work-from-home jobs in India.
 - [FAQ](https://weeklynaukri.com/faq): Frequently asked questions about using WeeklyNaukri.
 - [About](https://weeklynaukri.com/about): About WeeklyNaukri.com.
