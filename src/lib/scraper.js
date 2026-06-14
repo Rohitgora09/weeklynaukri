@@ -437,20 +437,23 @@ export async function fetchSarkariResultData(force = false) {
     prepareRows(rawData.admissions, 'admissions');
     prepareRows(rawData.documents, 'documents');
 
+    // Deduplicate by BOTH url_slug and job_id to prevent PK constraint errors
     const uniqueRows = [];
-    const seen = new Set();
+    const seenSlugs = new Set();
+    const seenIds = new Set();
     insertRows.forEach(row => {
-      if (!seen.has(row.url_slug)) {
-        seen.add(row.url_slug);
+      if (!seenSlugs.has(row.url_slug) && !seenIds.has(row.job_id)) {
+        seenSlugs.add(row.url_slug);
+        seenIds.add(row.job_id);
         uniqueRows.push(row);
       }
     });
 
-    // 2. Bulk upsert freshly scraped rows
+    // 2. Bulk upsert freshly scraped rows — conflict on job_id (the actual PK)
     if (uniqueRows.length > 0) {
       const { error: upsertError } = await supabase
         .from('scraper_cache')
-        .upsert(uniqueRows, { onConflict: 'url_slug' });
+        .upsert(uniqueRows, { onConflict: 'job_id' });
       if (upsertError) throw upsertError;
     }
 
@@ -796,19 +799,23 @@ export async function fetchPrivateJobs(force = false) {
       };
     });
 
+    // Deduplicate by BOTH url_slug and job_id to prevent PK constraint errors
     const uniqueRows = [];
-    const seen = new Set();
+    const seenSlugs = new Set();
+    const seenIds = new Set();
     insertRows.forEach(row => {
-      if (!seen.has(row.url_slug)) {
-        seen.add(row.url_slug);
+      if (!seenSlugs.has(row.url_slug) && !seenIds.has(row.job_id)) {
+        seenSlugs.add(row.url_slug);
+        seenIds.add(row.job_id);
         uniqueRows.push(row);
       }
     });
 
     if (uniqueRows.length > 0) {
+      // Use upsert on job_id (PK) instead of insert to handle hash collisions gracefully
       const { error: insertError } = await supabase
         .from('scraper_cache')
-        .insert(uniqueRows);
+        .upsert(uniqueRows, { onConflict: 'job_id' });
       if (insertError) throw insertError;
     }
 
