@@ -25,8 +25,7 @@ export async function generateMetadata({ params }) {
   return {
     title: `${post.title} — WeeklyNaukri Study Guides`,
     description: desc,
-    keywords: [...(post.tags || []), 'WeeklyNaukri Study Guide', 'Sarkari Preparation'],
-    alternates: {
+  alternates: {
       canonical: `/blog/${post.slug}`,
     },
     openGraph: {

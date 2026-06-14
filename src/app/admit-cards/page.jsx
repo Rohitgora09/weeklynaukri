@@ -6,15 +6,6 @@ export const revalidate = 0;
 export const metadata = {
   title: 'Admit Card 2026: Download Sarkari Admit Cards — WeeklyNaukri',
   description: 'Download latest admit cards for SSC, UPSC, Railway, and Bank exams. Get direct hall ticket download links and exam date updates at WeeklyNaukri.com.',
-  keywords: [
-    'Admit Card',
-    'Admit Card 2026',
-    'Hall Ticket Download',
-    'Sarkari Exam Admit Card',
-    'SSC Admit Card',
-    'UPSC Admit Card',
-    'Railway Admit Card'
-  ],
   alternates: {
     canonical: '/admit-cards',
   },

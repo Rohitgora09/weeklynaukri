@@ -6,16 +6,6 @@ export const revalidate = 0;
 export const metadata = {
   title: 'Latest Govt Jobs 2026: Sarkari Naukri — WeeklyNaukri',
   description: 'Apply for latest government jobs in India. Find Sarkari Naukri vacancies from SSC, UPSC, Railway, and Bank with direct links at WeeklyNaukri.',
-  keywords: [
-    'Latest Govt Jobs',
-    'Sarkari Naukri',
-    'Government Jobs 2026',
-    'Govt Vacancy',
-    'Free Job Alert',
-    'SSC Jobs',
-    'UPSC Jobs',
-    'Railway Jobs'
-  ],
   alternates: {
     canonical: '/latest-jobs',
   },

@@ -6,14 +6,6 @@ export const revalidate = 0;
 export const metadata = {
   title: 'IT Government Jobs: Technical Govt Jobs — Weekly Naukri',
   description: 'Apply to the latest IT government jobs, software developer, system admin, and technical vacancies in public sector undertakings. Find active direct apply links.',
-  keywords: [
-    'IT Government Jobs',
-    'Technical Govt Jobs',
-    'Govt jobs IT',
-    'Software Developer Govt Jobs',
-    'Public Sector IT Jobs',
-    'Sarkari Result IT'
-  ],
   alternates: {
     canonical: '/it-govt-jobs',
   },

@@ -6,15 +6,6 @@ export const revalidate = 0;
 export const metadata = {
   title: 'Sarkari Result 2026: Govt Exam Results — WeeklyNaukri',
   description: 'Check latest Sarkari Result 2026. Download scorecards, merit lists, and cut-off marks for SSC, UPSC, Railway, and Bank exams at WeeklyNaukri.com.',
-  keywords: [
-    'Sarkari Result',
-    'Sarkari Result 2026',
-    'Government Exam Result',
-    'SSC Result',
-    'UPSC Result',
-    'Railway Result',
-    'Naukri Result'
-  ],
   alternates: {
     canonical: '/results',
   },

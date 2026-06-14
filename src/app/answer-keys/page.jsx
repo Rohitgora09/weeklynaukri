@@ -7,14 +7,6 @@ export const revalidate = 0;
 export const metadata = {
   title: 'Answer Key 2026: Latest Sarkari Answer Keys — WeeklyNaukri',
   description: 'Check and download official answer keys for SSC, UPSC, Railway, and State government exams. Raise objections and verify your answers at WeeklyNaukri.com.',
-  keywords: [
-    'Answer Key',
-    'Answer Key 2026',
-    'Sarkari Exam Answer Key',
-    'SSC Answer Key',
-    'UPSC Answer Key',
-    'Objection Link'
-  ],
   alternates: {
     canonical: '/answer-keys',
   },
