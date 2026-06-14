@@ -8,6 +8,12 @@ export const metadata = {
   alternates: {
     canonical: '/privacy-policy',
   },
+  openGraph: {
+    title: 'Privacy Policy — WeeklyNaukri.com',
+    description: 'Read the privacy policy of WeeklyNaukri.com to learn how we protect your personal details.',
+    url: '/privacy-policy',
+    type: 'website',
+  },
 };
 
 export default function PrivacyPolicy() {

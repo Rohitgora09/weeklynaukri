@@ -18,6 +18,12 @@ export const metadata = {
   alternates: {
     canonical: '/admit-cards',
   },
+  openGraph: {
+    title: 'Admit Card 2026: Download Latest Sarkari Exam Admit Cards — WeeklyNaukri',
+    description: 'Download latest admit cards for SSC, UPSC, Railway, Bank, and State government exams. Get direct hall ticket download links and exam date updates at WeeklyNaukri.com.',
+    url: '/admit-cards',
+    type: 'website',
+  },
 };
 
 export default async function AdmitCardsPage() {

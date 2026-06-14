@@ -18,6 +18,12 @@ export const metadata = {
   alternates: {
     canonical: '/answer-keys',
   },
+  openGraph: {
+    title: 'Answer Key 2026: Latest Sarkari Exam Answer Keys — WeeklyNaukri',
+    description: 'Check and download official answer keys for SSC, UPSC, Railway, and State government exams. Raise objections and verify your answers at WeeklyNaukri.com.',
+    url: '/answer-keys',
+    type: 'website',
+  },
 };
 
 export default async function AnswerKeysPage() {

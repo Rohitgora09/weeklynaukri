@@ -10,11 +10,25 @@ export async function generateMetadata({ params }) {
     return { title: 'Test Series Not Found' };
   }
 
+  const description = `Attempt free online full mock tests for ${series.title}. Check solutions, syllabus coverage, correct options, and negative marking scoring rules.`;
+
   return {
     title: `${series.title} Online Practice Exam - WeeklyNaukri`,
-    description: `Attempt free online full mock tests for ${series.title}. Check solutions, syllabus coverage, correct options, and negative marking scoring rules.`,
+    description: description,
     alternates: {
-      canonical: `https://weeklynaukri.com/test-series/${id}`
+      canonical: `/test-series/${id}`
+    },
+    openGraph: {
+      title: `${series.title} Online Practice Exam - WeeklyNaukri`,
+      description: description,
+      url: `/test-series/${id}`,
+      type: 'website',
+      siteName: 'WeeklyNaukri.com',
+      images: [
+        {
+          url: 'https://weeklynaukri.com/logo.png',
+        }
+      ]
     }
   };
 }

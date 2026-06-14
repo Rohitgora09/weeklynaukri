@@ -13,6 +13,12 @@ export const metadata = {
   alternates: {
     canonical: '/faq',
   },
+  openGraph: {
+    title: 'Sarkari Exam Help & FAQ: Frequently Asked Questions — WeeklyNaukri',
+    description: 'Find answers to frequently asked questions about Sarkari Results, admit card downloads, applying online, syllabus updates, and company referrals at WeeklyNaukri.com.',
+    url: '/faq',
+    type: 'website',
+  },
 };
 
 export default function FAQPage() {

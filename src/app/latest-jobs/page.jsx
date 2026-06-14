@@ -19,6 +19,12 @@ export const metadata = {
   alternates: {
     canonical: '/latest-jobs',
   },
+  openGraph: {
+    title: 'Latest Govt Jobs 2026: Sarkari Naukri Vacancy Updates — WeeklyNaukri',
+    description: 'Apply for the latest government jobs in India. Find Sarkari Naukri vacancies from SSC, UPSC, Railway, Bank, Defence, and State recruitment boards with direct apply links at WeeklyNaukri.com.',
+    url: '/latest-jobs',
+    type: 'website',
+  },
 };
 
 export default async function LatestJobsPage() {

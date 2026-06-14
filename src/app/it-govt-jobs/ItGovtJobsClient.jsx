@@ -159,7 +159,7 @@ export default function ItGovtJobsClient({ initialJobs, initialNotices }) {
                 title={selectedCategory} 
                 icon={selectedCategory === 'Technical Jobs' ? Briefcase : (selectedCategory === 'Admit Cards' ? Calendar : (selectedCategory === 'Results' ? BookOpen : Bell))}
                 color={selectedCategory === 'Technical Jobs' ? 'bg-blue-600' : (selectedCategory === 'Admit Cards' ? 'bg-orange-500' : (selectedCategory === 'Results' ? 'bg-green-600' : 'bg-purple-650'))}
-                limit={20}
+                limit={100}
               />
             ) : (
               <div className="text-center py-16 bg-gray-50/50 border border-dashed border-gray-200 rounded-3xl">

@@ -8,6 +8,12 @@ export const metadata = {
   alternates: {
     canonical: '/about',
   },
+  openGraph: {
+    title: 'About Us — WeeklyNaukri.com',
+    description: 'Learn more about WeeklyNaukri.com, India\'s #1 weekly government and private job notification portal.',
+    url: '/about',
+    type: 'website',
+  },
 };
 
 export default function AboutUs() {

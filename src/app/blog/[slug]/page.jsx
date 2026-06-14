@@ -18,13 +18,29 @@ export async function generateMetadata({ params }) {
     };
   }
 
+  const desc = post.excerpt && post.excerpt.length > 150
+    ? `${post.excerpt.slice(0, 147)}...`
+    : (post.excerpt || '');
+
   return {
     title: `${post.title} — WeeklyNaukri Study Guides`,
-    description: post.excerpt,
-    keywords: [...post.tags, 'WeeklyNaukri Study Guide', 'Sarkari Preparation'],
+    description: desc,
+    keywords: [...(post.tags || []), 'WeeklyNaukri Study Guide', 'Sarkari Preparation'],
     alternates: {
       canonical: `/blog/${post.slug}`,
     },
+    openGraph: {
+      title: `${post.title} — WeeklyNaukri Study Guides`,
+      description: desc,
+      url: `/blog/${post.slug}`,
+      type: 'article',
+      siteName: 'WeeklyNaukri.com',
+      images: [
+        {
+          url: post.image || 'https://weeklynaukri.com/logo.png',
+        }
+      ]
+    }
   };
 }
 

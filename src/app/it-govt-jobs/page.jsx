@@ -17,6 +17,12 @@ export const metadata = {
   alternates: {
     canonical: '/it-govt-jobs',
   },
+  openGraph: {
+    title: 'IT Government Jobs: Latest Technical Govt Jobs in India - Weekly Naukri',
+    description: 'Apply to the latest IT government jobs, software developer, system admin, and technical vacancies in public sector undertakings. Find active direct apply links.',
+    url: '/it-govt-jobs',
+    type: 'website',
+  },
 };
 
 const techKeywords = [

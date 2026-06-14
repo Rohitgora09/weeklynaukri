@@ -15,6 +15,12 @@ export const metadata = {
   alternates: {
     canonical: '/blog',
   },
+  openGraph: {
+    title: 'WeeklyNaukri Career Blog: Sarkari Exam Prep Guides & Job Tips',
+    description: 'Read the latest exam preparation guides, syllabus details, exam patterns, study plans, and career tips for SSC, Railways, Bank, and other competitive government exams at WeeklyNaukri.com.',
+    url: '/blog',
+    type: 'website',
+  },
 };
 
 export default function BlogPage() {

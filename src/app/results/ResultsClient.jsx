@@ -143,7 +143,7 @@ export default function ResultsClient({ initialResults }) {
                 title="Latest Results" 
                 icon={BookOpen}
                 color="bg-green-600"
-                limit={20}
+                limit={100}
               />
             ) : (
               <div className="text-center py-16 bg-gray-50/50 border border-dashed border-gray-200 rounded-3xl">

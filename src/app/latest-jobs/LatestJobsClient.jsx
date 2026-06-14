@@ -134,7 +134,7 @@ export default function LatestJobsClient({ initialJobs }) {
                 title="Latest Government Jobs"
                 icon={Briefcase}
                 color="bg-indigo-600"
-                limit={30}
+                limit={100}
               />
             ) : (
               <div className="text-center py-16 bg-gray-50/50 border border-dashed border-gray-200 rounded-3xl">

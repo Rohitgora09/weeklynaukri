@@ -18,6 +18,12 @@ export const metadata = {
   alternates: {
     canonical: '/results',
   },
+  openGraph: {
+    title: 'Sarkari Result 2026: Latest Government Exam Results — WeeklyNaukri',
+    description: 'Check latest Sarkari Result 2026. Download scorecard, merit list, and cut-off marks for SSC, UPSC, Railway, Bank, and State government exams at WeeklyNaukri.com.',
+    url: '/results',
+    type: 'website',
+  },
 };
 
 export default async function ResultsPage() {
