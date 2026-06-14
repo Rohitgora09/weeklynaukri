@@ -134,5 +134,137 @@ export const blogPosts = [
       
       <p>Start your practice today by checking out the free mock tests on WeeklyNaukri.com!</p>
     `
+  },
+  {
+    id: 'how-to-crack-rrb-ntpc-2026',
+    title: 'How to Crack RRB NTPC 2026: Complete Prep Strategy, Books & Syllabus',
+    slug: 'how-to-crack-rrb-ntpc-2026',
+    excerpt: 'Find a step-by-step preparation plan, exam pattern, subject-wise syllabus, and recommended book list to crack the Railway Recruitment Board (RRB) NTPC 2026 exam on your first attempt.',
+    publishedDate: '14 Jun 2026',
+    author: 'Sarkari Railway Experts',
+    readTime: '10 min read',
+    tags: ['Railway Jobs', 'RRB NTPC', 'Study Guides'],
+    image: 'https://images.unsplash.com/photo-1532103054090-334e6e60ab29?w=800&auto=format&fit=crop&q=60',
+    content: `
+      <p>The Railway Recruitment Board (RRB) Non-Technical Popular Categories (NTPC) is one of the most popular government exams in India, attracting millions of aspirants. Qualifying this exam offers excellent career opportunities in Indian Railways, including posts like Station Master, Goods Guard (Train Manager), Commercial Apprentice, Junior Clerk, and Typist.</p>
+
+      <p>With high competition, passing the exam requires a structured study plan, the right choice of books, and consistent practice. In this comprehensive guide, we detail the complete step-by-step strategy, subject-wise syllabus, and expert resources to crack RRB NTPC 2026.</p>
+
+      <h3>1. Understand the RRB NTPC Selection Process</h3>
+      <p>The selection process for RRB NTPC consists of multiple stages:</p>
+      <ul>
+        <li><strong>First Stage Computer Based Test (CBT-1):</strong> Screening test common for all posts. It is qualifying in nature but critical to clear.</li>
+        <li><strong>Second Stage Computer Based Test (CBT-2):</strong> Post-specific exam that determines the final merit ranking.</li>
+        <li><strong>Computer Based Aptitude Test (CBAT) / Typing Skill Test:</strong> Applicable only for specific roles (e.g. CBAT for Station Master, Typing Test for Clerks/Typists).</li>
+        <li><strong>Document Verification & Medical Examination:</strong> The final stage of confirmation.</li>
+      </ul>
+
+      <h3>2. RRB NTPC CBT-1 & CBT-2 Exam Pattern</h3>
+      <p>Before jumping into books, let's understand the exam structure. Both CBT-1 and CBT-2 test the same three core subjects, but the number of questions and difficulty levels differ:</p>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>CBT-1 Questions</th>
+            <th>CBT-1 Marks</th>
+            <th>CBT-2 Questions</th>
+            <th>CBT-2 Marks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>General Awareness</td>
+            <td>40</td>
+            <td>40</td>
+            <td>50</td>
+            <td>50</td>
+          </tr>
+          <tr>
+            <td>Mathematics</td>
+            <td>30</td>
+            <td>30</td>
+            <td>35</td>
+            <td>35</td>
+          </tr>
+          <tr>
+            <td>General Intelligence & Reasoning</td>
+            <td>30</td>
+            <td>30</td>
+            <td>35</td>
+            <td>35</td>
+          </tr>
+          <tr style="font-weight: bold; background-color: #f3f4f6;">
+            <td>Total</td>
+            <td>100</td>
+            <td>100</td>
+            <td>120</td>
+            <td>120</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <p><strong>Note:</strong> The duration for both exams is 90 minutes. There is a negative marking of <strong>1/3rd mark</strong> for every incorrect answer.</p>
+
+      <h3>3. Subject-wise Syllabus & Preparation Tips</h3>
+      
+      <h4>A. General Awareness (Weightage: 40% in CBT-1, 42% in CBT-2)</h4>
+      <p>This section holds the maximum weightage and can be solved the fastest. It covers:</p>
+      <ul>
+        <li>Current Events of National and International Importance (Current Affairs)</li>
+        <li>Games and Sports, Art and Culture of India</li>
+        <li>Indian Literature, Monuments and Places of India</li>
+        <li>General Science and Life Science (up to 10th CBSE level)</li>
+        <li>History of India and Freedom Struggle</li>
+        <li>Physical, Social and Economic Geography of India and World</li>
+        <li>Indian Polity and Constitution</li>
+        <li>General Scientific & Technological Developments (including Space and Nuclear program of India)</li>
+      </ul>
+      <p><strong>Pro Tip:</strong> Focus on General Science and History. Current Affairs of the past 10-12 months are crucial. Revise Lucent's GK regularly.</p>
+
+      <h4>B. Mathematics (Weightage: 30% in CBT-1, 29% in CBT-2)</h4>
+      <p>This section is highly scoring if you know the formulas and shortcuts. Important topics include:</p>
+      <ul>
+        <li>Number System, Decimals, Fractions</li>
+        <li>LCM & HCF, Ratio and Proportion</li>
+        <li>Percentage, Mensuration, Time and Work</li>
+        <li>Time and Distance, Simple and Compound Interest</li>
+        <li>Profit and Loss, Elementary Algebra</li>
+        <li>Geometry and Trigonometry, Elementary Statistics</li>
+      </ul>
+      <p><strong>Pro Tip:</strong> Arithmetic constitutes 70% of the math section. Advanced math is relatively basic in RRB exams, so focus on standard formulas and properties.</p>
+
+      <h4>C. General Intelligence & Reasoning (Weightage: 30% in CBT-1, 29% in CBT-2)</h4>
+      <p>This is the most scoring section of the exam. Topics to cover:</p>
+      <ul>
+        <li>Analogies, Completion of Number and Alphabetical Series</li>
+        <li>Coding and Decoding, Mathematical Operations</li>
+        <li>Similarities and Differences, Relationships (Blood Relations)</li>
+        <li>Analytical Reasoning, Syllogism</li>
+        <li>Jumbling, Venn Diagrams, Puzzle, Data Sufficiency</li>
+        <li>Statement- Conclusion, Statement- Courses of Action, Decision Making</li>
+      </ul>
+      <p><strong>Pro Tip:</strong> Practice statement-assumption questions as railways ask several logical reasoning questions. Focus on speed puzzles and series completion.</p>
+
+      <h3>4. Recommended Booklist for RRB NTPC 2026</h3>
+      <p>Having the best study material helps you cover concepts faster and practice realistic questions:</p>
+      
+      <ul>
+        <li><strong>Mathematics:</strong> <em>Fast Track Objective Arithmetic</em> by Rajesh Verma OR <em>Quantitative Aptitude</em> by R.S. Aggarwal.</li>
+        <li><strong>Reasoning:</strong> <em>A Modern Approach to Verbal & Non-Verbal Reasoning</em> by R.S. Aggarwal.</li>
+        <li><strong>General Awareness:</strong> <em>General Knowledge</em> by Lucent Publications. For Science, use Lucent's <em>General Science</em>.</li>
+        <li><strong>Previous Years Papers:</strong> <em>Kiran RRB NTPC Mathematics & Reasoning Chapterwise Solved Papers</em>. Solving past papers is the single most important part of preparation.</li>
+      </ul>
+
+      <h3>5. 60-Day Step-by-Step Study Plan</h3>
+      <p>Here is a target roadmap for your daily prep:</p>
+      <ul>
+        <li><strong>Days 1-30 (Concept Building):</strong> Spend 4 hours daily on Math & Reasoning theory. Solve 30 chapter questions daily. Spend 2 hours daily on static GK and science notes.</li>
+        <li><strong>Days 31-45 (Practice & PYQs):</strong> Solve at least 20 Previous Years Question papers. Time yourself strictly for 90 minutes. Identify questions you miss and review those topics.</li>
+        <li><strong>Days 46-60 (Mock Tests & Speed):</strong> Take 1 online mock test daily. Spend 1 hour analyzing your weak areas. Focus on speed: aim to solve 100 questions in 75 minutes during practice to handle exam stress.</li>
+      </ul>
+
+      <p>Ready to test your speed? Head over to the **Test Series** section on WeeklyNaukri.com to access free, post-specific RRB NTPC mock exams and track your All India Rank!</p>
+    `
   }
 ];
