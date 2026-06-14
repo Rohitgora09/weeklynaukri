@@ -64,18 +64,26 @@ export async function fetchSSCNotices(force = false) {
 
     if (!cacheError && cached && cached.length > 0) {
       const newestTime = new Date(cached[0].scraped_at).getTime();
+      
+      const mapper = item => ({
+        id: item.job_id,
+        slug: item.url_slug,
+        title: item.title,
+        org: item.org,
+        date: new Date(item.scraped_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+        link: item.source_url,
+        tag: 'New',
+        tagColor: 'purple'
+      });
+
       if (Date.now() - newestTime < CACHE_DURATION_MS) {
         console.log("Returning Supabase cached SSC notices");
-        return cached.map(item => ({
-          id: item.job_id,
-          slug: item.url_slug,
-          title: item.title,
-          org: item.org,
-          date: new Date(item.scraped_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
-          link: item.source_url,
-          tag: 'New',
-          tagColor: 'purple'
-        }));
+        return cached.map(mapper);
+      } else {
+        console.log("Returning STALE Supabase cached SSC notices (refreshing in background)...");
+        // Trigger async background refresh without blocking
+        fetchSSCNotices(true).catch(err => console.error("Background SSC notices scrape error:", err.message));
+        return cached.map(mapper);
       }
     }
   }
@@ -275,16 +283,23 @@ export async function fetchSarkariResultData(force = false) {
         const sortedCached = [...allCached].sort((a, b) => new Date(b.scraped_at) - new Date(a.scraped_at));
         const newestTime = new Date(sortedCached[0].scraped_at).getTime();
 
+        const returnData = {
+          latestJobs: grouped.latestJobs.map(mapper),
+          admitCards: grouped.admitCards.map(mapper),
+          results: grouped.results.map(mapper),
+          answerKeys: grouped.answerKeys.map(mapper),
+          admissions: grouped.admissions.map(mapper),
+          documents: grouped.documents.map(mapper)
+        };
+
         if (Date.now() - newestTime < CACHE_DURATION_MS && grouped.latestJobs.length > 0) {
           console.log("Returning Supabase cached SarkariResult data");
-          return {
-            latestJobs: grouped.latestJobs.map(mapper),
-            admitCards: grouped.admitCards.map(mapper),
-            results: grouped.results.map(mapper),
-            answerKeys: grouped.answerKeys.map(mapper),
-            admissions: grouped.admissions.map(mapper),
-            documents: grouped.documents.map(mapper)
-          };
+          return returnData;
+        } else if (grouped.latestJobs.length > 0) {
+          console.log("Returning STALE Supabase cached SarkariResult data (refreshing in background)...");
+          // Trigger async background refresh without blocking
+          fetchSarkariResultData(true).catch(err => console.error("Background SarkariResult scrape error:", err.message));
+          return returnData;
         }
       }
     }
@@ -649,6 +664,11 @@ export async function fetchPrivateJobs(force = false) {
       const newestTime = new Date(cached[0].scraped_at).getTime();
       if (Date.now() - newestTime < CACHE_DURATION_MS) {
         console.log("Returning Supabase cached private jobs");
+        return cached.map(mapper);
+      } else {
+        console.log("Returning STALE Supabase cached private jobs (refreshing in background)...");
+        // Trigger async background refresh without blocking
+        fetchPrivateJobs(true).catch(err => console.error("Background private jobs scrape error:", err.message));
         return cached.map(mapper);
       }
     }
