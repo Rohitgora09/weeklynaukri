@@ -91,7 +91,9 @@ export default function ResultsClient({ initialResults }) {
           
           <h1 className="text-4xl md:text-6xl font-extrabold text-emerald-950 leading-tight tracking-tight mb-6">
             Sarkari Result 2026 <br />
-            <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Latest Government Exam Results</span>
+            <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
+              {results[0] ? `Latest: ${results[0].title}` : 'Latest Government Exam Results'}
+            </span>
           </h1>
           
           <p className="text-gray-600 text-base md:text-lg mb-8 max-w-2xl mx-auto">

@@ -4,14 +4,14 @@ import ResultsClient from './ResultsClient';
 export const revalidate = 0;
 
 export const metadata = {
-  title: 'Sarkari Result 2026: Govt Exam Results — WeeklyNaukri',
-  description: 'Check latest Sarkari Result 2026. Download scorecards, merit lists, and cut-off marks for SSC, UPSC, Railway, and Bank exams at WeeklyNaukri.com.',
+  title: 'Sarkari Result 2026 – Latest Govt Exam Results | WeeklyNaukri',
+  description: 'Check all latest Sarkari Results 2026. SSC, RRB, UPSC, Banking, Police & State exams – scorecards, cut-offs & merit lists updated instantly.',
   alternates: {
     canonical: '/results',
   },
   openGraph: {
-    title: 'Sarkari Result 2026: Govt Exam Results — WeeklyNaukri',
-    description: 'Check latest Sarkari Result 2026. Download scorecards, merit lists, and cut-off marks for SSC, UPSC, Railway, and Bank exams at WeeklyNaukri.com.',
+    title: 'Sarkari Result 2026 – Latest Govt Exam Results | WeeklyNaukri',
+    description: 'Check all latest Sarkari Results 2026. SSC, RRB, UPSC, Banking, Police & State exams – scorecards, cut-offs & merit lists updated instantly.',
     url: '/results',
     type: 'website',
   },

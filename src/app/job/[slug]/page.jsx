@@ -230,6 +230,17 @@ export default async function JobDetailsPage({ params }) {
     console.error("Failed to query recent jobs for details widget:", e);
   }
 
+  const categoryMap = {
+    latestJobs: { label: 'Latest Jobs', route: '/latest-jobs' },
+    results: { label: 'Results', route: '/results' },
+    admitCards: { label: 'Admit Cards', route: '/admit-cards' },
+    answerKeys: { label: 'Answer Keys', route: '/answer-keys' },
+    admissions: { label: 'Admissions', route: '/' },
+    documents: { label: 'Documents', route: '/' },
+    privateJobs: { label: 'Private Jobs', route: '/' },
+  };
+  const categoryInfo = categoryMap[job.category] || { label: 'Jobs', route: '/' };
+
   return (
     <div className="min-h-screen bg-white pb-20">
       {/* Dynamic JSON-LD Structured Data Schema */}
@@ -246,7 +257,22 @@ export default async function JobDetailsPage({ params }) {
       </nav>
 
       {/* Main Container */}
-      <main className="max-w-4xl mx-auto px-4 md:px-6 pt-6 md:pt-10">
+      <main className="max-w-4xl mx-auto px-4 md:px-6 pt-6">
+        {/* Breadcrumbs */}
+        <div className="text-xs text-gray-550 flex items-center gap-1.5 mb-6">
+          <Link href="/" className="hover:text-blue-700 transition-colors">
+            Home
+          </Link>
+          <span className="text-gray-300">/</span>
+          <Link href={categoryInfo.route} className="hover:text-blue-700 transition-colors">
+            {categoryInfo.label}
+          </Link>
+          <span className="text-gray-300">/</span>
+          <span className="text-gray-700 font-medium truncate">
+            {job.org} {job.title}
+          </span>
+        </div>
+
         <div className="text-center mb-8">
           <h1 className="text-xl md:text-3xl font-extrabold text-blue-950 leading-tight mb-2 uppercase tracking-wide">
             {job.org} {job.title} Online Form 2026

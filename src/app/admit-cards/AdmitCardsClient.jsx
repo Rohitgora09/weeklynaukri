@@ -82,6 +82,15 @@ export default function AdmitCardsClient({ initialAdmitCards }) {
     <div className="bg-white min-h-screen flex flex-col w-full">
       <Navbar onCategorySelect={handleCategorySelect} />
 
+      {/* Breadcrumbs */}
+      <div className="max-w-7xl mx-auto px-6 pt-6 w-full text-xs text-gray-550 flex items-center gap-1.5">
+        <Link href="/" className="hover:text-orange-600 transition-colors">
+          Home
+        </Link>
+        <span className="text-gray-300">/</span>
+        <span className="text-gray-700 font-medium">Admit Cards</span>
+      </div>
+
       {/* FAQ JSON-LD Schema */}
       <script
         type="application/ld+json"

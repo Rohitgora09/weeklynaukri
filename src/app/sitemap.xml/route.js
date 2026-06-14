@@ -30,7 +30,9 @@ export async function GET() {
       '/admit-cards',
       '/answer-keys',
       '/latest-jobs',
-      '/blog'
+      '/blog',
+      '/ssc-cgl-2026',
+      '/rrb-alp-2026'
     ];
 
     const staticUrls = staticPages.map(page => ({

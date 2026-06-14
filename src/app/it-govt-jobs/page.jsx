@@ -4,14 +4,14 @@ import ItGovtJobsClient from './ItGovtJobsClient';
 export const revalidate = 0;
 
 export const metadata = {
-  title: 'IT Government Jobs: Technical Govt Jobs — Weekly Naukri',
-  description: 'Apply to the latest IT government jobs, software developer, system admin, and technical vacancies in public sector undertakings. Find active direct apply links.',
+  title: 'IT Govt Jobs India 2026 – Tech & Software | WeeklyNaukri',
+  description: "Find IT & software government jobs in India 2026. NIC, DRDO, ISRO, PSU tech & programmer vacancies. India's only dedicated Govt Tech Jobs section.",
   alternates: {
     canonical: '/it-govt-jobs',
   },
   openGraph: {
-    title: 'IT Government Jobs: Technical Govt Jobs — Weekly Naukri',
-    description: 'Apply to the latest IT government jobs, software developer, system admin, and technical vacancies in public sector undertakings. Find active direct apply links.',
+    title: 'IT Govt Jobs India 2026 – Tech & Software | WeeklyNaukri',
+    description: "Find IT & software government jobs in India 2026. NIC, DRDO, ISRO, PSU tech & programmer vacancies. India's only dedicated Govt Tech Jobs section.",
     url: '/it-govt-jobs',
     type: 'website',
   },

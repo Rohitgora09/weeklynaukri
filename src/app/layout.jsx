@@ -15,8 +15,8 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: 'Govt Jobs: Latest Sarkari Result 2026 — Weekly Naukri',
-  description: "WeeklyNaukri.com is India's leading portal for active Government Jobs, IT vacancies, and Sarkari Results. Find latest openings.",
+  title: 'Latest Govt Jobs & Sarkari Result 2026 | WeeklyNaukri',
+  description: "India's trusted portal for latest government jobs, sarkari result, admit cards & answer keys. Updated daily. SSC, UPSC, Railway, Banking & more.",
   metadataBase: new URL('https://weeklynaukri.com'),
   icons: {
     icon: '/favicon.svg',
@@ -29,8 +29,8 @@ export const metadata = {
     locale: 'en_IN',
     url: 'https://weeklynaukri.com/',
     siteName: 'WeeklyNaukri.com',
-    title: 'Govt Jobs: Latest Sarkari Result 2026 — Weekly Naukri',
-    description: "WeeklyNaukri.com is India's leading portal for active Government Jobs, IT vacancies, and Sarkari Results. Find latest openings.",
+    title: 'Latest Govt Jobs & Sarkari Result 2026 | WeeklyNaukri',
+    description: "India's trusted portal for latest government jobs, sarkari result, admit cards & answer keys. Updated daily. SSC, UPSC, Railway, Banking & more.",
     images: [
       {
         url: '/og-image.png',
@@ -42,8 +42,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Govt Jobs: Latest Sarkari Result 2026 — Weekly Naukri',
-    description: "WeeklyNaukri.com is India's leading portal for active Government Jobs, IT vacancies, and Sarkari Results. Find latest openings.",
+    title: 'Latest Govt Jobs & Sarkari Result 2026 | WeeklyNaukri',
+    description: "India's trusted portal for latest government jobs, sarkari result, admit cards & answer keys. Updated daily. SSC, UPSC, Railway, Banking & more.",
     images: ['/og-image.png'],
   }
 };
