@@ -32,7 +32,9 @@ export async function GET() {
       '/latest-jobs',
       '/blog',
       '/ssc-cgl-2026',
-      '/rrb-alp-2026'
+      '/rrb-alp-2026',
+      '/it-government-jobs-2026',
+      '/up-govt-jobs-2026'
     ];
 
     const staticUrls = staticPages.map(page => ({

@@ -27,7 +27,23 @@ export default async function ResultsPage() {
     console.error("Results Page server fetch error:", err.message);
   }
 
+  const itemListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    'itemListElement': results.map((item, index) => ({
+      '@type': 'ListItem',
+      'position': index + 1,
+      'url': `https://weeklynaukri.com/job/${item.url_slug || item.slug || item.id}`
+    }))
+  };
+
   return (
-    <ResultsClient initialResults={results} />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
+      <ResultsClient initialResults={results} />
+    </>
   );
 }

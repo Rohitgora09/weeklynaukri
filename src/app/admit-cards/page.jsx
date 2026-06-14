@@ -27,7 +27,23 @@ export default async function AdmitCardsPage() {
     console.error("Admit Cards Page server fetch error:", err.message);
   }
 
+  const itemListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    'itemListElement': admitCards.map((item, index) => ({
+      '@type': 'ListItem',
+      'position': index + 1,
+      'url': `https://weeklynaukri.com/job/${item.url_slug || item.slug || item.id}`
+    }))
+  };
+
   return (
-    <AdmitCardsClient initialAdmitCards={admitCards} />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
+      <AdmitCardsClient initialAdmitCards={admitCards} />
+    </>
   );
 }

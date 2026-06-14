@@ -27,7 +27,23 @@ export default async function LatestJobsPage() {
     console.error("Latest Jobs Page server fetch error:", err.message);
   }
 
+  const itemListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    'itemListElement': latestJobs.map((job, index) => ({
+      '@type': 'ListItem',
+      'position': index + 1,
+      'url': `https://weeklynaukri.com/job/${job.url_slug || job.slug || job.id}`
+    }))
+  };
+
   return (
-    <LatestJobsClient initialJobs={latestJobs} />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
+      <LatestJobsClient initialJobs={latestJobs} />
+    </>
   );
 }
