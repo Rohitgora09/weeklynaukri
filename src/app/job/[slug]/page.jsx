@@ -505,6 +505,24 @@ export default async function JobDetailsPage({ params }) {
           </div>
         </div>
 
+        {/* Quick SEO Cross-Linking Widget */}
+        <div className="mt-8 border border-gray-200 bg-white rounded-2xl p-6 shadow-sm">
+          <h4 className="font-extrabold text-blue-950 text-xs mb-4 uppercase tracking-wider">
+            Quick Navigation Shortcuts
+          </h4>
+          <div className="grid grid-cols-3 gap-3 text-center text-xs font-bold">
+            <Link href="/results" className="p-3 bg-green-50 border border-green-100 hover:border-green-300 text-green-700 rounded-xl transition-all">
+              Latest Results 2026
+            </Link>
+            <Link href="/admit-cards" className="p-3 bg-orange-50 border border-orange-100 hover:border-orange-300 text-orange-700 rounded-xl transition-all">
+              Download Admit Cards
+            </Link>
+            <Link href="/answer-keys" className="p-3 bg-purple-50 border border-purple-100 hover:border-purple-300 text-purple-700 rounded-xl transition-all">
+              Exam Answer Keys
+            </Link>
+          </div>
+        </div>
+
         {/* Recent Government Job Openings Widget (SEO Internal Linking to eliminate orphan pages) */}
         {recentJobs.length > 0 && (
           <div className="mt-12 border border-gray-200 bg-gray-50/30 rounded-2xl p-6 md:p-8">
