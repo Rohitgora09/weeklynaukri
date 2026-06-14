@@ -558,7 +558,7 @@ export const blogPosts = [
     author: 'WeeklyNaukri Editorial',
     readTime: '8 min read',
     tags: ['UP Police', 'Sarkari Job', 'Study Guides'],
-    image: 'https://images.unsplash.com/photo-1599740831146-80f835230f4a?w=800&auto=format&fit=crop&q=60',
+    image: '/up-police-banner.png',
     content: `
       <p>The Uttar Pradesh Police Recruitment and Promotion Board (UPPRPB) conducts one of the largest state-level examinations for the post of Police Constable. With thousands of vacancies announced, millions of candidates apply to join the ranks of the UP Police force, making it highly competitive.</p>
       
