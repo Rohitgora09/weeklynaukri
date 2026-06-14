@@ -147,7 +147,7 @@ export async function fetchSSCNotices(force = false) {
     
     const insertRows = notices.map(notice => {
       const id = stableId('ssc-', notice.title);
-      const slug = slugify(notice.title) + '-' + id;
+      const slug = slugify(notice.title);
       return {
         url_slug: slug,
         job_id: id,
@@ -415,7 +415,7 @@ export async function fetchSarkariResultData(force = false) {
       activeCategories.push(categoryName);
       items.forEach(item => {
         const id = stableId('sr-', item.title);
-        const slug = slugify(item.title) + '-' + id;
+        const slug = slugify(item.title);
         const preservedDetails = detailsMap.get(slug) || null;
         insertRows.push({
           url_slug: slug,
@@ -770,7 +770,7 @@ export async function fetchPrivateJobs(force = false) {
 
     const insertRows = combinedJobs.map(job => {
       const id = stableId('pvt-', job.title + '-' + job.company);
-      const slug = slugify(job.title) + '-' + id;
+      const slug = slugify(job.title) + (job.company ? '-' + slugify(job.company) : '');
       const salary = getMockSalary(job.title);
       
       const details = {

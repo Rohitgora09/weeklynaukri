@@ -301,8 +301,51 @@ export default function HomeClient({ initialJobs, initialNotices }) {
   const categoryTabs = ['All Categories', 'Govt Jobs', 'Private Jobs', 'Results', 'Admit Cards', 'Answer Keys', 'Exam Calendar'];
   const forceLazyVisible = !!searchQuery || selectedCategory !== 'All Categories';
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is Weekly Naukri?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Weekly Naukri is a free job portal listing the latest government and private job notifications, sarkari results, and exam updates across India."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How often are new government jobs updated?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "New government job listings are updated daily including SSC, Railways, Banking, Defence, State PSC, and IT sector vacancies."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Weekly Naukri free to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, Weekly Naukri is completely free. You can browse all job listings, results, and admit cards without any subscription."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I get notified about new sarkari jobs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can join our WhatsApp channel or Telegram group to receive instant alerts for new government job notifications and sarkari results."
+        }
+      }
+    ]
+  };
+
   return (
     <div className="bg-white min-h-screen flex flex-col w-full">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <Navbar onCategorySelect={handleCategorySelect} />
 
       {/* Hero Banner Section */}
@@ -313,8 +356,8 @@ export default function HomeClient({ initialJobs, initialNotices }) {
           </div>
           
           <h1 className="text-4xl md:text-6xl font-extrabold text-blue-950 leading-tight tracking-tight mb-6 animate-stagger-2">
-            Find the Latest <br />
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Government Jobs & Private Sectors</span>
+            Latest Govt Jobs &amp; <br />
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Sarkari Result 2026</span>
           </h1>
           
           <p className="text-gray-700 text-base md:text-lg mb-10 max-w-2xl mx-auto leading-relaxed animate-stagger-3">
