@@ -266,5 +266,206 @@ export const blogPosts = [
 
       <p>Ready to test your speed? Head over to the **Test Series** section on WeeklyNaukri.com to access free, post-specific RRB NTPC mock exams and track your All India Rank!</p>
     `
+  },
+  {
+    id: 'ssc-cgl-2026-eligibility-guide',
+    title: 'SSC CGL 2026 Eligibility Criteria: Age Limit, Qualifications & Post-wise Details',
+    slug: 'ssc-cgl-2026-eligibility-guide',
+    excerpt: 'Complete guide to SSC CGL 2026 eligibility criteria. Find age limit, post-wise qualification requirements, age relaxations, and physical standards.',
+    publishedDate: '14 Jun 2026',
+    author: 'WeeklyNaukri Editorial',
+    readTime: '7 min read',
+    tags: ['SSC CGL', 'Govt Exams', 'Eligibility'],
+    image: 'https://images.unsplash.com/photo-1588072432836-e10032774350?w=800&auto=format&fit=crop&q=60',
+    content: `
+      <p>The Staff Selection Commission Combined Graduate Level (SSC CGL) exam is one of the most competitive recruiting drives in India. Qualifying this exam offers prestigious positions like Assistant Section Officer (ASO), Income Tax Inspector, Excise Inspector, Assistant Enforcement Officer (AEO), and Sub-Inspector in CBI.</p>
+
+      <p>Before beginning your exam preparation, it is critical to understand the detailed eligibility criteria. Meeting these requirements is mandatory, and any discrepancy found during Document Verification (DV) will lead to immediate disqualification. In this guide, we break down the post-wise educational qualifications, age limits, relaxations, and physical standards for SSC CGL 2026.</p>
+
+      <h3>1. Nationality / Citizenship</h3>
+      <p>A candidate must be either:</p>
+      <ul>
+        <li>A citizen of India, or</li>
+        <li>A subject of Nepal, or</li>
+        <li>A subject of Bhutan, or</li>
+        <li>A Tibetan refugee who came over to India before January 1, 1962, with the intention of permanently settling.</li>
+      </ul>
+
+      <h3>2. Educational Qualification (Post-wise)</h3>
+      <p>The minimum educational qualification required for SSC CGL is a Bachelor's degree from a recognized university. However, specific posts require specialized qualifications:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Post Name</th>
+            <th>Department / Ministry</th>
+            <th>Required Educational Qualification</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Assistant Audit Officer / Assistant Accounts Officer (AAO)</td>
+            <td>Indian Audit & Accounts Department under CAG</td>
+            <td><strong>Essential:</strong> Bachelor’s Degree in any stream.<br/><strong>Desirable:</strong> Chartered Accountant (CA) / Cost & Management Accountant / Company Secretary / M.Com / MBA (Finance).</td>
+          </tr>
+          <tr>
+            <td>Junior Statistical Officer (JSO)</td>
+            <td>Ministry of Statistics & Programme Implementation</td>
+            <td>Bachelor’s Degree in any stream with at least 60% Marks in Mathematics at 12th standard level OR Bachelor’s Degree in any stream with Statistics as one of the subjects at graduation level.</td>
+          </tr>
+          <tr>
+            <td>Statistical Investigator Grade-II</td>
+            <td>Registrar General of India</td>
+            <td>Bachelor’s Degree in any stream with Statistics as one of the subjects. The candidate must have studied Statistics as a subject in all three years of the graduation course.</td>
+          </tr>
+          <tr>
+            <td>All Other Posts (Inspector, ASO, Assistant, Auditor, Tax Assistant)</td>
+            <td>CSS, IB, Railway, External Affairs, CBDT, CBIC, Enforcement Directorate, CBI, etc.</td>
+            <td>Bachelor’s Degree in any stream (Arts, Science, Commerce, Engineering, etc.) from a recognized university. No minimum percentage required.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>3. Age Limit & Post-wise Grouping</h3>
+      <p>The age limit varies from post to post. The crucial date for age calculation is typically determined by the official notification. Here is the age classification for major posts:</p>
+
+      <ul>
+        <li><strong>Assistant Section Officer (CSS, MEA, Railways):</strong> 20 to 30 Years</li>
+        <li><strong>Inspector of Income Tax / Central Excise / Preventive Officer (CBDT/CBIC):</strong> 18 to 30 Years</li>
+        <li><strong>Assistant Enforcement Officer (AEO):</strong> Up to 30 Years</li>
+        <li><strong>Sub-Inspector (CBI):</strong> 20 to 30 Years</li>
+        <li><strong>Junior Statistical Officer (JSO):</strong> Up to 32 Years</li>
+        <li><strong>Auditor, Accountant, Tax Assistant, Upper Division Clerk (UDC):</strong> 18 to 27 Years</li>
+      </ul>
+
+      <h3>4. Age Relaxation Criteria</h3>
+      <p>Candidates belonging to reserved categories are eligible for age relaxation in the upper limit as per government norms:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Age Relaxation Allowed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>OBC (Other Backward Classes)</td>
+            <td>3 Years</td>
+          </tr>
+          <tr>
+            <td>SC / ST (Scheduled Caste / Scheduled Tribe)</td>
+            <td>5 Years</td>
+          </tr>
+          <tr>
+            <td>PwBD (Unreserved)</td>
+            <td>10 Years</td>
+          </tr>
+          <tr>
+            <td>PwBD (OBC)</td>
+            <td>13 Years</td>
+          </tr>
+          <tr>
+            <td>PwBD (SC/ST)</td>
+            <td>15 Years</td>
+          </tr>
+          <tr>
+            <td>Ex-Servicemen (ESM)</td>
+            <td>3 Years after deduction of military service rendered from actual age</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>5. Physical & Medical Standards</h3>
+      <p>For certain executive posts like Inspector (Central Excise, Preventive Officer, Examiner), Sub-Inspector in CBI, and Sub-Inspector in NIA, candidates must fulfill specific physical measurements and pass a medical test:</p>
+
+      <h4>For Male Candidates (Excise/Preventive Officer/Examiner):</h4>
+      <ul>
+        <li><strong>Height:</strong> 157.5 cm (relaxed by 5 cm for Garhwalis, Assamese, Gorkhas, and ST)</li>
+        <li><strong>Chest:</strong> 81 cm (fully expanded with a minimum expansion of 5 cm)</li>
+        <li><strong>Physical Test:</strong> Walking: 1600 meters in 15 minutes. Cycling: 8 km in 30 minutes.</li>
+      </ul>
+
+      <h4>For Female Candidates (Excise/Preventive Officer/Examiner):</h4>
+      <ul>
+        <li><strong>Height:</strong> 152 cm (relaxed by 2.5 cm for Gorkhas, Assamese, ST)</li>
+        <li><strong>Weight:</strong> 48 kg (relaxed by 2 kg for Gorkhas, Assamese, ST)</li>
+        <li><strong>Physical Test:</strong> Walking: 1 km in 20 minutes. Running: 1 km in 20 minutes (or cycling 3 km in 25 minutes).</li>
+      </ul>
+
+      <p>Want to check if you are fully prepared for the upcoming exam? Prepare and evaluate yourself with our free syllabus-oriented **SSC CGL Test Series** on WeeklyNaukri.com!</p>
+    `
+  },
+  {
+    id: 'it-government-jobs-engineers',
+    title: 'IT Government Jobs for Software Engineers in India: Career Guide & Vacancies',
+    slug: 'it-government-jobs-engineers',
+    excerpt: 'Explore top IT government jobs for software engineers in India. Find information about NIC, ISRO, DRDO, PSUs, salary, eligibility, and how to apply.',
+    publishedDate: '14 Jun 2026',
+    author: 'WeeklyNaukri Tech Editorial',
+    readTime: '8 min read',
+    tags: ['IT Jobs', 'Govt Jobs', 'Career Guide'],
+    image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop&q=60',
+    content: `
+      <p>For engineering graduates and IT professionals in India, the choice between private software companies and public sectors has evolved. Today, government organizations offer excellent technology careers working on massive scale applications like Aadhaar, UPI, space missions, and defense systems. These jobs offer the unique combination of public sector stability, high reputation, and competitive pay scales under the 7th Pay Commission.</p>
+
+      <p>In this guide, we explore the top organizations that recruit computer science graduates, software engineers, and IT professionals, detailing their eligibility criteria, salary grades, and selection processes.</p>
+
+      <h3>1. Prime Government Recruits for Software Engineers</h3>
+
+      <h4>A. National Informatics Centre (NIC)</h4>
+      <p>NIC is the premier technology arm of the Government of India under the Ministry of Electronics and Information Technology (MeitY). It builds and runs most government portals and digital infrastructures.</p>
+      <ul>
+        <li><strong>Key Roles:</strong> Scientist-B, Scientific/Technical Assistant-A, Scientific Officer.</li>
+        <li><strong>Eligibility:</strong> B.E/B.Tech in Computer Science/IT, MCA, M.Sc (CS/IT).</li>
+        <li><strong>Selection:</strong> Written exam (70% technical, 30% generic) followed by an interview for Scientist-B posts.</li>
+      </ul>
+
+      <h4>B. Indian Space Research Organisation (ISRO)</h4>
+      <p>ISRO recruits computer science engineers to develop satellite control software, image processing systems, and data analytics algorithms.</p>
+      <ul>
+        <li><strong>Key Roles:</strong> Scientist/Engineer 'SC' (Computer Science).</li>
+        <li><strong>Eligibility:</strong> B.E/B.Tech in Computer Science/Engineering with a minimum of 65% aggregate marks.</li>
+        <li><strong>Selection:</strong> Written test followed by a technical interview, or through valid GATE scores.</li>
+      </ul>
+
+      <h4>C. Defence Research and Development Organisation (DRDO)</h4>
+      <p>DRDO recruits software engineers for advanced cryptography, secure network architectures, real-time operating systems, and military software packages.</p>
+      <ul>
+        <li><strong>Key Roles:</strong> Scientist-B (Computer Science).</li>
+        <li><strong>Eligibility:</strong> B.E/B.Tech in Computer Science & Engineering with a valid GATE score.</li>
+        <li><strong>Selection:</strong> GATE score screening followed by a personal interview.</li>
+      </ul>
+
+      <h4>D. Public Sector Undertakings (PSUs)</h4>
+      <p>Leading PSUs like ONGC, IOCL, NTPC, GAIL, HPCL, BHEL, and POSOCO hire software engineers to run their ERPs, cybersecurity setups, and databases.</p>
+      <ul>
+        <li><strong>Selection:</strong> Almost all premium PSUs recruit exclusively through candidate GATE scores in the Computer Science and Information Technology (CS) paper.</li>
+      </ul>
+
+      <h4>E. Public Sector Banks (IBPS SO IT Officer)</h4>
+      <p>Public sector banks hire IT Officers to handle core banking systems, mobile apps, database administration, and cybersecurity.</p>
+      <ul>
+        <li><strong>Key Roles:</strong> Specialist Officer (IT Officer Scale-I).</li>
+        <li><strong>Eligibility:</strong> 4-year Engineering degree in CS/IT/ECE or Post Graduate degree in CS/IT/MCA.</li>
+        <li><strong>Selection:</strong> IBPS Specialist Officer Prelims, Mains (100% professional knowledge), and Interview.</li>
+      </ul>
+
+      <h3>2. Salary Scales & Allowances</h3>
+      <p>Most central government Scientist-B and IT Officer roles start at <strong>Pay Level 10</strong> of the 7th Pay Commission:</p>
+      <ul>
+        <li><strong>Basic Pay:</strong> ₹56,100 per month</li>
+        <li><strong>Gross Salary (approx):</strong> ₹85,000 - ₹95,000 per month (including Dearness Allowance (DA), House Rent Allowance (HRA), and Transport Allowance depending on city category).</li>
+      </ul>
+
+      <h3>3. Key Preparation Tips to Crack IT Govt Exams</h3>
+      <ol>
+        <li><strong>Focus on Core CS Concepts:</strong> The syllabus of almost all these exams heavily covers GATE topics: Data Structures & Algorithms, Operating Systems, Database Management Systems (DBMS), Computer Networks, and Theory of Computation.</li>
+        <li><strong>Maintain GATE Prep:</strong> Since DRDO, ISRO, and top PSUs recruit through GATE, scoring high in the GATE CS paper is the most direct gateway to these careers.</li>
+        <li><strong>Practice General Aptitude:</strong> Banking and NIC exams devote 30-50% of the exam to Quantitative Aptitude, Logical Reasoning, and English, so do not neglect these parts.</li>
+      </ol>
+
+      <p>Looking for active software and IT engineering jobs in the government sector? Browse the dedicated **IT Government Jobs** page on WeeklyNaukri.com to find and apply to the latest openings directly!</p>
+    `
   }
 ];
