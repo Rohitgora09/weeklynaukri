@@ -76,8 +76,10 @@ async function getJobData(slug) {
     }
   }
 
-  // For private jobs, do not attempt to deep-scrape details on-demand
-  if (cached.category === 'privateJobs') {
+  const isPdf = (cached.source_url || '').toLowerCase().endsWith('.pdf') || (cached.source_url || '').toLowerCase().includes('.pdf');
+
+  // For private jobs, notices, or PDF links, do not attempt to deep-scrape details on-demand
+  if (cached.category === 'privateJobs' || cached.category === 'notices' || isPdf) {
     return {
       isStatic: false,
       job: {

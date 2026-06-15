@@ -56,12 +56,14 @@ export async function GET() {
 
     const dynamicJobs = dynamicJobsData || [];
 
-    const dynamicJobUrls = dynamicJobs.map(job => ({
-      loc: `https://weeklynaukri.com/job/${job.url_slug}`,
-      lastmod: job.scraped_at ? new Date(job.scraped_at).toISOString().split('T')[0] : null,
-      changefreq: 'weekly',
-      priority: '0.9'
-    }));
+    const dynamicJobUrls = dynamicJobs
+      .filter(job => job.url_slug && job.url_slug.trim() !== '')
+      .map(job => ({
+        loc: `https://weeklynaukri.com/job/${job.url_slug}`,
+        lastmod: job.scraped_at ? new Date(job.scraped_at).toISOString().split('T')[0] : null,
+        changefreq: 'weekly',
+        priority: '0.9'
+      }));
 
     const testSeriesUrls = mockTestSeriesList.map(series => ({
       loc: `https://weeklynaukri.com/test-series/${series.id}`,
