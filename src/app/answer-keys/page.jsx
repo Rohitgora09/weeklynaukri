@@ -15,6 +15,13 @@ export const metadata = {
     description: 'Check and download official answer keys for SSC, UPSC, Railway, and State government exams. Raise objections and verify your answers at WeeklyNaukri.com.',
     url: '/answer-keys',
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Answer Key 2026 — WeeklyNaukri' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Answer Key 2026: Latest Sarkari Answer Keys — WeeklyNaukri',
+    description: 'Check and download official answer keys for SSC, UPSC, Railway, and State government exams. Raise objections and verify your answers at WeeklyNaukri.com.',
+    images: ['/og-image.png'],
   },
 };
 
