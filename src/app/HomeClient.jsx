@@ -360,8 +360,8 @@ export default function HomeClient({ initialJobs, initialNotices }) {
           </div>
           
           <h1 className="text-4xl md:text-6xl font-extrabold text-blue-950 leading-tight tracking-tight mb-6 animate-stagger-2">
-            Latest Govt Jobs &amp; <br />
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Sarkari Result 2026</span>
+            Find the Latest <br />
+            Government Jobs &amp; <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Private Sectors</span>
           </h1>
           
           <p className="text-gray-700 text-base md:text-lg mb-10 max-w-2xl mx-auto leading-relaxed animate-stagger-3">

@@ -57,6 +57,7 @@ export default async function SitemapPage() {
     { name: 'Free Online Mock Test Series', path: '/test-series' },
     { name: 'Job Referrals Board', path: '/referrals' },
     { name: 'Career Prep Blog', path: '/blog' },
+    { name: 'Official Exam Syllabus PDF Vault', path: '/syllabus' },
     { name: 'Remote Jobs Career Guide', path: '/remote-jobs-guide' },
     { name: 'Frequently Asked Questions', path: '/faq' },
     { name: 'About WeeklyNaukri', path: '/about' },

@@ -41,6 +41,7 @@ export default function Navbar({ onCategorySelect }) {
   const navItems = [
     { label: 'Govt Jobs', path: '/latest-jobs' },
     { label: 'Govt Tech Jobs', path: '/it-govt-jobs' },
+    { label: 'Syllabus', path: '/syllabus' },
     { label: 'Test Series', path: '/test-series' },
     { label: 'Private Jobs', value: 'Private Jobs' },
     { label: 'Results', path: '/results' },
