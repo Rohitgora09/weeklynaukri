@@ -14,13 +14,6 @@ export const metadata = {
     description: "Find IT & software government jobs in India 2026. NIC, DRDO, ISRO, PSU tech & programmer vacancies. India's only dedicated Govt Tech Jobs section.",
     url: '/it-govt-jobs',
     type: 'website',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'IT Government Jobs India 2026 — WeeklyNaukri' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'IT Govt Jobs India 2026 – Tech & Software | WeeklyNaukri',
-    description: "Find IT & software government jobs in India 2026. NIC, DRDO, ISRO, PSU tech & programmer vacancies. India's only dedicated Govt Tech Jobs section.",
-    images: ['/og-image.png'],
   },
 };
 

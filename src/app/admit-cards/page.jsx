@@ -14,13 +14,6 @@ export const metadata = {
     description: 'Download admit cards & hall tickets for SSC, RRB, UPSC, IBPS, Police & State PSC exams 2026. Instant updates on WeeklyNaukri.',
     url: '/admit-cards',
     type: 'website',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Admit Card 2026 — WeeklyNaukri' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Admit Card 2026 – Download Govt Hall Tickets | WeeklyNaukri',
-    description: 'Download admit cards & hall tickets for SSC, RRB, UPSC, IBPS, Police & State PSC exams 2026. Instant updates on WeeklyNaukri.',
-    images: ['/og-image.png'],
   },
 };
 
