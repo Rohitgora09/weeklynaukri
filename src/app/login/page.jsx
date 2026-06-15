@@ -6,6 +6,11 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
+export const metadata = {
+  title: 'Login — WeeklyNaukri',
+  robots: { index: false, follow: false },
+};
+
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
