@@ -18,7 +18,8 @@ import {
   Calendar,
   ExternalLink,
   Menu,
-  SearchX
+  SearchX,
+  Calculator
 } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
@@ -396,24 +397,47 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             </div>
           )}
 
-          {/* Direct navigation card for Govt Tech Jobs */}
-          <div className="mt-10 max-w-md mx-auto bg-blue-50/50 border border-blue-200/70 rounded-2xl p-5 flex items-center justify-between shadow-sm animate-fade-in-up">
-            <div className="flex items-center gap-3 text-left">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-650 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm">
-                <Sparkles className="w-5 h-5 text-amber-300" aria-hidden="true" />
+          {/* Direct navigation cards grid */}
+          <div className="mt-10 max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in-up">
+            {/* Govt Tech Jobs Card */}
+            <div className="bg-blue-50/50 border border-blue-200/70 rounded-2xl p-4 flex items-center justify-between shadow-sm text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-650 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm">
+                  <Sparkles className="w-4.5 h-4.5 text-amber-300" aria-hidden="true" />
+                </div>
+                <div>
+                  <h2 className="font-bold text-blue-950 text-xs">Govt Tech Jobs</h2>
+                  <p className="text-[10px] text-blue-800/80">Software & IT posts</p>
+                </div>
               </div>
-              <div>
-                <h2 className="font-bold text-blue-950 text-xs sm:text-sm">Technical & IT Government Jobs</h2>
-                <p className="text-[11px] sm:text-xs text-blue-800/80">Explore software & programmer vacancies.</p>
-              </div>
+              <Link 
+                href="/it-govt-jobs" 
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-semibold px-3.5 py-2 rounded-full hover:from-blue-700 hover:to-indigo-700 transition-all shadow-sm shrink-0 ml-2"
+                aria-label="Explore Technical and IT Government Jobs"
+              >
+                Explore
+              </Link>
             </div>
-            <Link 
-              href="/it-govt-jobs" 
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-semibold px-4 py-2.5 rounded-full hover:from-blue-700 hover:to-indigo-700 transition-all shadow-sm shrink-0 ml-2"
-              aria-label="Explore Technical and IT Government Jobs"
-            >
-              Explore
-            </Link>
+
+            {/* SSC GD 2026 Calculator Card */}
+            <div className="bg-amber-50/60 border border-amber-200/70 rounded-2xl p-4 flex items-center justify-between shadow-sm text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm">
+                  <Calculator className="w-4.5 h-4.5 text-white" aria-hidden="true" />
+                </div>
+                <div>
+                  <h2 className="font-bold text-amber-950 text-xs">SSC GD Estimator</h2>
+                  <p className="text-[10px] text-amber-800/80">Marks & cut-off calculator</p>
+                </div>
+              </div>
+              <Link 
+                href="/ssc-gd-2026" 
+                className="bg-gradient-to-r from-amber-500 to-orange-550 text-white text-xs font-semibold px-3.5 py-2 rounded-full hover:from-amber-600 hover:to-orange-600 transition-all shadow-sm shrink-0 ml-2"
+                aria-label="Explore SSC GD Score Calculator"
+              >
+                Calculate
+              </Link>
+            </div>
           </div>
 
           {/* Quick search chips */}

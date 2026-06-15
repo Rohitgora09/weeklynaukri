@@ -1,5 +1,81 @@
 export const blogPosts = [
   {
+    id: 'ssc-gd-constable-answer-key-2026',
+    title: 'SSC GD Answer Key 2026: Calculate Score & Expected Cut-Off Marks',
+    slug: 'ssc-gd-constable-answer-key-2026',
+    excerpt: 'The Staff Selection Commission has released the SSC GD Constable 2026 response sheet. Follow our step-by-step guide to download the answer key, calculate negative marks, and check expected cut-offs.',
+    publishedDate: '15 Jun 2026',
+    author: 'WeeklyNaukri Editorial',
+    readTime: '5 min read',
+    tags: ['SSC GD', 'Answer Key', 'Cut-Off'],
+    image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&auto=format&fit=crop&q=60',
+    content: `
+      <p>The Staff Selection Commission (SSC) has released the provisional answer keys and candidate response sheets for the <strong>Constable (GD) in CAPFs, SSF, and Rifleman (GD) in Assam Rifles Examination, 2026</strong>. Candidates who appeared for the exam can now download their response sheet from the official website <strong>ssc.gov.in</strong> by logging in with their registration credentials.</p>
+
+      <h3>How to Download SSC GD Answer Key 2026</h3>
+      <p>Follow these simple steps to download your response sheet:</p>
+      <ol>
+        <li>Go to the official website: <strong><a href="https://ssc.gov.in" target="_blank" rel="noopener noreferrer">ssc.gov.in</a></strong>.</li>
+        <li>Click on the <strong>"Answer Key"</strong> tab on the homepage.</li>
+        <li>Select the link for <em>"Uploading of Tentative Answer Key along with Candidate Response Sheet - Constable (GD) 2026"</em>.</li>
+        <li>Enter your Roll Number and Password (as per your admission certificate).</li>
+        <li>Click <strong>Login</strong>. Your response sheet along with correct answers marked in green will be displayed.</li>
+        <li>Download or print the PDF for mark calculation.</li>
+      </ol>
+
+      <h3>How to Calculate SSC GD 2026 Marks (Negative Marking Rules)</h3>
+      <p>The SSC GD written exam consists of 80 questions carrying a total of 160 marks. Each correct answer awards 2 marks, while a negative mark is deducted for every incorrect attempt.</p>
+      <ul>
+        <li><strong>Total Questions:</strong> 80 questions (Reasoning: 20, General Knowledge: 20, Mathematics: 20, English/Hindi: 20).</li>
+        <li><strong>Correct Answer:</strong> +2 Marks</li>
+        <li><strong>Incorrect Answer:</strong> -0.25 Marks (standard GD negative marking is 0.25).</li>
+      </ul>
+      <p><strong>Scoring Formula:</strong></p>
+      <p><code>Raw Score = (Number of Correct Answers × 2) - (Number of Incorrect Answers × 0.25)</code></p>
+      <p>To calculate your raw score easily, try our interactive <a href="/ssc-gd-2026">SSC GD Marks Calculator Tool</a>.</p>
+
+      <h3>Expected Category-Wise Cut-Off Marks 2026</h3>
+      <p>Based on difficulty level, shift analysis, and negative marks calculated by thousands of candidates, the expected cut-off ranges for physical tests (PET/PST) are as follows:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Expected Cut-Off (Out of 160)</th>
+            <th>Safe Attempt Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>General (UR)</td>
+            <td>128 – 136 Marks</td>
+            <td>65 – 68 Questions</td>
+          </tr>
+          <tr>
+            <td>OBC</td>
+            <td>124 – 132 Marks</td>
+            <td>63 – 66 Questions</td>
+          </tr>
+          <tr>
+            <td>EWS</td>
+            <td>122 – 130 Marks</td>
+            <td>62 – 65 Questions</td>
+          </tr>
+          <tr>
+            <td>SC</td>
+            <td>112 – 118 Marks</td>
+            <td>56 – 60 Questions</td>
+          </tr>
+          <tr>
+            <td>ST</td>
+            <td>102 – 110 Marks</td>
+            <td>52 – 55 Questions</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><em>Note: These are predicted raw scores. Final selection will be based on normalized marks declared by the commission.</em></p>
+    `
+  },
+  {
     id: 'top-upcoming-govt-exams-2026',
     title: 'Top 10 Upcoming Government Exams in India for 2026',
     slug: 'top-upcoming-govt-exams-2026',
