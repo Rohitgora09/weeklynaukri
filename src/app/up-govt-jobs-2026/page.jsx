@@ -14,6 +14,13 @@ export const metadata = {
     description: 'All Uttar Pradesh government job notifications 2026 at one place. UPSSSC, UPPSC, UP Police, TGT & more. Apply online at WeeklyNaukri.',
     url: '/up-govt-jobs-2026',
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'UP Government Jobs 2026 — WeeklyNaukri' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'UP Govt Jobs 2026 – UPSSSC, UPPSC, Police | WeeklyNaukri',
+    description: 'All Uttar Pradesh government job notifications 2026 at one place. UPSSSC, UPPSC, UP Police, TGT & more. Apply online at WeeklyNaukri.',
+    images: ['/og-image.png'],
   },
 };
 

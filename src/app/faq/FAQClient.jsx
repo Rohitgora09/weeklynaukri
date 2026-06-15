@@ -54,25 +54,6 @@ export default function FAQClient() {
     <div className="min-h-screen bg-gray-50 flex flex-col w-full">
       <Navbar />
 
-      {/* JSON-LD Schema for Google FAQ */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": faqs.map(faq => ({
-              "@type": "Question",
-              "name": faq.question,
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": faq.answer
-              }
-            }))
-          })
-        }}
-      />
-
       <main className="max-w-3xl mx-auto px-6 py-12 flex-1 w-full">
         <div className="text-center mb-10">
           <HelpCircle className="w-12 h-12 text-blue-600 mx-auto mb-3" />
