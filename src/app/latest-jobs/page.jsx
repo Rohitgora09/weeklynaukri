@@ -14,13 +14,6 @@ export const metadata = {
     description: 'Apply for latest government jobs in India. Find Sarkari Naukri vacancies from SSC, UPSC, Railway, and Bank with direct links at WeeklyNaukri.',
     url: '/latest-jobs',
     type: 'website',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Latest Govt Jobs 2026 — WeeklyNaukri' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Latest Govt Jobs 2026: Sarkari Naukri — WeeklyNaukri',
-    description: 'Apply for latest government jobs in India. Find Sarkari Naukri vacancies from SSC, UPSC, Railway, and Bank with direct links at WeeklyNaukri.',
-    images: ['/og-image.png'],
   },
 };
 

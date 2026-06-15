@@ -13,13 +13,6 @@ export const metadata = {
     description: 'Learn more about WeeklyNaukri.com, India\'s #1 weekly government and private job notification portal.',
     url: '/about',
     type: 'website',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'About WeeklyNaukri.com' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'About Us — WeeklyNaukri.com',
-    description: 'Learn more about WeeklyNaukri.com, India\'s #1 weekly government and private job notification portal.',
-    images: ['/og-image.png'],
   },
 };
 

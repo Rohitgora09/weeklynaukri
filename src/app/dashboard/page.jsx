@@ -18,11 +18,6 @@ import {
 } from 'lucide-react';
 import { api } from '../../services/api';
 
-export const metadata = {
-  title: 'Admin Dashboard — WeeklyNaukri',
-  robots: { index: false, follow: false },
-};
-
 export default function Dashboard() {
   const [authorized, setAuthorized] = useState(false);
   const [password, setPassword] = useState('');

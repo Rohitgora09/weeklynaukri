@@ -1,11 +1,6 @@
 import Link from 'next/link';
 import { AlertCircle } from 'lucide-react';
 
-export const metadata = {
-  title: 'Page Not Found — WeeklyNaukri',
-  robots: { index: false, follow: false },
-};
-
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">

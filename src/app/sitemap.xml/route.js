@@ -17,33 +17,34 @@ export const revalidate = 3600; // Cache sitemap for 1 hour
 export async function GET() {
   try {
     const staticPages = [
-      { path: '', changefreq: 'daily', priority: '1.0' },
-      { path: '/latest-jobs', changefreq: 'daily', priority: '0.9' },
-      { path: '/results', changefreq: 'daily', priority: '0.9' },
-      { path: '/admit-cards', changefreq: 'daily', priority: '0.9' },
-      { path: '/answer-keys', changefreq: 'weekly', priority: '0.8' },
-      { path: '/it-govt-jobs', changefreq: 'daily', priority: '0.8' },
-      { path: '/ssc-cgl-2026', changefreq: 'weekly', priority: '0.8' },
-      { path: '/rrb-alp-2026', changefreq: 'weekly', priority: '0.8' },
-      { path: '/it-government-jobs-2026', changefreq: 'weekly', priority: '0.8' },
-      { path: '/up-govt-jobs-2026', changefreq: 'weekly', priority: '0.8' },
-      { path: '/rajasthan-jobs-2026', changefreq: 'weekly', priority: '0.8' },
-      { path: '/ssc-gd-2026', changefreq: 'weekly', priority: '0.8' },
-      { path: '/exam-calendar', changefreq: 'weekly', priority: '0.7' },
-      { path: '/test-series', changefreq: 'weekly', priority: '0.7' },
-      { path: '/blog', changefreq: 'weekly', priority: '0.7' },
-      { path: '/referrals', changefreq: 'weekly', priority: '0.7' },
-      { path: '/remote-jobs-guide', changefreq: 'monthly', priority: '0.6' },
-      { path: '/syllabus', changefreq: 'monthly', priority: '0.6' },
-      { path: '/faq', changefreq: 'monthly', priority: '0.5' },
-      { path: '/about', changefreq: 'monthly', priority: '0.5' },
-      { path: '/contact', changefreq: 'monthly', priority: '0.5' },
+      '',
+      '/contact',
+      '/privacy-policy',
+      '/about',
+      '/referrals',
+      '/it-govt-jobs',
+      '/test-series',
+      '/faq',
+      '/remote-jobs-guide',
+      '/results',
+      '/admit-cards',
+      '/answer-keys',
+      '/latest-jobs',
+      '/blog',
+      '/ssc-cgl-2026',
+      '/rrb-alp-2026',
+      '/it-government-jobs-2026',
+      '/up-govt-jobs-2026',
+      '/exam-calendar',
+      '/rajasthan-jobs-2026',
+      '/syllabus',
+      '/ssc-gd-2026'
     ];
 
     const staticUrls = staticPages.map(page => ({
-      loc: `https://weeklynaukri.com${page.path}`,
-      changefreq: page.changefreq,
-      priority: page.priority
+      loc: `https://weeklynaukri.com${page}`,
+      changefreq: page === '' ? 'daily' : 'monthly',
+      priority: page === '' ? '1.0' : '0.5'
     }));
 
     // Get all dynamic scraped jobs from Supabase Cache
