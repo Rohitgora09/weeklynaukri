@@ -53,8 +53,6 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${inter.variable}`}>
       <head>
         {/* Preload critical assets for LCP/FCP */}
-        <link rel="preload" as="image" href="/favicon.svg" />
-        <link rel="preload" as="image" href="/logo.png" />
         <link rel="preload" as="image" href="/logo.svg" />
 
         {/* Google Tag Manager */}
