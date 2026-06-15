@@ -35,6 +35,53 @@ function formatIsoDate(dateStr) {
   return null;
 }
 
+function getBaseSalary(job) {
+  let minVal = 25000;
+  let maxVal = 60000;
+  const unit = 'MONTH';
+
+  const salaryStr = job.salary || '';
+  if (salaryStr) {
+    // Try to parse "₹5-10 LPA" or similar
+    const lpaMatch = salaryStr.match(/₹?(\d+)-(\d+)\s*LPA/i);
+    if (lpaMatch) {
+      minVal = Math.round((parseFloat(lpaMatch[1]) * 100000) / 12);
+      maxVal = Math.round((parseFloat(lpaMatch[2]) * 100000) / 12);
+    } else {
+      const singleLpa = salaryStr.match(/₹?(\d+)\s*LPA/i);
+      if (singleLpa) {
+        const value = Math.round((parseFloat(singleLpa[1]) * 100000) / 12);
+        minVal = Math.round(value * 0.8);
+        maxVal = Math.round(value * 1.2);
+      }
+    }
+  } else {
+    // Government jobs default salary based on title keywords
+    const title = (job.title || '').toLowerCase();
+    if (title.includes('ias') || title.includes('ips') || title.includes('officer') || title.includes('scientist') || title.includes('commissioner')) {
+      minVal = 56100; // Pay Level 10
+      maxVal = 177500;
+    } else if (title.includes('inspector') || title.includes('sub inspector') || title.includes('si') || title.includes('assistant section officer') || title.includes('aso')) {
+      minVal = 44900; // Pay Level 7
+      maxVal = 142400;
+    } else if (title.includes('constable') || title.includes('clerk') || title.includes('assistant') || title.includes('typist') || title.includes('technician')) {
+      minVal = 21700; // Pay Level 3
+      maxVal = 69100;
+    }
+  }
+
+  return {
+    '@type': 'MonetaryAmount',
+    currency: 'INR',
+    value: {
+      '@type': 'QuantitativeValue',
+      minValue: minVal,
+      maxValue: maxVal,
+      unitText: unit
+    }
+  };
+}
+
 export default function JobPostingSchema({ job }) {
   if (!job) return null;
 
@@ -64,6 +111,7 @@ export default function JobPostingSchema({ job }) {
     datePosted: postedDate,
     validThrough: finalExpiry,
     employmentType: 'FULL_TIME',
+    baseSalary: getBaseSalary(job),
     jobLocation: {
       '@type': 'Place',
       address: {
