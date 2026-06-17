@@ -1,7 +1,7 @@
 import { fetchSSCNotices, fetchSarkariResultData } from '../../lib/scraper';
 import ItGovtJobsClient from '../it-govt-jobs/ItGovtJobsClient';
 
-export const revalidate = 0;
+export const revalidate = 900; // Cache for 15 minutes
 
 export const metadata = {
   title: 'IT Govt Jobs India 2026 – Tech & Software | WeeklyNaukri',

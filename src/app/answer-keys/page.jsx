@@ -2,7 +2,7 @@ import { fetchSarkariResultData } from '../../lib/scraper';
 import { answerKeys } from '../../data/jobs';
 import AnswerKeysClient from './AnswerKeysClient';
 
-export const revalidate = 0;
+export const revalidate = 900; // Cache for 15 minutes
 
 export const metadata = {
   title: 'Answer Key 2026: Latest Sarkari Answer Keys — WeeklyNaukri',

@@ -1,7 +1,7 @@
 import { fetchSarkariResultData } from '../../lib/scraper';
 import AdmitCardsClient from './AdmitCardsClient';
 
-export const revalidate = 0;
+export const revalidate = 900; // Cache for 15 minutes
 
 export const metadata = {
   title: 'Admit Card 2026 – Download Govt Hall Tickets | WeeklyNaukri',

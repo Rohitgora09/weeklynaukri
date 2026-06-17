@@ -1,7 +1,7 @@
 import { fetchSarkariResultData } from '../../lib/scraper';
 import UpGovtJobsClient from './UpGovtJobsClient';
 
-export const revalidate = 0;
+export const revalidate = 900; // Cache for 15 minutes
 
 export const metadata = {
   title: 'UP Govt Jobs 2026 – UPSSSC, UPPSC, Police | WeeklyNaukri',

@@ -1,7 +1,7 @@
 import { fetchSarkariResultData } from '../../lib/scraper';
 import ResultsClient from './ResultsClient';
 
-export const revalidate = 0;
+export const revalidate = 900; // Cache for 15 minutes
 
 export const metadata = {
   title: 'Sarkari Result 2026 – Latest Govt Exam Results | WeeklyNaukri',

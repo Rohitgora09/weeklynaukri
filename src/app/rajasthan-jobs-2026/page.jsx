@@ -1,7 +1,7 @@
 import { fetchSarkariResultData } from '../../lib/scraper';
 import RajasthanJobsClient from './RajasthanJobsClient';
 
-export const revalidate = 0;
+export const revalidate = 900; // Cache for 15 minutes
 
 export const metadata = {
   title: 'Rajasthan Govt Jobs 2026 – RPSC, RSSB, Police | WeeklyNaukri',

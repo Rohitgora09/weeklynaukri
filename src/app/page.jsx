@@ -2,7 +2,7 @@ import { fetchSSCNotices, fetchSarkariResultData, fetchPrivateJobs } from '../li
 import HomeClient from './HomeClient';
 
 // Force SSR for home page so search engine always gets fresh scraped jobs
-export const revalidate = 0;
+export const revalidate = 900; // Cache for 15 minutes
 
 export default async function Home() {
   let initialJobs = { latestJobs: [], admitCards: [], results: [], privateJobs: [] };

@@ -1,7 +1,7 @@
 import { fetchSarkariResultData } from '../../lib/scraper';
 import LatestJobsClient from './LatestJobsClient';
 
-export const revalidate = 0;
+export const revalidate = 900; // Cache for 15 minutes
 
 export const metadata = {
   title: 'Latest Govt Jobs 2026: Sarkari Naukri — WeeklyNaukri',
