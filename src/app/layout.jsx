@@ -116,7 +116,13 @@ export default function RootLayout({ children }) {
                   },
                   "image": {
                     "@id": "https://weeklynaukri.com/#logo"
-                  }
+                  },
+                  "sameAs": [
+                    "https://t.me/weekly_naukri",
+                    "https://chat.whatsapp.com/GeHRdlojdjU7hurA2QCIT7",
+                    "https://youtube.com/@weeklynaukri",
+                    "https://instagram.com/weeklynaukri"
+                  ]
                 }
               ]
             })
