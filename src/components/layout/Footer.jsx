@@ -18,7 +18,7 @@ export default function Footer({ onFooterSearch }) {
   return (
     <footer role="contentinfo" aria-label="Site footer" className="bg-gray-50 border-t border-gray-200 pt-16 pb-8 mt-16 w-full contain-layout-paint">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
           <div>
             <Link href="/" className="flex items-center gap-2 mb-4" aria-label="WeeklyNaukri - Go to homepage">
               <img src="/logo.svg" alt="WeeklyNaukri Logo" className="h-20 w-20 md:h-24 md:w-24 object-contain rounded-full shadow-sm shrink-0 bg-white p-1" />
@@ -36,13 +36,23 @@ export default function Footer({ onFooterSearch }) {
               <li><a href="https://www.india.gov.in/my-government/state-pin-services/public-service-commissions" target="_blank" rel="noopener noreferrer" className="hover:text-black cursor-pointer transition-colors">State PSC</a></li>
             </ul>
           </nav>
+          <nav aria-label="Popular exam portals">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">Exam Hubs</h3>
+            <ul className="space-y-2.5 text-sm text-gray-600">
+              <li><Link href="/exam-calendar" className="hover:text-black cursor-pointer transition-colors">Exam Calendar</Link></li>
+              <li><Link href="/syllabus" className="hover:text-black cursor-pointer transition-colors">Syllabus PDF Vault</Link></li>
+              <li><Link href="/ssc-cgl-2026" className="hover:text-black cursor-pointer transition-colors">SSC CGL 2026</Link></li>
+              <li><Link href="/ssc-gd-2026" className="hover:text-black cursor-pointer transition-colors">SSC GD Constable</Link></li>
+              <li><Link href="/rrb-alp-2026" className="hover:text-black cursor-pointer transition-colors">RRB ALP 2026</Link></li>
+              <li><Link href="/up-govt-jobs-2026" className="hover:text-black cursor-pointer transition-colors">UP Govt Jobs</Link></li>
+              <li><Link href="/rajasthan-jobs-2026" className="hover:text-black cursor-pointer transition-colors">Rajasthan Jobs</Link></li>
+              <li><Link href="/it-government-jobs-2026" className="hover:text-black cursor-pointer transition-colors">IT Govt Jobs</Link></li>
+            </ul>
+          </nav>
           <nav aria-label="Resources and exam information">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Resources</h3>
             <ul className="space-y-2.5 text-sm text-gray-600">
-              <li><button onClick={() => handleLinkClick('All Categories', 'Calendar')} className="hover:text-black cursor-pointer transition-colors bg-transparent border-none p-0 text-sm text-gray-600 text-left">Exam Calendar</button></li>
-              <li><button onClick={() => handleLinkClick('All Categories', 'Syllabus')} className="hover:text-black cursor-pointer transition-colors bg-transparent border-none p-0 text-sm text-gray-600 text-left">Syllabus</button></li>
-              <li><button onClick={() => handleLinkClick('All Categories', 'Previous Paper')} className="hover:text-black cursor-pointer transition-colors bg-transparent border-none p-0 text-sm text-gray-600 text-left">Previous Papers</button></li>
-              <li><button onClick={() => handleLinkClick('All Categories', 'Mock Test')} className="hover:text-black cursor-pointer transition-colors bg-transparent border-none p-0 text-sm text-gray-600 text-left">Mock Tests</button></li>
+              <li><Link href="/test-series" className="hover:text-black cursor-pointer transition-colors">Online Test Series</Link></li>
               <li><Link href="/admit-cards" className="hover:text-black cursor-pointer transition-colors">Admit Cards</Link></li>
               <li><Link href="/answer-keys" className="hover:text-black cursor-pointer transition-colors">Answer Keys</Link></li>
               <li><Link href="/results" className="hover:text-black cursor-pointer transition-colors">Sarkari Results</Link></li>
