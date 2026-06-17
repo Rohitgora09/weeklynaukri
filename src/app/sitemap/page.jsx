@@ -59,6 +59,7 @@ export default async function SitemapPage() {
     { name: 'Career Prep Blog', path: '/blog' },
     { name: 'Official Exam Syllabus PDF Vault', path: '/syllabus' },
     { name: 'SSC GD 2026 Score Calculator', path: '/ssc-gd-2026' },
+    { name: 'Sarkari Photo & Signature Resizer', path: '/image-resizer' },
     { name: 'Remote Jobs Career Guide', path: '/remote-jobs-guide' },
     { name: 'Frequently Asked Questions', path: '/faq' },
     { name: 'About WeeklyNaukri', path: '/about' },

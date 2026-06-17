@@ -52,6 +52,7 @@ export default function Footer({ onFooterSearch }) {
           <nav aria-label="Resources and exam information">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Resources</h3>
             <ul className="space-y-2.5 text-sm text-gray-600">
+              <li><Link href="/image-resizer" className="hover:text-black cursor-pointer transition-colors font-semibold text-rose-650">Sarkari Image Resizer</Link></li>
               <li><Link href="/test-series" className="hover:text-black cursor-pointer transition-colors">Online Test Series</Link></li>
               <li><Link href="/admit-cards" className="hover:text-black cursor-pointer transition-colors">Admit Cards</Link></li>
               <li><Link href="/answer-keys" className="hover:text-black cursor-pointer transition-colors">Answer Keys</Link></li>
