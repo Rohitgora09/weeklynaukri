@@ -443,7 +443,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
           {/* Quick search chips */}
           <div className="mt-12 flex flex-wrap items-center justify-center gap-2.5 max-w-2xl mx-auto" role="group" aria-label="Trending search suggestions">
             <span className="text-xs text-gray-500 font-medium">Trending Searches:</span>
-            {['SSC CGL', 'UPSC Prelims', 'Railway Group D', 'Bank PO', 'Agneepath Scheme', 'State PSC'].map(chip => (
+            {['SSC GD', 'SSC CGL', 'UPSC Prelims', 'Railway Group D', 'Bank PO', 'State PSC'].map(chip => (
               <button
                 key={chip}
                 onClick={() => handleChipClick(chip)}
@@ -768,6 +768,41 @@ export default function HomeClient({ initialJobs, initialNotices }) {
               <p>
                 In addition to government jobs, WeeklyNaukri offers a unique referral portal for top IT and corporate vacancies, helping engineering and management graduates land private sector jobs. Explore our free mock test series and comprehensive exam calendars to stay ahead in your preparation journey.
               </p>
+            </div>
+          </div>
+
+          {/* FAQ Section */}
+          <div className="mt-12 border-t border-gray-150/70 pt-10 text-left max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-blue-950 mb-6">Frequently Asked Questions (FAQ)</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-bold text-gray-900 text-sm mb-2">What is Weekly Naukri?</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Weekly Naukri is India's leading job portal that aggregates and indexes the latest government notifications, sarkari results, admit cards, and private sector IT opportunities in one unified portal.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-sm mb-2">Is Weekly Naukri free to use?</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Yes, our platform is 100% free for all job seekers. You can browse active vacancies, check exam results, download syllabi, and practice with our online mock test series without any hidden charges or subscriptions.
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-bold text-gray-900 text-sm mb-2">How often are new government jobs updated?</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Our databases are refreshed daily by crawling official portals. We list active openings from central and state boards including SSC, UPSC, Railway (RRB), IBPS, and Defence organizations.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-sm mb-2">How do I get notified about new job alerts?</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    You can receive instant updates by subscribing to our official Telegram channel and WhatsApp updates group. Link buttons for these channels are pinned directly in our homepage announcement bar.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

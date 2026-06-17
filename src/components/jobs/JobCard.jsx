@@ -67,9 +67,9 @@ export default function JobCard({
     return (
       <Link href={targetHref} className="flex items-center justify-between py-2.5 group cursor-pointer hover:bg-gray-50 -mx-4 px-4 rounded-xl transition-colors w-full">
         <div className="flex-1 min-w-0 pr-4">
-          <p className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+          <h3 className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors truncate">
             {title}
-          </p>
+          </h3>
           <p className="text-xs text-gray-400 mt-0.5 truncate">{org}</p>
         </div>
         <div className="flex items-center gap-3 shrink-0">
@@ -84,9 +84,9 @@ export default function JobCard({
   return (
     <Link href={targetHref} aria-label={`View details for ${title}`} className="bg-gray-50 rounded-xl p-4 hover:bg-blue-50/50 border border-transparent hover:border-blue-100 transition-all duration-200 cursor-pointer group block w-full">
       {tag && <Tag color={tagColor} className="mb-2">{tag}</Tag>}
-      <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-950 transition-colors line-clamp-2 min-h-[40px]">
+      <h3 className="text-sm font-semibold text-gray-900 group-hover:text-blue-950 transition-colors line-clamp-2 min-h-[40px]">
         {title}
-      </p>
+      </h3>
       {org && <p className="text-xs text-gray-500 mt-1 truncate">{org}</p>}
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-200/60">
         <p className="text-[10px] text-gray-400 flex items-center gap-1">
