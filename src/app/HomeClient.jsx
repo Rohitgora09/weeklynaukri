@@ -617,6 +617,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                   items={filteredResults}
                   limit={15}
                   emptyText="No declared results match your query."
+                  viewMoreUrl="/results"
                 />
               )}
               {showAdmitCards && (
@@ -629,6 +630,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                   items={filteredAdmitCards}
                   limit={15}
                   emptyText="No admit cards match your query."
+                  viewMoreUrl="/admit-cards"
                 />
               )}
               {showGovt && (
@@ -641,6 +643,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                   items={filteredGovtJobs}
                   limit={15}
                   emptyText="No government job listings match your query."
+                  viewMoreUrl="/latest-jobs"
                 />
               )}
             </div>
@@ -658,6 +661,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                     items={filteredAnswerKeys}
                     limit={10}
                     emptyText="No answer keys match your query."
+                    viewMoreUrl="/answer-keys"
                   />
                 )}
                 {showAdmissions && (
@@ -712,6 +716,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                     items={filteredPrivateJobs}
                     limit={8}
                     emptyText="No private sector jobs match this query."
+                    viewMoreUrl="/referrals"
                   />
                 )}
               </div>
