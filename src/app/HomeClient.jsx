@@ -604,62 +604,93 @@ export default function HomeClient({ initialJobs, initialNotices }) {
           </div>
         ) : (
           !hasNoResults && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            {/* Main columns */}
-            <div className="lg:col-span-8 space-y-10">
-              
-              {/* Govt jobs feed */}
+          <div className="space-y-10">
+            {/* Primary Grid: Results, Admit Cards, Latest Jobs */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+              {showResults && (
+                <JobList
+                  title="Sarkari Results"
+                  subtitle="Latest exam results declared"
+                  icon={BookOpen}
+                  color="bg-green-600"
+                  variant="list"
+                  items={filteredResults}
+                  limit={15}
+                  emptyText="No declared results match your query."
+                />
+              )}
+              {showAdmitCards && (
+                <JobList
+                  title="Admit Cards"
+                  subtitle="Download hall tickets & exam dates"
+                  icon={Calendar}
+                  color="bg-orange-500"
+                  variant="list"
+                  items={filteredAdmitCards}
+                  limit={15}
+                  emptyText="No admit cards match your query."
+                />
+              )}
               {showGovt && (
                 <JobList
                   title="Latest Govt Jobs"
                   subtitle="Central & state government vacancies"
                   icon={Briefcase}
                   color="bg-blue-600"
+                  variant="list"
                   items={filteredGovtJobs}
-                  limit={12}
+                  limit={15}
                   emptyText="No government job listings match your query."
                 />
               )}
-
-              {/* Results feed */}
-              {showResults && (
-                <LazySection height="1000px" forceVisible={forceLazyVisible}>
-                  <JobList
-                    title="Sarkari Results"
-                    subtitle="Latest exam results declared"
-                    icon={BookOpen}
-                    color="bg-green-600"
-                    items={filteredResults}
-                    limit={12}
-                    emptyText="No declared results match your query."
-                  />
-                </LazySection>
-              )}
-
-              {/* Admit cards feed */}
-              {showAdmitCards && (
-                <LazySection height="1000px" forceVisible={forceLazyVisible}>
-                  <JobList
-                    title="Admit Cards"
-                    subtitle="Download hall tickets & exam dates"
-                    icon={Calendar}
-                    color="bg-orange-500"
-                    items={filteredAdmitCards}
-                    limit={12}
-                    emptyText="No admit cards match your query."
-                  />
-                </LazySection>
-              )}
-
             </div>
 
-            {/* Right sidebar */}
-            <div className="lg:col-span-4 space-y-10">
-              
-              {/* Live SSC notifications */}
-              {showGovt && filteredSSCNotices.length > 0 && (
-                <LazySection height="550px" forceVisible={forceLazyVisible}>
+            {/* Secondary Grid: Answer Keys, Admissions, Important Documents */}
+            <LazySection height="450px" forceVisible={forceLazyVisible}>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+                {showAnswerKeys && (
+                  <JobList
+                    title="Answer Keys"
+                    subtitle="Official exam answer sheets"
+                    icon={BookOpen}
+                    color="bg-rose-500"
+                    variant="list"
+                    items={filteredAnswerKeys}
+                    limit={10}
+                    emptyText="No answer keys match your query."
+                  />
+                )}
+                {showAdmissions && (
+                  <JobList
+                    title="Admissions"
+                    subtitle="Colleges & university entrance exams"
+                    icon={Sparkles}
+                    color="bg-teal-650"
+                    variant="list"
+                    items={filteredAdmissions}
+                    limit={10}
+                    emptyText="No admission alerts match your query."
+                  />
+                )}
+                {showDocuments && (
+                  <JobList
+                    title="Important Documents"
+                    subtitle="Scholarships & certificate forms"
+                    icon={Briefcase}
+                    color="bg-amber-600"
+                    variant="list"
+                    items={filteredDocuments}
+                    limit={10}
+                    emptyText="No documents match your query."
+                  />
+                )}
+              </div>
+            </LazySection>
+
+            {/* Tertiary Grid: Live SSC Notices & Private Sector Careers */}
+            <LazySection height="350px" forceVisible={forceLazyVisible}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                {showGovt && filteredSSCNotices.length > 0 && (
                   <JobList
                     title="Live SSC Notices"
                     subtitle="Staff Selection Commission live alerts"
@@ -668,13 +699,10 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                     variant="list"
                     items={filteredSSCNotices}
                     limit={8}
+                    emptyText="No live notices found."
                   />
-                </LazySection>
-              )}
-
-              {/* Private sector jobs */}
-              {showPrivate && (
-                <LazySection height="780px" forceVisible={forceLazyVisible}>
+                )}
+                {showPrivate && (
                   <JobList
                     title="Private Jobs"
                     subtitle="Top hiring companies matching skills"
@@ -682,52 +710,15 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                     color="bg-indigo-650"
                     variant="private"
                     items={filteredPrivateJobs}
-                    limit={6}
+                    limit={8}
                     emptyText="No private sector jobs match this query."
                   />
-                </LazySection>
-              )}
-
-            </div>
-
+                )}
+              </div>
+            </LazySection>
           </div>
           )
         )}
-
-        {/* Admissions, Answer Keys, Documents - grid splits */}
-        <LazySection height="380px" forceVisible={forceLazyVisible}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-            {showAdmissions && filteredAdmissions.length > 0 && (
-              <JobList
-                title="Admissions"
-                subtitle="Colleges & university entrance exams"
-                variant="list"
-                items={filteredAdmissions}
-                limit={5}
-              />
-            )}
-
-            {showAnswerKeys && filteredAnswerKeys.length > 0 && (
-              <JobList
-                title="Answer Keys"
-                subtitle="Official exam answer sheets"
-                variant="list"
-                items={filteredAnswerKeys}
-                limit={5}
-              />
-            )}
-
-            {showDocuments && filteredDocuments.length > 0 && (
-              <JobList
-                title="Important Documents"
-                subtitle="Scholarships, certificate guides & forms"
-                variant="list"
-                items={filteredDocuments}
-                limit={5}
-              />
-            )}
-          </div>
-        </LazySection>
         
         {/* Stats metrics card banner */}
         <LazySection height="220px" forceVisible={forceLazyVisible}>
