@@ -1,5 +1,117 @@
 export const blogPosts = [
   {
+    id: 'rpsc-si-result-2026',
+    title: 'RPSC SI Result 2026 Declared: Check Rajasthan Sub-Inspector Merit List',
+    slug: 'rpsc-si-result-2026',
+    excerpt: 'The Rajasthan Public Service Commission has declared the RPSC SI Result 2026. Download the PDF merit list, category-wise cut-off marks, and check selection status.',
+    publishedDate: '19 Jun 2026',
+    author: 'WeeklyNaukri Editorial',
+    readTime: '4 min read',
+    tags: ['RPSC', 'SI Result', 'Rajasthan Jobs'],
+    image: 'https://images.unsplash.com/photo-1422405153578-4bd676b190c6?w=800&auto=format&fit=crop&q=60',
+    content: `
+      <p>The Rajasthan Public Service Commission (RPSC) has officially declared the results for the <strong>Sub-Inspector (SI) and Platoon Commander Recruitment Examination 2026</strong>. Candidates who appeared for the written exams and subsequent physical eligibility tests (PET) can now access the list of selected candidates on the official portal <strong>rpsc.rajasthan.gov.in</strong>.</p>
+
+      <h3>How to Check RPSC SI Result 2026 Online</h3>
+      <p>Follow these simple steps to download the SI merit list PDF and check your roll number:</p>
+      <ol>
+        <li>Visit the official website of RPSC: <strong><a href="https://rpsc.rajasthan.gov.in" target="_blank" rel="noopener noreferrer">rpsc.rajasthan.gov.in</a></strong>.</li>
+        <li>On the homepage, navigate to the <strong>"News and Events"</strong> section.</li>
+        <li>Click on the link titled <em>"Result Preamble and Cut-Off Marks for Sub Inspector Comb. Comp. Exam 2026"</em>.</li>
+        <li>The RPSC SI Result PDF file will open in your browser.</li>
+        <li>Use the search shortcut (Ctrl+F) to search for your Roll Number in the PDF.</li>
+        <li>Download the PDF and save a copy for future reference.</li>
+      </ol>
+
+      <h3>RPSC SI Expected Category-wise Cut-off Marks</h3>
+      <p>RPSC has released the category-wise cut-off marks alongside the merit list. Here is a summary of the cut-off thresholds:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Cut-Off Marks (Male)</th>
+            <th>Cut-Off Marks (Female)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>General (UR)</td>
+            <td>233.29</td>
+            <td>205.40</td>
+          </tr>
+          <tr>
+            <td>OBC</td>
+            <td>233.29</td>
+            <td>205.40</td>
+          </tr>
+          <tr>
+            <td>EWS</td>
+            <td>233.29</td>
+            <td>205.40</td>
+          </tr>
+          <tr>
+            <td>SC</td>
+            <td>216.96</td>
+            <td>185.20</td>
+          </tr>
+          <tr>
+            <td>ST</td>
+            <td>207.25</td>
+            <td>187.12</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>What is Next in the Selection Process?</h3>
+      <p>All candidates whose roll numbers appear in the RPSC SI written merit list will be called for the final interview round. RPSC will release the interview dates, call letters, and document verification details soon on their website. Keep checking our <a href="/results">Sarkari Results hub</a> for instant updates.</p>
+    `
+  },
+  {
+    id: 'aiims-bsc-nursing-admit-card-2026',
+    title: 'AIIMS BSc Nursing Admit Card 2026: Download Link & Exam Guidelines',
+    slug: 'aiims-bsc-nursing-admit-card-2026',
+    excerpt: 'All India Institute of Medical Sciences has released the AIIMS BSc Nursing Admit Card 2026. Follow our guide to download the hall ticket and check exam instructions.',
+    publishedDate: '19 Jun 2026',
+    author: 'WeeklyNaukri Editorial',
+    readTime: '4 min read',
+    tags: ['AIIMS', 'Admit Card', 'Nursing Exam'],
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&auto=format&fit=crop&q=60',
+    content: `
+      <p>The All India Institute of Medical Sciences (AIIMS), New Delhi, has officially released the admit cards for the upcoming <strong>AIIMS B.Sc (Hons) Nursing and B.Sc Nursing (Post-Basic) Entrance Examinations 2026</strong>. Registered candidates can download their hall tickets from the official portal <strong>aiimsexams.ac.in</strong> using their login credentials.</p>
+
+      <h3>How to Download AIIMS BSc Nursing Admit Card 2026</h3>
+      <p>Candidates can follow this step-by-step guide to download their admit cards without any issues:</p>
+      <ol>
+        <li>Visit the official AIIMS examination website: <strong><a href="https://aiimsexams.ac.in" target="_blank" rel="noopener noreferrer">aiimsexams.ac.in</a></strong>.</li>
+        <li>Under the "Academic Courses" tab, select <strong>"B.Sc (Hons) Nursing"</strong> or <strong>"B.Sc Nursing (Post-Basic)"</strong>.</li>
+        <li>Click on the <strong>"Login/Registration"</strong> portal link.</li>
+        <li>Enter your Registration ID, RUC (Registration Unique Code), Password, and the Captcha code shown.</li>
+        <li>Once logged in, click on the <strong>"Admit Card"</strong> link in your dashboard.</li>
+        <li>Your hall ticket will be displayed on the screen. Verify all details, download, and take a printout.</li>
+      </ol>
+
+      <h3>Details to Verify on the Admit Card</h3>
+      <p>After downloading, check the following details carefully. If you find any discrepancies, report them to the AIIMS helpline immediately:</p>
+      <ul>
+        <li>Candidate Name and Photograph</li>
+        <li>Roll Number and Registration ID</li>
+        <li>Category (UR, OBC, SC, ST, EWS)</li>
+        <li>Exam Date, Reporting Time, and Gate Closing Time</li>
+        <li>Exam Centre Address and Code</li>
+        <li>Exam Day Guidelines</li>
+      </ul>
+
+      <h3>Required Documents at the Exam Centre</h3>
+      <p>You must bring the following documents to the exam center to gain entry:</p>
+      <ol>
+        <li>A clear printout of the AIIMS B.Sc Nursing Admit Card (color print recommended).</li>
+        <li>A valid government-issued photo ID (Aadhar Card, Voter ID, Passport, or Driving License).</li>
+        <li>A passport-sized photograph (same as uploaded during registration).</li>
+      </ol>
+      <p>Need to resize your passport photos for future exam registrations? Try our free online <a href="/image-resizer">Sarkari Image Resizer</a>.</p>
+    `
+  },
+  {
     id: 'ssc-gd-constable-answer-key-2026',
     title: 'SSC GD Answer Key 2026: Calculate Score & Expected Cut-Off Marks',
     slug: 'ssc-gd-constable-answer-key-2026',
