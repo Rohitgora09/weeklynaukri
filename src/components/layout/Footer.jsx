@@ -88,9 +88,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-2 lg:grid-cols-5 gap-8">
         <div className="col-span-2">
           <Link href="/" className="flex items-center gap-2 mb-3">
-            <span className="grid place-items-center w-8 h-8 bg-action text-white rounded-lg">
-              <Zap size={16} strokeWidth={2.5} />
-            </span>
+            <img src="/logo.svg" alt="WeeklyNaukri Logo" className="w-8 h-8 shrink-0" />
             <span className="font-heading font-extrabold text-lg text-white">
               Weekly<span className="text-action">Naukri</span>
             </span>

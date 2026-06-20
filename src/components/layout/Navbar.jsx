@@ -66,9 +66,7 @@ export default function Navbar({ onCategorySelect }) {
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16 gap-4">
         {/* Brand logo & name */}
         <Link href="/" className="flex items-center gap-2 shrink-0" data-testid="logo-home-link">
-          <span className="grid place-items-center w-9 h-9 rounded-lg bg-brand text-white">
-            <Zap size={18} strokeWidth={2.5} />
-          </span>
+          <img src="/logo.svg" alt="WeeklyNaukri Logo" className="w-9 h-9 shrink-0" />
           <span className="font-heading font-extrabold text-xl tracking-tight text-ink">
             Weekly<span className="text-action">Naukri</span>
           </span>
