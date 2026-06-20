@@ -2,12 +2,25 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Zap, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+
+const NAV_ITEMS = [
+  { label: 'Home', path: '/' },
+  { label: 'Latest Jobs', path: '/latest-jobs' },
+  { label: 'Results', path: '/results' },
+  { label: 'Admit Cards', path: '/admit-cards' },
+  { label: 'Answer Keys', path: '/answer-keys' },
+  { label: 'Syllabus', path: '/syllabus' },
+  { label: 'Image Resizer', path: '/image-resizer' },
+  { label: 'SSC GD 2026', path: '/ssc-gd-2026' },
+  { label: 'Blog', path: '/blog' },
+];
 
 export default function Navbar({ onCategorySelect }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchVal, setSearchVal] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -38,168 +51,172 @@ export default function Navbar({ onCategorySelect }) {
     }
   };
 
-  const navItems = [
-    { label: 'Govt Jobs', path: '/latest-jobs' },
-    { label: 'Govt Tech Jobs', path: '/it-govt-jobs' },
-    { label: 'Syllabus', path: '/syllabus' },
-    { label: 'Test Series', path: '/test-series' },
-    { label: 'Private Jobs', value: 'Private Jobs' },
-    { label: 'Results', path: '/results' },
-    { label: 'Admit Cards', path: '/admit-cards' },
-    { label: 'Referrals', path: '/referrals' },
-    { label: 'Blog', path: '/blog' },
-  ];
+  const submitSearch = (e) => {
+    e.preventDefault();
+    if (searchVal.trim()) {
+      router.push(`/latest-jobs?search=${encodeURIComponent(searchVal.trim())}`);
+    }
+  };
 
   return (
-    <nav 
-      role="navigation" 
-      aria-label="Main navigation"
-      className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50 px-6 py-4 flex items-center justify-between max-w-7xl mx-auto w-full"
-    >
-      <Link href="/" className="flex items-center gap-2 shrink-0" aria-label="WeeklyNaukri - Go to homepage">
-        <img src="/logo.svg" alt="WeeklyNaukri Logo" className="h-12 w-12 md:h-16 md:w-16 object-contain rounded-full shadow-sm shrink-0 bg-white p-1" />
-        <span className="font-bold text-gray-900 tracking-tight hidden sm:block text-lg">WeeklyNaukri</span>
-      </Link>
+    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200 shadow-sm w-full" data-testid="site-header">
+      {/* Top brand bar */}
+      <div className="bg-brand text-white">
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-9 text-xs">
+          <span className="tabular tracking-wide hidden sm:block">Daily Sarkari updates • Govt Jobs • Results • Admit Cards</span>
+          <Link href="/ssc-gd-2026" className="hover:underline font-medium" data-testid="topbar-sscgd-link">
+            SSC GD 2026 Marks Calculator →
+          </Link>
+        </div>
+      </div>
 
-      <div className="hidden md:flex items-center gap-6" role="menubar">
-        {navItems.map((item) => (
-          item.path ? (
+      {/* Main Nav Container */}
+      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16 gap-4">
+        {/* Brand logo & name */}
+        <Link href="/" className="flex items-center gap-2 shrink-0" data-testid="logo-home-link">
+          <span className="grid place-items-center w-9 h-9 rounded-lg bg-brand text-white">
+            <Zap size={18} strokeWidth={2.5} />
+          </span>
+          <span className="font-heading font-extrabold text-xl tracking-tight text-ink">
+            Weekly<span className="text-action">Naukri</span>
+          </span>
+        </Link>
+
+        {/* Search form (desktop) */}
+        <form onSubmit={submitSearch} className="hidden md:flex flex-1 max-w-md items-center border border-slate-200 rounded-full overflow-hidden focus-within:border-action focus-within:ring-2 focus-within:ring-action/20 transition">
+          <Search size={16} className="ml-4 text-muted" />
+          <input
+            value={searchVal}
+            onChange={(e) => setSearchVal(e.target.value)}
+            placeholder="Search jobs, results, exams…"
+            className="w-full px-3 py-2 text-sm outline-none bg-transparent"
+            data-testid="header-search-input"
+          />
+          <button type="submit" className="bg-brand text-white text-xs font-semibold px-4 py-2.5 hover:bg-action transition-colors cursor-pointer" data-testid="header-search-button">
+            Search
+          </button>
+        </form>
+
+        {/* Desktop nav links */}
+        <nav className="hidden lg:flex items-center gap-1 text-sm">
+          {NAV_ITEMS.slice(0, 6).map((item) => (
             <Link
               key={item.label}
               href={item.path}
-              role="menuitem"
-              className="relative flex items-center gap-1 text-sm font-medium text-gray-800 hover:text-black transition-colors py-1 group rounded-md"
+              className="px-3 py-1.5 rounded-full font-medium text-slatebody hover:text-ink hover:bg-slate-50 transition-colors"
+              data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
             >
-              <span className="relative z-10">{item.label}</span>
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full" aria-hidden="true"></span>
+              {item.label}
             </Link>
-          ) : (
-            <button
-              key={item.label}
-              onClick={() => handleNavCategory(item.value)}
-              role="menuitem"
-              className="relative flex items-center gap-1 text-sm font-medium text-gray-800 hover:text-black transition-colors py-1 group cursor-pointer bg-transparent border-none rounded-md"
-            >
-              <span className="relative z-10">{item.label}</span>
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full" aria-hidden="true"></span>
-            </button>
-          )
-        ))}
-      </div>
+          ))}
+        </nav>
 
-      <div className="flex items-center gap-4">
-        {currentUser ? (
-          <div className="hidden sm:flex items-center gap-4">
-            <span className="text-sm font-medium text-gray-800">
-              Hi, {currentUser.name}
-            </span>
-            {currentUser.role === 'admin' && (
-              <Link href="/dashboard" className="text-sm font-semibold text-amber-600 hover:text-amber-700 transition-colors rounded-md">
-                Dashboard
+        {/* Auth / Action links */}
+        <div className="hidden sm:flex items-center gap-4 text-sm shrink-0">
+          {currentUser ? (
+            <div className="flex items-center gap-4">
+              <span className="font-medium text-slatebody">
+                Hi, {currentUser.name}
+              </span>
+              {currentUser.role === 'admin' && (
+                <Link href="/dashboard" className="font-semibold text-warn hover:text-amber-600 transition-colors">
+                  Dashboard
+                </Link>
+              )}
+              <button
+                onClick={handleLogout}
+                className="text-xs bg-slate-50 text-slatebody hover:bg-slate-100 hover:text-ink px-3.5 py-2 rounded-full font-semibold border border-slate-250 transition-colors cursor-pointer"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-4">
+              <Link href="/login" className="text-slatebody hover:text-ink font-medium">
+                Login
               </Link>
-            )}
-            <button
-              onClick={handleLogout}
-              className="text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 px-3.5 py-2 rounded-full font-medium transition-colors cursor-pointer border border-gray-200"
-            >
-              Logout
-            </button>
-          </div>
-        ) : (
-          <div className="hidden sm:flex items-center gap-4">
-            <Link href="/login" className="text-sm text-gray-800 hover:text-black transition-colors rounded-md">
-              Login
-            </Link>
-            <Link href="/signup" className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors cursor-pointer">
-              Get started free
-            </Link>
-          </div>
-        )}
-        {/* Hamburger Menu Toggle Button */}
+              <Link href="/signup" className="bg-brand text-white px-5 py-2.5 rounded-full font-bold hover:bg-action transition-colors cursor-pointer shadow-sm">
+                Get Started
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Mobile menu button */}
         <button
+          className="lg:hidden p-2 text-slatebody hover:text-ink cursor-pointer"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 text-gray-800 hover:text-black cursor-pointer rounded-lg"
-          aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-          aria-expanded={mobileMenuOpen}
-          aria-controls="mobile-nav-menu"
+          data-testid="mobile-menu-toggle"
+          aria-label="Menu"
         >
-          {mobileMenuOpen ? <X className="w-6 h-6" aria-hidden="true" /> : <Menu className="w-6 h-6" aria-hidden="true" />}
+          {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
 
-      {/* Mobile Navigation Dropdown */}
+      {/* Mobile nav dropdown */}
       {mobileMenuOpen && (
-        <div 
-          id="mobile-nav-menu"
-          role="menu" 
-          aria-label="Mobile navigation"
-          className="absolute top-full left-0 right-0 md:hidden bg-white border-b border-gray-200 px-6 py-4 flex flex-col gap-4 shadow-lg animate-fade-in-down z-40"
-        >
-          {navItems.map((item) => (
-            item.path ? (
+        <div className="lg:hidden border-t border-line bg-white" data-testid="mobile-nav">
+          <form onSubmit={submitSearch} className="flex items-center border-b border-line">
+            <Search size={16} className="ml-3 text-muted" />
+            <input
+              value={searchVal}
+              onChange={(e) => setSearchVal(e.target.value)}
+              placeholder="Search…"
+              className="w-full px-2 py-3 text-sm outline-none"
+              data-testid="mobile-search-input"
+            />
+          </form>
+          <div className="grid grid-cols-2">
+            {NAV_ITEMS.map((item) => (
               <Link
                 key={item.label}
                 href={item.path}
-                role="menuitem"
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-medium text-gray-800 hover:text-black py-2 rounded-md"
+                className="px-4 py-3 text-sm font-medium border-b border-r border-line text-slatebody hover:bg-slate-50"
+                data-testid={`mobile-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
               >
                 {item.label}
               </Link>
-            ) : (
-              <button
-                key={item.label}
-                onClick={() => handleNavCategory(item.value)}
-                role="menuitem"
-                className="text-left text-sm font-medium text-gray-800 hover:text-black py-2 bg-transparent border-none cursor-pointer w-full rounded-md"
-              >
-                {item.label}
-              </button>
-            )
-          ))}
-          <div className="border-t border-gray-100 pt-4 flex flex-col gap-3">
+            ))}
             {currentUser ? (
-              <div className="flex flex-col gap-2">
-                <span className="text-xs text-gray-600 px-1">
-                  Logged in as: <strong className="text-gray-900">{currentUser.name}</strong>
-                </span>
+              <>
                 {currentUser.role === 'admin' && (
                   <Link
                     href="/dashboard"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="text-center text-sm font-semibold text-amber-700 py-2 bg-amber-50 hover:bg-amber-100 rounded-xl"
+                    className="col-span-2 px-4 py-3 text-sm font-bold border-b border-line text-warn bg-amber-50/20 hover:bg-amber-50"
                   >
-                    Dashboard
+                    Admin Dashboard
                   </Link>
                 )}
                 <button
-                  onClick={handleLogout}
-                  className="text-center text-sm font-medium bg-gray-100 text-gray-800 py-2.5 rounded-xl hover:bg-gray-200 transition-colors cursor-pointer border-none"
+                  onClick={() => { setMobileMenuOpen(false); handleLogout(); }}
+                  className="col-span-2 px-4 py-3 text-sm text-left font-semibold border-b border-line text-red-600 hover:bg-red-50 cursor-pointer bg-transparent"
                 >
                   Logout
                 </button>
-              </div>
+              </>
             ) : (
-              <div className="flex flex-col gap-2">
+              <>
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-center text-sm font-medium text-gray-800 py-2.5 rounded-xl border border-gray-200 hover:bg-gray-50"
+                  className="px-4 py-3 text-sm font-semibold border-b border-line text-slatebody hover:bg-slate-50"
                 >
                   Login
                 </Link>
                 <Link
                   href="/signup"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-center text-sm font-medium bg-black text-white py-2.5 rounded-xl hover:bg-gray-850"
+                  className="px-4 py-3 text-sm font-bold border-b border-line text-action bg-blue-50/50 hover:bg-blue-50"
                 >
-                  Get started free
+                  Sign Up
                 </Link>
-              </div>
+              </>
             )}
           </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 }

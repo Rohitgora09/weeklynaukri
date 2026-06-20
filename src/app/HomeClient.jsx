@@ -19,7 +19,19 @@ import {
   ExternalLink,
   Menu,
   SearchX,
-  Calculator
+  Calculator,
+  Megaphone,
+  ChevronRight,
+  FileCheck2,
+  IdCard,
+  KeyRound,
+  GraduationCap,
+  FileText,
+  ShieldCheck,
+  CheckCircle2,
+  Zap,
+  Image as ImageIcon,
+  FileStack
 } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
@@ -34,6 +46,7 @@ import {
   admissions as fallbackAdmissions, 
   documents as fallbackDocuments 
 } from '../data/jobs';
+
 
 // Client-side list wrapper for lazy loading sections using IntersectionObserver
 function LazySection({ children, height = '300px', forceVisible = false }) {
@@ -345,74 +358,106 @@ export default function HomeClient({ initialJobs, initialNotices }) {
     ]
   };
 
+  const ticker = latestJobs.concat(latestResults).slice(0, 10);
+  const totalLive = latestJobs.length + admitCards.length + latestResults.length + answerKeys.length + admissions.length + documents.length + privateJobs.length;
+
   return (
-    <div className="bg-white min-h-screen flex flex-col w-full">
+    <div className="bg-white min-h-screen flex flex-col w-full" data-testid="home-page">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <Navbar onCategorySelect={handleCategorySelect} />
 
-      {/* Hero Banner Section */}
-      <section aria-label="Hero - Find Government and Private Jobs" className="bg-gradient-to-b from-blue-50/60 via-blue-50/30 to-white px-6 py-14 md:py-24 text-center w-full">
-        <div className="max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-800 px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-6 animate-stagger-1">
-            <Sparkles className="w-3.5 h-3.5" aria-hidden="true" /> India's Most Trusted Sarkari Result Portal
+      {/* Ticker / Notice Marquee Banner */}
+      <div className="bg-gradient-to-r from-rose-600 to-red-500 text-white overflow-hidden marquee-wrap w-full">
+        <div className="max-w-7xl mx-auto flex items-center">
+          <span className="bg-ink text-white text-[11px] font-bold uppercase tracking-widest px-3 py-2 shrink-0 flex items-center gap-1">
+            <Megaphone size={12} /> Live
+          </span>
+          <div className="overflow-hidden flex-1">
+            <div className="animate-marquee text-xs py-2">
+              {ticker.concat(ticker).map((t, i) => (
+                <Link key={i} href={`/job/${t.url_slug || t.slug || t.id}`} className="mx-6 hover:underline font-medium inline-block">
+                  ● {t.title}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Hero Section */}
+      <section className="relative overflow-hidden border-b border-slate-200 bg-white w-full">
+        {/* Animated Glow Blobs */}
+        <div className="blob bg-blue-300 w-72 h-72 -top-20 -left-10" />
+        <div className="blob bg-emerald-200 w-72 h-72 top-10 right-0 animate-delay-3000" style={{ animationDelay: '3s' }} />
+        <div className="absolute inset-0 dot-grid opacity-40" />
+
+        <div className="relative max-w-7xl mx-auto px-4 py-10 lg:py-14 text-center">
+          <div className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-action font-bold bg-blue-50 border border-blue-100 rounded-full px-3 py-1 mb-4">
+            <Sparkles size={12} /> Sarkari Result Hub · 2026
           </div>
           
-          <h1 className="text-4xl md:text-6xl font-extrabold text-blue-950 leading-tight tracking-tight mb-6 animate-stagger-2">
-            Find the Latest <br />
-            Government Jobs &amp; <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Private Sectors</span>
+          <h1 className="font-heading font-extrabold text-3xl sm:text-5xl tracking-tight leading-[1.08] text-ink mb-4 max-w-4xl mx-auto">
+            Latest <span className="text-gradient">Govt Jobs, Results</span> &amp; Admit Cards — all in one fast feed.
           </h1>
           
-          <p className="text-gray-700 text-base md:text-lg mb-10 max-w-2xl mx-auto leading-relaxed animate-stagger-3">
-            Get instant updates on the latest govt jobs, sarkari results, admit cards, answer keys, and exam syllabus from all sectors.
+          <p className="text-slatebody text-sm sm:text-base mb-6 max-w-2xl mx-auto leading-relaxed">
+            <strong className="text-ink">WeeklyNaukri.com</strong> is a privacy-first, mobile-first hub for Indian competitive exams (Sarkari Naukri), tech careers and private jobs. We track official portals daily and publish verified <strong className="text-ink">results, admit cards, answer keys &amp; admissions</strong>.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-stagger-4">
-            <button
-              onClick={() => document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' })}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 rounded-full font-semibold text-base hover:from-blue-700 hover:to-indigo-700 hover:-translate-y-0.5 transition-all shadow-lg shadow-blue-600/25 cursor-pointer animate-cta-pulse flex items-center gap-2"
-              aria-label="Explore all available job openings"
-            >
-              Explore Job Openings
-              <ArrowRight className="w-5 h-5" aria-hidden="true" />
-            </button>
-            
-            <button
-              onClick={() => setIsResumeModalOpen(true)}
-              className="bg-white text-gray-800 border-2 border-gray-200 px-8 py-4 rounded-full font-semibold text-base hover:bg-blue-50 hover:border-blue-300 hover:-translate-y-0.5 transition-all shadow-sm flex items-center gap-2 cursor-pointer"
-              aria-label="Upload your resume to find matching jobs using AI"
-            >
-              <UploadCloud className="w-5 h-5 text-blue-600" aria-hidden="true" /> Match with AI Resume
-            </button>
+          {/* Search input bar */}
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (searchQuery.trim()) {
+                document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' });
+              }
+            }} 
+            className="mt-6 flex items-center bg-white border-2 border-ink rounded-full overflow-hidden max-w-xl mx-auto shadow-sm focus-within:ring-4 focus-within:ring-action/15 transition"
+          >
+            <Search size={18} className="ml-4 text-muted" />
+            <input 
+              value={searchQuery} 
+              onChange={handleSearchChange} 
+              placeholder="Search a job, exam or result…" 
+              className="w-full px-3 py-3.5 text-sm outline-none bg-transparent"
+              data-testid="hero-search-input" 
+            />
+            <button type="submit" className="bg-action text-white text-sm font-bold px-6 py-3.5 hover:bg-blue-800 transition-colors cursor-pointer" data-testid="hero-search-button">Search</button>
+          </form>
+
+          {/* Statistics chips row */}
+          <div className="flex flex-wrap items-center justify-center gap-2.5 mt-6">
+            {[
+              { icon: TrendingUp, label: `${totalLive > 0 ? totalLive : "50"}+ live listings`, c: "text-action bg-blue-50 border-blue-100" },
+              { icon: Zap, label: "Updated daily", c: "text-ok bg-green-50 border-green-100" },
+              { icon: ShieldCheck, label: "Privacy-first tools", c: "text-brand bg-indigo-50 border-indigo-100" },
+              { icon: CheckCircle2, label: "100% free", c: "text-rose-600 bg-rose-50 border-rose-100" },
+            ].map((s, i) => (
+              <span key={i} className={`inline-flex items-center gap-1.5 text-xs font-semibold rounded-full border px-3 py-1.5 ${s.c}`}>
+                <s.icon size={13} /> {s.label}
+              </span>
+            ))}
           </div>
 
-          {resumeKeywords.length > 0 && (
-            <div className="mt-6 inline-flex items-center gap-2 bg-green-50 text-green-800 border border-green-200 px-4 py-2 rounded-xl text-xs" role="status">
-              <span>Matched private jobs by skills: <strong>{resumeKeywords.join(', ')}</strong></span>
-              <button onClick={() => setResumeKeywords([])} className="hover:text-green-950 font-bold ml-1 cursor-pointer bg-transparent border-none p-0" aria-label="Clear resume skill matches">
-                <X className="w-3.5 h-3.5" aria-hidden="true" />
-              </button>
-            </div>
-          )}
-
-          {/* Direct navigation cards grid */}
-          <div className="mt-10 max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in-up">
+          {/* Action links */}
+          <div className="mt-8 max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Govt Tech Jobs Card */}
-            <div className="bg-blue-50/50 border border-blue-200/70 rounded-2xl p-4 flex items-center justify-between shadow-sm text-left">
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between shadow-sm text-left hover:border-blue-200 transition-all duration-200">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-650 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm">
                   <Sparkles className="w-4.5 h-4.5 text-amber-300" aria-hidden="true" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-blue-950 text-xs">Govt Tech Jobs</h2>
-                  <p className="text-[10px] text-blue-800/80">Software & IT posts</p>
+                  <h2 className="font-bold text-ink text-xs">Govt Tech Jobs</h2>
+                  <p className="text-[10px] text-slatebody">Software & IT posts</p>
                 </div>
               </div>
               <Link 
                 href="/it-govt-jobs" 
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-semibold px-3.5 py-2 rounded-full hover:from-blue-700 hover:to-indigo-700 transition-all shadow-sm shrink-0 ml-2"
+                className="bg-brand hover:bg-action text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors shadow-sm shrink-0 ml-2"
                 aria-label="Explore Technical and IT Government Jobs"
               >
                 Explore
@@ -420,19 +465,19 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             </div>
 
             {/* SSC GD 2026 Calculator Card */}
-            <div className="bg-amber-50/60 border border-amber-200/70 rounded-2xl p-4 flex items-center justify-between shadow-sm text-left">
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between shadow-sm text-left hover:border-blue-200 transition-all duration-200">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm">
                   <Calculator className="w-4.5 h-4.5 text-white" aria-hidden="true" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-amber-950 text-xs">SSC GD Estimator</h2>
-                  <p className="text-[10px] text-amber-800/80">Marks & cut-off calculator</p>
+                  <h2 className="font-bold text-ink text-xs">SSC GD Estimator</h2>
+                  <p className="text-[10px] text-slatebody">Marks & cut-off calculator</p>
                 </div>
               </div>
               <Link 
                 href="/ssc-gd-2026" 
-                className="bg-gradient-to-r from-amber-500 to-orange-550 text-white text-xs font-semibold px-3.5 py-2 rounded-full hover:from-amber-600 hover:to-orange-600 transition-all shadow-sm shrink-0 ml-2"
+                className="bg-brand hover:bg-action text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors shadow-sm shrink-0 ml-2"
                 aria-label="Explore SSC GD Score Calculator"
               >
                 Calculate
@@ -440,14 +485,34 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             </div>
           </div>
 
+          {/* AI Resume Upload Match button */}
+          <div className="mt-8 flex justify-center">
+            <button
+              onClick={() => setIsResumeModalOpen(true)}
+              className="bg-action text-white border-none px-8 py-3.5 rounded-full font-bold text-sm hover:bg-blue-800 hover:-translate-y-0.5 transition-all shadow-md flex items-center gap-2 cursor-pointer"
+              aria-label="Upload your resume to find matching jobs using AI"
+            >
+              <UploadCloud className="w-5 h-5 text-white" aria-hidden="true" /> Match with AI Resume
+            </button>
+          </div>
+
+          {resumeKeywords.length > 0 && (
+            <div className="mt-4 inline-flex items-center gap-2 bg-green-50 text-green-800 border border-green-200 px-4 py-2 rounded-xl text-xs" role="status">
+              <span>Matched private jobs by skills: <strong>{resumeKeywords.join(', ')}</strong></span>
+              <button onClick={() => setResumeKeywords([])} className="hover:text-green-950 font-bold ml-1 cursor-pointer bg-transparent border-none p-0" aria-label="Clear resume skill matches">
+                <X className="w-3.5 h-3.5" aria-hidden="true" />
+              </button>
+            </div>
+          )}
+
           {/* Quick search chips */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-2.5 max-w-2xl mx-auto" role="group" aria-label="Trending search suggestions">
-            <span className="text-xs text-gray-500 font-medium">Trending Searches:</span>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-2 max-w-2xl mx-auto" role="group" aria-label="Trending search suggestions">
+            <span className="text-xs text-slatebody font-medium">Trending:</span>
             {['SSC GD', 'SSC CGL', 'UPSC Prelims', 'Railway Group D', 'Bank PO', 'State PSC'].map(chip => (
               <button
                 key={chip}
                 onClick={() => handleChipClick(chip)}
-                className="bg-gray-50 border border-gray-200 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 text-xs text-gray-700 px-3.5 py-1.5 rounded-full transition-all cursor-pointer font-medium"
+                className="bg-slate-50 border border-slate-200 hover:bg-blue-50 hover:border-blue-300 hover:text-action text-xs text-slatebody px-3.5 py-1.5 rounded-full transition-all cursor-pointer font-medium"
                 aria-label={`Search for ${chip} jobs`}
               >
                 {chip}
@@ -462,8 +527,8 @@ export default function HomeClient({ initialJobs, initialNotices }) {
         <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 border border-blue-100 rounded-2xl px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left shadow-sm">
           <div className="flex items-center gap-3">
             <span className="text-xl shrink-0" role="img" aria-label="megaphone">📢</span>
-            <p className="text-sm text-gray-700 font-semibold leading-normal">
-              Join our channels for instant Sarkari Result &amp; Job Alerts!
+            <p className="text-sm text-ink font-semibold leading-normal">
+              Join our channels for Sarkari Result &amp; Job Alerts!
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0 w-full md:w-auto justify-center">
@@ -487,6 +552,47 @@ export default function HomeClient({ initialJobs, initialNotices }) {
         </div>
       </div>
 
+      {/* Category Sticky Nav Strip */}
+      <section className="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-[100px] z-30 hidden md:block w-full">
+        <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-center gap-2 overflow-x-auto feed-scroll">
+          {[
+            { id: 'Results', label: 'Latest Results', icon: FileCheck2 },
+            { id: 'Admit Cards', label: 'Admit Cards', icon: IdCard },
+            { id: 'Govt Jobs', label: 'Latest Govt Jobs', icon: Briefcase },
+            { id: 'Answer Keys', label: 'Answer Keys', icon: KeyRound },
+            { id: 'Admissions', label: 'Admissions', icon: GraduationCap },
+            { id: 'Documents', label: 'Important Documents', icon: FileText },
+            { id: 'Private Jobs', label: 'Private Jobs', icon: Building2 }
+          ].map((item) => {
+            const Icon = item.icon;
+            const count = item.id === 'Results' ? latestResults.length : 
+                          item.id === 'Admit Cards' ? admitCards.length :
+                          item.id === 'Govt Jobs' ? latestJobs.length :
+                          item.id === 'Answer Keys' ? answerKeys.length :
+                          item.id === 'Admissions' ? admissions.length :
+                          item.id === 'Documents' ? documents.length :
+                          item.id === 'Private Jobs' ? privateJobs.length : 0;
+            return (
+              <button 
+                key={item.id} 
+                onClick={() => {
+                  setSelectedCategory(item.id);
+                  document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className={`group shrink-0 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
+                  selectedCategory === item.id 
+                    ? 'border-action text-action bg-blue-50' 
+                    : 'border-slate-200 bg-white text-slatebody hover:border-action hover:text-action hover:bg-blue-50'
+                }`}
+              >
+                <Icon size={14} className="text-action" /> {item.label}
+                {count > 0 && <span className="tabular text-[10px] bg-slate-100 group-hover:bg-white rounded-full px-1.5 py-0.5">{count}</span>}
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
       {/* Job Search Core Section */}
       <section id="search-section" aria-label="Job search and listings" className="max-w-7xl mx-auto px-6 py-12 w-full flex-1">
         {/* Search Bar Input */}
@@ -498,27 +604,26 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             <input
               type="text"
               placeholder="Search by post name, department, location, or exam..."
-              defaultValue={searchQuery}
+              value={searchQuery}
               onChange={handleSearchChange}
               aria-label="Search for jobs by post name, department, location, or exam"
-              className="w-full pl-12 pr-4 py-4 rounded-full border border-gray-300 shadow-md shadow-gray-100/50 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 bg-gray-50/50 hover:bg-gray-50 transition-all text-sm font-medium"
+              className="w-full pl-12 pr-4 py-4 rounded-full border border-slate-200 shadow-md shadow-slate-100/50 outline-none focus:ring-4 focus:ring-action/10 focus:border-action bg-slate-50/50 hover:bg-slate-50 transition-all text-sm font-medium"
             />
           </div>
         )}
 
         {/* Tab Selection Filter */}
-        <div className="flex border-b border-gray-200 mb-8 overflow-x-auto gap-1" role="tablist" aria-label="Job category tabs">
-          {categoryTabs.map(tab => (
+        <div className="flex border-b border-slate-200 mb-8 overflow-x-auto gap-1" role="tablist" aria-label="Job category tabs">
+          {['All Categories', 'Govt Jobs', 'Private Jobs', 'Results', 'Admit Cards', 'Answer Keys', 'Exam Calendar'].map(tab => (
             <button
               key={tab}
               onClick={() => setSelectedCategory(tab)}
               role="tab"
               aria-selected={selectedCategory === tab}
-              aria-controls={`panel-${tab.replace(/\s/g, '-').toLowerCase()}`}
               className={`px-6 py-3 font-semibold text-sm border-b-2 transition-all whitespace-nowrap cursor-pointer rounded-t-lg ${
                 selectedCategory === tab 
-                  ? 'border-blue-600 text-blue-700 bg-blue-50/50' 
-                  : 'border-transparent text-gray-500 hover:text-gray-800 hover:bg-gray-50'
+                  ? 'border-action text-action bg-blue-50/50' 
+                  : 'border-transparent text-slatebody hover:text-ink hover:bg-slate-50'
               }`}
             >
               {tab}
@@ -529,21 +634,19 @@ export default function HomeClient({ initialJobs, initialNotices }) {
         {/* No results state */}
         {hasNoResults && (
           <div className="flex flex-col items-center justify-center py-16 text-center" role="status" aria-live="polite">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-              <SearchX className="w-8 h-8 text-gray-400" aria-hidden="true" />
+            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-200">
+              <SearchX className="w-8 h-8 text-slate-400" aria-hidden="true" />
             </div>
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">No results found</h2>
-            <p className="text-sm text-gray-500 max-w-md">
-              We couldn't find any listings matching "<strong className="text-gray-800">{searchQuery}</strong>". Try a different keyword or browse all categories.
+            <h2 className="text-lg font-semibold text-ink mb-2">No results found</h2>
+            <p className="text-sm text-slatebody max-w-md">
+              We couldn't find any listings matching "<strong className="text-ink">{searchQuery}</strong>". Try a different keyword or browse all categories.
             </p>
             <button
               onClick={() => {
                 setSearchQuery('');
                 setSelectedCategory('All Categories');
-                const input = document.querySelector('input[aria-label]');
-                if (input) input.value = '';
               }}
-              className="mt-4 text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors cursor-pointer bg-transparent border-none"
+              className="mt-4 text-sm font-semibold text-action hover:text-blue-850 transition-colors cursor-pointer bg-transparent border-none"
             >
               Clear search & show all
             </button>
@@ -558,9 +661,9 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             <JobList
               title="Private Jobs"
               subtitle="Top hiring companies matching skills"
-              icon={Building2}
-              color="bg-indigo-650"
+              iconName="Building2"
               variant="private"
+              accent="action"
               items={filteredPrivateJobs}
               limit={20}
               emptyText="No private sector jobs match this query."
@@ -571,8 +674,8 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             <JobList
               title="Sarkari Results"
               subtitle="Latest exam results declared"
-              icon={BookOpen}
-              color="bg-green-600"
+              iconName="FileCheck2"
+              accent="alert"
               items={filteredResults}
               limit={24}
               emptyText="No declared results match your query."
@@ -583,8 +686,8 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             <JobList
               title="Admit Cards"
               subtitle="Download hall tickets & exam dates"
-              icon={Calendar}
-              color="bg-orange-500"
+              iconName="IdCard"
+              accent="action"
               items={filteredAdmitCards}
               limit={24}
               emptyText="No admit cards match your query."
@@ -595,8 +698,8 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             <JobList
               title="Answer Keys"
               subtitle="Official exam answer sheets"
-              icon={BookOpen}
-              variant="list"
+              iconName="KeyRound"
+              accent="ok"
               items={filteredAnswerKeys}
               limit={24}
               emptyText="No answer keys match your query."
@@ -604,151 +707,196 @@ export default function HomeClient({ initialJobs, initialNotices }) {
           </div>
         ) : (
           !hasNoResults && (
-          <div className="space-y-10">
-            {/* Primary Grid: Results, Admit Cards, Latest Jobs */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-              {showResults && (
-                <JobList
-                  title="Sarkari Results"
-                  subtitle="Latest exam results declared"
-                  icon={BookOpen}
-                  color="bg-green-600"
-                  variant="list"
-                  items={filteredResults}
-                  limit={15}
-                  emptyText="No declared results match your query."
-                  viewMoreUrl="/results"
-                />
-              )}
-              {showAdmitCards && (
-                <JobList
-                  title="Admit Cards"
-                  subtitle="Download hall tickets & exam dates"
-                  icon={Calendar}
-                  color="bg-orange-500"
-                  variant="list"
-                  items={filteredAdmitCards}
-                  limit={15}
-                  emptyText="No admit cards match your query."
-                  viewMoreUrl="/admit-cards"
-                />
-              )}
-              {showGovt && (
-                <JobList
-                  title="Latest Govt Jobs"
-                  subtitle="Central & state government vacancies"
-                  icon={Briefcase}
-                  color="bg-blue-600"
-                  variant="list"
-                  items={filteredGovtJobs}
-                  limit={15}
-                  emptyText="No government job listings match your query."
-                  viewMoreUrl="/latest-jobs"
-                />
+            <div className="space-y-10">
+              {/* Primary Grid: Results, Admit Cards, Latest Jobs */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+                {showResults && (
+                  <JobList
+                    title="Sarkari Results"
+                    subtitle="Latest exam results declared"
+                    iconName="FileCheck2"
+                    accent="alert"
+                    items={filteredResults}
+                    limit={15}
+                    emptyText="No declared results match your query."
+                    viewMoreUrl="/results"
+                  />
+                )}
+                {showAdmitCards && (
+                  <JobList
+                    title="Admit Cards"
+                    subtitle="Download hall tickets & exam dates"
+                    iconName="IdCard"
+                    accent="action"
+                    items={filteredAdmitCards}
+                    limit={15}
+                    emptyText="No admit cards match your query."
+                    viewMoreUrl="/admit-cards"
+                  />
+                )}
+                {showGovt && (
+                  <JobList
+                    title="Latest Govt Jobs"
+                    subtitle="Central & state government vacancies"
+                    iconName="Briefcase"
+                    accent="brand"
+                    items={filteredGovtJobs}
+                    limit={15}
+                    emptyText="No government job listings match your query."
+                    viewMoreUrl="/latest-jobs"
+                  />
+                )}
+              </div>
+
+              {/* Secondary Grid: Answer Keys, Admissions, Important Documents, Private Jobs */}
+              <LazySection height="450px" forceVisible={forceLazyVisible}>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
+                  {showAnswerKeys && (
+                    <JobList
+                      title="Answer Keys"
+                      subtitle="Official exam answer sheets"
+                      iconName="KeyRound"
+                      accent="ok"
+                      items={filteredAnswerKeys}
+                      limit={10}
+                      emptyText="No answer keys match your query."
+                      viewMoreUrl="/answer-keys"
+                    />
+                  )}
+                  {showAdmissions && (
+                    <JobList
+                      title="Admissions"
+                      subtitle="Colleges & university entrance exams"
+                      iconName="GraduationCap"
+                      accent="warn"
+                      items={filteredAdmissions}
+                      limit={10}
+                      emptyText="No admission alerts match your query."
+                    />
+                  )}
+                  {showDocuments && (
+                    <JobList
+                      title="Important Documents"
+                      subtitle="Scholarships & certificate forms"
+                      iconName="FileText"
+                      accent="brand"
+                      items={filteredDocuments}
+                      limit={10}
+                      emptyText="No documents match your query."
+                    />
+                  )}
+                  {showPrivate && (
+                    <JobList
+                      title="Private Jobs"
+                      subtitle="Top hiring companies matching skills"
+                      iconName="Building2"
+                      accent="action"
+                      variant="private"
+                      items={filteredPrivateJobs}
+                      limit={10}
+                      emptyText="No private sector jobs match this query."
+                      viewMoreUrl="/referrals"
+                    />
+                  )}
+                </div>
+              </LazySection>
+
+              {/* Tertiary Grid: Live SSC Notices */}
+              {showGovt && filteredSSCNotices.length > 0 && (
+                <LazySection height="350px" forceVisible={forceLazyVisible}>
+                  <div className="max-w-4xl mx-auto w-full">
+                    <JobList
+                      title="Live SSC Notices"
+                      subtitle="Staff Selection Commission live alerts"
+                      iconName="Bell"
+                      accent="brand"
+                      items={filteredSSCNotices}
+                      limit={8}
+                      emptyText="No live notices found."
+                    />
+                  </div>
+                </LazySection>
               )}
             </div>
-
-            {/* Secondary Grid: Answer Keys, Admissions, Important Documents */}
-            <LazySection height="450px" forceVisible={forceLazyVisible}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-                {showAnswerKeys && (
-                  <JobList
-                    title="Answer Keys"
-                    subtitle="Official exam answer sheets"
-                    icon={BookOpen}
-                    color="bg-rose-500"
-                    variant="list"
-                    items={filteredAnswerKeys}
-                    limit={10}
-                    emptyText="No answer keys match your query."
-                    viewMoreUrl="/answer-keys"
-                  />
-                )}
-                {showAdmissions && (
-                  <JobList
-                    title="Admissions"
-                    subtitle="Colleges & university entrance exams"
-                    icon={Sparkles}
-                    color="bg-teal-650"
-                    variant="list"
-                    items={filteredAdmissions}
-                    limit={10}
-                    emptyText="No admission alerts match your query."
-                  />
-                )}
-                {showDocuments && (
-                  <JobList
-                    title="Important Documents"
-                    subtitle="Scholarships & certificate forms"
-                    icon={Briefcase}
-                    color="bg-amber-600"
-                    variant="list"
-                    items={filteredDocuments}
-                    limit={10}
-                    emptyText="No documents match your query."
-                  />
-                )}
-              </div>
-            </LazySection>
-
-            {/* Tertiary Grid: Live SSC Notices & Private Sector Careers */}
-            <LazySection height="350px" forceVisible={forceLazyVisible}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
-                {showGovt && filteredSSCNotices.length > 0 && (
-                  <JobList
-                    title="Live SSC Notices"
-                    subtitle="Staff Selection Commission live alerts"
-                    icon={Bell}
-                    color="bg-purple-650"
-                    variant="list"
-                    items={filteredSSCNotices}
-                    limit={8}
-                    emptyText="No live notices found."
-                  />
-                )}
-                {showPrivate && (
-                  <JobList
-                    title="Private Jobs"
-                    subtitle="Top hiring companies matching skills"
-                    icon={Building2}
-                    color="bg-indigo-650"
-                    variant="private"
-                    items={filteredPrivateJobs}
-                    limit={8}
-                    emptyText="No private sector jobs match this query."
-                    viewMoreUrl="/referrals"
-                  />
-                )}
-              </div>
-            </LazySection>
-          </div>
           )
         )}
-        
-        {/* Stats metrics card banner */}
-        <LazySection height="220px" forceVisible={forceLazyVisible}>
-          <div className="mt-16 bg-gradient-to-r from-blue-950 to-blue-900 rounded-2xl p-8 md:p-12 shadow-xl shadow-blue-900/10 text-center text-white" aria-label="Platform statistics">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {[
-                { value: '50,000+', label: 'Active Job Listings', icon: Briefcase },
-                { value: '18.3K+', label: 'Happy Users', icon: Users },
-                { value: '1,200+', label: 'Govt Departments', icon: Building2 },
-                { value: '95%', label: 'Match Accuracy', icon: TrendingUp },
-              ].map((stat, i) => (
-                <div key={i} className="flex flex-col items-center">
-                  <stat.icon className="w-6 h-6 text-amber-400 mb-2" aria-hidden="true" />
-                  <span className="block text-2xl md:text-3xl font-bold" aria-label={`${stat.value} ${stat.label}`}>{stat.value}</span>
-                  <span className="text-xs text-blue-200 mt-1 font-medium">{stat.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </LazySection>
 
-        {/* SEO Text Block / Info Section for Search Engines & Users */}
-        <div className="mt-16 border-t border-gray-100 pt-16 text-left max-w-4xl mx-auto contain-layout-paint">
-          <h2 className="text-2xl font-bold text-blue-950 mb-6">WeeklyNaukri - India's Premier Sarkari Result & Latest Govt Jobs Portal</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-gray-600 leading-relaxed">
+        {/* Trust band */}
+        <section className="bg-ink text-white w-full rounded-2xl overflow-hidden mt-16 shadow-lg">
+          <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: CheckCircle2, t: "Verified Sources", d: "Cross-checked with official portals" },
+              { icon: Zap, t: "Updated Daily", d: "Auto-ingested live notifications" },
+              { icon: ShieldCheck, t: "Privacy-First", d: "Image tools never leave your device" },
+              { icon: Sparkles, t: "Free Forever", d: "No signup, no paywalls" },
+            ].map((s, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <span className="grid place-items-center w-10 h-10 rounded-lg bg-white/10 text-white shrink-0"><s.icon size={18} /></span>
+                <div>
+                  <p className="font-heading font-bold text-sm">{s.t}</p>
+                  <p className="text-xs text-slate-350 leading-snug mt-0.5">{s.d}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Tools + FAQ Accordion */}
+        <section className="mt-16 bg-slate-50 border border-slate-200 rounded-3xl p-6 md:p-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <h2 className="font-heading font-bold text-2xl tracking-tight text-ink">Free Exam Utilities</h2>
+              <p className="text-slatebody text-sm mt-1 mb-5">Built for candidates. Fast, privacy-first, no signup.</p>
+              <div className="grid sm:grid-cols-3 gap-4">
+                {[
+                  { icon: ImageIcon, title: "Photo & Signature Resizer", desc: "SSC, UPSC presets. 100% in-browser.", to: "/image-resizer", testid: "tool-image-resizer", grad: "from-blue-600 to-sky-500" },
+                  { icon: Calculator, title: "SSC GD 2026 Calculator", desc: "Marks, cut-off & PET estimator.", to: "/ssc-gd-2026", testid: "tool-ssc-gd", grad: "from-emerald-600 to-green-500" },
+                  { icon: FileStack, title: "Syllabus PDF Vault", desc: "Patterns, weightage & downloads.", to: "/syllabus", testid: "tool-syllabus", grad: "from-indigo-700 to-blue-700" },
+                ].map((t) => (
+                  <Link key={t.to} href={t.to} data-testid={t.testid}
+                    className="group bg-white rounded-2xl border border-slate-200 p-5 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1.5 hover:border-action/30"
+                  >
+                    <span className={`grid place-items-center w-12 h-12 rounded-xl bg-gradient-to-br ${t.grad} text-white mb-3 shadow-md group-hover:scale-110 transition-transform`}>
+                      <t.icon size={22} />
+                    </span>
+                    <h3 className="font-heading font-bold text-sm text-ink">{t.title}</h3>
+                    <p className="text-xs text-muted mt-1 leading-relaxed">{t.desc}</p>
+                    <span className="inline-flex items-center gap-1 text-xs font-bold text-action mt-3">Open <ArrowRight size={12} /></span>
+                  </Link>
+                ))}
+              </div>
+              <div className="mt-6 flex items-center gap-3 bg-green-50 rounded-xl border border-green-100 p-4">
+                <ShieldCheck size={20} className="text-ok shrink-0" />
+                <p className="text-sm text-slatebody"><strong className="text-ink">Privacy-first:</strong> Image tools run 100% inside your browser. Your photos are never uploaded to any server.</p>
+              </div>
+            </div>
+
+            {/* FAQ Accordion Side Block */}
+            <aside data-testid="home-faq-sidebar">
+              <h2 className="font-heading font-bold text-2xl tracking-tight text-ink mb-4">FAQ</h2>
+              <div className="space-y-3">
+                {[
+                  { q: "What is WeeklyNaukri.com?", a: "WeeklyNaukri.com is a mobile-first Sarkari Naukri hub providing the latest government jobs, results, admit cards, answer keys, admissions and exam utilities for Indian competitive exams, updated daily." },
+                  { q: "How often is the portal updated?", a: "Our feeds for Latest Jobs, Results and Admit Cards are refreshed every day so candidates never miss an official notification." },
+                  { q: "Are the photo resizer and calculators free?", a: "Yes. All utilities including the Photo & Signature Resizer and the SSC GD 2026 Marks Calculator are 100% free and process data locally in your browser." },
+                  { q: "Is my photo uploaded to any server?", a: "No. The image resizer is privacy-first — your photo and signature are processed entirely inside your browser using HTML5 canvas and never leave your device." },
+                ].map((f, i) => (
+                  <details key={i} className="bg-white rounded-xl border border-slate-200 group overflow-hidden" data-testid={`faq-item-${i}`}>
+                    <summary className="cursor-pointer list-none px-4 py-3.5 font-semibold text-sm flex justify-between items-center hover:bg-slate-50 transition-colors text-ink">
+                      {f.q}<span className="text-action group-open:rotate-45 transition-transform text-lg leading-none">+</span>
+                    </summary>
+                    <p className="px-4 pb-3.5 text-sm text-slatebody leading-relaxed border-t border-slate-50 pt-2">{f.a}</p>
+                  </details>
+                ))}
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        {/* SEO Text Block / Info Section */}
+        <div className="mt-16 border-t border-slate-200 pt-16 text-left max-w-4xl mx-auto contain-layout-paint">
+          <h2 className="text-2xl font-bold text-ink mb-6">WeeklyNaukri - India's Premier Sarkari Result & Latest Govt Jobs Portal</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-slatebody leading-relaxed">
             <div>
               <p className="mb-4">
                 Welcome to <strong>WeeklyNaukri.com</strong>, your ultimate destination for all government exam updates, private sector jobs, results, admit cards, and answer keys. We specialize in aggregating active notifications for <strong>Sarkari Naukri</strong> (government jobs) and major IT/private jobs across India, making it easier for aspirants to find their dream careers.
@@ -766,52 +914,17 @@ export default function HomeClient({ initialJobs, initialNotices }) {
               </p>
             </div>
           </div>
-
-          {/* FAQ Section */}
-          <div className="mt-12 border-t border-gray-150/70 pt-10 text-left max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-blue-950 mb-6">Frequently Asked Questions (FAQ)</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-6">
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm mb-2">What is Weekly Naukri?</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    Weekly Naukri is India's leading job portal that aggregates and indexes the latest government notifications, sarkari results, admit cards, and private sector IT opportunities in one unified portal.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm mb-2">Is Weekly Naukri free to use?</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    Yes, our platform is 100% free for all job seekers. You can browse active vacancies, check exam results, download syllabi, and practice with our online mock test series without any hidden charges or subscriptions.
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-6">
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm mb-2">How often are new government jobs updated?</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    Our databases are refreshed daily by crawling official portals. We list active openings from central and state boards including SSC, UPSC, Railway (RRB), IBPS, and Defence organizations.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm mb-2">How do I get notified about new job alerts?</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    You can receive instant updates by subscribing to our official Telegram channel and WhatsApp updates group. Link buttons for these channels are pinned directly in our homepage announcement bar.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
       <LazySection height="400px" forceVisible={forceLazyVisible}>
-        <Footer onFooterSearch={handleFooterSearch} />
+        <Footer />
       </LazySection>
 
       {/* AI Resume Upload Match Modal */}
       {isResumeModalOpen && (
         <div 
-          className="fixed inset-0 bg-black/65 backdrop-blur-sm z-50 flex items-center justify-center p-4" 
+          className="fixed inset-0 bg-ink/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" 
           role="dialog" 
           aria-modal="true" 
           aria-labelledby="resume-modal-title"
@@ -821,38 +934,38 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             <div ref={modalRef}>
               <button 
                 onClick={() => setIsResumeModalOpen(false)} 
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors cursor-pointer bg-transparent border-none p-1 rounded-lg"
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-900 transition-colors cursor-pointer bg-transparent border-none p-1 rounded-lg"
                 aria-label="Close resume upload dialog"
               >
                 <X className="w-5 h-5" aria-hidden="true" />
               </button>
               
               <div className="text-center mb-6">
-                <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3 text-amber-600">
+                <div className="w-12 h-12 bg-blue-50 text-action rounded-full flex items-center justify-center mx-auto mb-3">
                   <Sparkles className="w-6 h-6" aria-hidden="true" />
                 </div>
-                <h3 id="resume-modal-title" className="text-xl font-bold text-gray-900">AI Resume Match</h3>
-                <p className="text-sm text-gray-600 mt-1">Upload your PDF resume to instantly find private sector jobs matching your skills.</p>
+                <h3 id="resume-modal-title" className="text-xl font-bold text-ink">AI Resume Match</h3>
+                <p className="text-sm text-slatebody mt-1">Upload your PDF resume to instantly find private sector jobs matching your skills.</p>
               </div>
               
-              <label className="border-2 border-dashed border-gray-300 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-50/50 hover:border-blue-300 transition-all group">
+              <label className="border-2 border-dashed border-slate-350 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-50/50 hover:border-blue-300 transition-all group">
                 <input type="file" accept=".pdf" className="hidden" onChange={handleFileUpload} disabled={isParsing} aria-label="Upload PDF resume file" />
                 {isParsing ? (
                   <>
-                    <Loader2 className="w-8 h-8 text-blue-600 animate-spin mb-3" role="status" aria-label="Analyzing resume" />
-                    <span className="text-sm font-medium text-gray-800">Analyzing skills...</span>
+                    <Loader2 className="w-8 h-8 text-action animate-spin mb-3" role="status" aria-label="Analyzing resume" />
+                    <span className="text-sm font-medium text-slatebody">Analyzing skills...</span>
                   </>
                 ) : (
                   <>
-                    <UploadCloud className="w-8 h-8 text-gray-400 group-hover:text-blue-600 transition-colors mb-3" aria-hidden="true" />
-                    <span className="text-sm font-medium text-gray-800">Click to upload PDF</span>
-                    <span className="text-xs text-gray-500 mt-1">Max file size: 5MB</span>
+                    <UploadCloud className="w-8 h-8 text-slate-400 group-hover:text-action transition-colors mb-3" aria-hidden="true" />
+                    <span className="text-sm font-medium text-slatebody">Click to upload PDF</span>
+                    <span className="text-xs text-slate-400 mt-1">Max file size: 5MB</span>
                   </>
                 )}
               </label>
               {resumeError && (
                 <div className="mt-3 text-center" role="alert">
-                  <p className="text-sm text-red-600 font-medium">{resumeError}</p>
+                  <p className="text-sm text-red-650 font-semibold">{resumeError}</p>
                 </div>
               )}
             </div>

@@ -1,13 +1,28 @@
 import '../index.css';
-import { Inter } from 'next/font/google';
+import { Outfit, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
 import Script from 'next/script';
 
-const inter = Inter({
+const outfit = Outfit({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-heading',
+});
+
+const ibmPlexSans = IBM_Plex_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   display: 'swap',
-  variable: '--font-inter',
+  variable: '--font-body',
 });
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  display: 'swap',
+  variable: '--font-mono',
+});
+
 
 export const viewport = {
   width: 'device-width',
@@ -50,7 +65,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${inter.variable}`}>
+    <html lang="en" className={`${outfit.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}>
       <head>
         {/* Preload critical assets for LCP/FCP */}
         <link rel="preload" as="image" href="/logo.svg" />
