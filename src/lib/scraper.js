@@ -521,47 +521,198 @@ export async function fetchSarkariJobDetails(url) {
     browser = await getBrowser();
     const page = await browser.newPage();
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 10000 });
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 15000 });
+
+    // Wait a moment for dynamic content to settle
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     const details = await page.evaluate(() => {
-      const findText = (keywords) => {
-        const els = Array.from(document.querySelectorAll('li, p, div, span'));
-        for (const el of els) {
-          const text = el.innerText || '';
+      // ── Helper: extract value after a colon/dash from a text line ──
+      function extractValue(text) {
+        if (!text) return 'N/A';
+        // Remove HTML tags if any leaked through
+        const clean = text.replace(/<[^>]*>/g, '').trim();
+        // Try splitting at : or –
+        const parts = clean.split(/\s*[:–]\s*/);
+        if (parts.length > 1) {
+          return parts.slice(1).join(':').trim() || clean;
+        }
+        return clean;
+      }
+
+      // ── Helper: extract fee amount from text (strips ₹, /-, whitespace) ──
+      function extractFeeAmount(text) {
+        if (!text) return 'N/A';
+        // Match a number (possibly with commas) that may be preceded by ₹ and followed by /-
+        const m = text.match(/₹?\s*([\d,]+)\s*\/?-?/);
+        if (m) return m[1].replace(/,/g, '');
+        // If text literally says "Nil" or "0" or "Free"
+        if (/nil|free/i.test(text)) return '0';
+        return 'N/A';
+      }
+
+      // ── Helper: find all <li> text items within a section identified by its header ──
+      function findSectionItems(headerKeywords) {
+        // Strategy: find heading elements (h1-h6, div with gb-headline class) whose text
+        // matches one of the keywords, then collect <li> texts from the next sibling container.
+        const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, [class*="gb-headline"]'));
+        
+        for (const heading of headings) {
+          const hText = (heading.innerText || '').toLowerCase().trim();
+          const matched = headerKeywords.some(kw => hText.includes(kw.toLowerCase()));
+          if (!matched) continue;
+
+          // Collect list items: look in the heading's parent container or next siblings
+          const items = [];
+          
+          // Strategy 1: Same parent container — look for sibling elements with <li>
+          let container = heading.closest('.gb-grid-column') || heading.closest('.gb-container') || heading.parentElement;
+          if (container) {
+            const lis = container.querySelectorAll('li');
+            lis.forEach(li => {
+              const t = (li.innerText || '').trim();
+              if (t.length > 2) items.push(t);
+            });
+            // Also check for standalone div/p text (e.g., vacancy count in a div)
+            if (items.length === 0) {
+              const divs = container.querySelectorAll('div[class*="gb-headline"], p');
+              divs.forEach(d => {
+                if (d === heading) return;
+                const t = (d.innerText || '').trim();
+                if (t.length > 1 && t.length < 200) items.push(t);
+              });
+            }
+          }
+          
+          // Strategy 2: Walk next siblings if container didn't yield results
+          if (items.length === 0) {
+            let sibling = heading.nextElementSibling;
+            for (let i = 0; i < 5 && sibling; i++) {
+              const lis = sibling.querySelectorAll('li');
+              if (lis.length > 0) {
+                lis.forEach(li => {
+                  const t = (li.innerText || '').trim();
+                  if (t.length > 2) items.push(t);
+                });
+                break;
+              }
+              sibling = sibling.nextElementSibling;
+            }
+          }
+          
+          if (items.length > 0) return items;
+        }
+        return [];
+      }
+
+      // ── Helper: search list items for a matching keyword and extract the value ──
+      function findInItems(items, keywords) {
+        for (const item of items) {
+          const lower = item.toLowerCase();
           for (const kw of keywords) {
-            if (text.toLowerCase().includes(kw.toLowerCase()) && text.length < 120) {
-              return text.replace(kw, '').replace(/[:\-]/g, '').trim() || text.trim();
+            if (lower.includes(kw.toLowerCase())) {
+              return extractValue(item);
             }
           }
         }
         return 'N/A';
-      };
+      }
 
-      const applyStart = findText(['Online Apply Start Date', 'Application Begin']);
-      const applyEnd = findText(['Online Apply Last Date', 'Last Date for Apply Online', 'Last Date']);
-      const examDate = findText(['Exam Date']);
+      // ══════════════════════════════════════════════════════════════
+      // 1. PARSE IMPORTANT DATES
+      // ══════════════════════════════════════════════════════════════
+      const dateItems = findSectionItems(['important dates', 'important date']);
+      const applyStart = findInItems(dateItems, ['Apply Start Date', 'Application Begin', 'Form Start Date', 'Mains Form Start']);
+      const applyEnd = findInItems(dateItems, ['Apply Last Date', 'Last Date for Apply', 'Last Date', 'Form Last Date', 'Mains Form Last Date']);
+      let examDate = findInItems(dateItems, ['Exam Date', 'Pre Exam Date', 'Prelims Date', 'CBT Date']);
 
-      const generalFee = findText(['General / OBC', 'General / OBC / EWS', 'All Category Candidates']);
-      const scStFee = findText(['SC / ST', 'SC/ST', 'SC / ST / PH']);
-      const femaleFee = findText(['All Category Female', 'Women']);
+      // ══════════════════════════════════════════════════════════════
+      // 2. PARSE APPLICATION FEE
+      // ══════════════════════════════════════════════════════════════
+      const feeItems = findSectionItems(['application fee', 'exam fee', 'examination fee']);
+      
+      // Find general fee — look for various common label patterns
+      const generalFeeText = findInItems(feeItems, [
+        'General, OBC, EWS', 'General / OBC / EWS', 'General / OBC',
+        'Gen / OBC', 'Gen, OBC', 'General/OBC', 'All Category Candidate',
+        'All Other Category', 'UR / OBC', 'Unreserved'
+      ]);
+      const generalFee = extractFeeAmount(generalFeeText);
 
-      const minAge = findText(['Minimum Age']);
-      const maxAge = findText(['Maximum Age']);
+      // Find SC/ST fee
+      const scStFeeText = findInItems(feeItems, [
+        'SC / ST', 'SC/ST', 'SC / ST / PH', 'SC/ST/PH'
+      ]);
+      const scStFee = extractFeeAmount(scStFeeText);
 
-      const vacancies = findText(['Total Post', 'Vacancy Details', 'Total Vacancy']) || 'Check Notification';
-      const eligibility = findText(['Bachelor Degree', '10+2', 'Class 10', 'Diploma', 'Eligibility']) || 'Check Official Notification';
+      // Find female / women fee
+      const femaleFeeText = findInItems(feeItems, [
+        'Female Category', 'All Female', 'Female', 'Women', 'All Category Female',
+        'Mahila', 'Lady'
+      ]);
+      const femaleFee = extractFeeAmount(femaleFeeText);
 
-      const links = { apply: '#', notification: '#', official: '#' };
-      const rows = Array.from(document.querySelectorAll('tr'));
-      rows.forEach(row => {
-        const text = (row.innerText || '').toLowerCase();
-        const a = row.querySelector('a');
-        if (a) {
-          if (text.includes('apply online') || text.includes('apply')) links.apply = a.href;
-          else if (text.includes('notification')) links.notification = a.href;
-          else if (text.includes('official website')) links.official = a.href;
+      // ══════════════════════════════════════════════════════════════
+      // 3. PARSE AGE LIMIT
+      // ══════════════════════════════════════════════════════════════
+      const ageItems = findSectionItems(['age limit', 'age criteria']);
+      const minAge = findInItems(ageItems, ['Minimum Age', 'Min Age']);
+      const maxAge = findInItems(ageItems, ['Maximum Age', 'Max Age']);
+
+      // ══════════════════════════════════════════════════════════════
+      // 4. PARSE VACANCIES
+      // ══════════════════════════════════════════════════════════════
+      const vacancyItems = findSectionItems(['total post', 'vacancy', 'total vacancy']);
+      let vacancies = 'Check Notification';
+      if (vacancyItems.length > 0) {
+        // Often the vacancy count is in a standalone div like "933 Posts"
+        for (const item of vacancyItems) {
+          const m = item.match(/([\d,]+)\s*(post|vacanc|seat)/i);
+          if (m) {
+            vacancies = m[1].replace(/,/g, '') + ' Posts';
+            break;
+          }
         }
-      });
+        if (vacancies === 'Check Notification' && vacancyItems[0].length < 50) {
+          vacancies = vacancyItems[0];
+        }
+      }
+
+      // ══════════════════════════════════════════════════════════════
+      // 5. PARSE ELIGIBILITY
+      // ══════════════════════════════════════════════════════════════
+      const eligItems = findSectionItems(['eligibility', 'qualification', 'education']);
+      let eligibility = 'Check Official Notification';
+      if (eligItems.length > 0) {
+        // Join first few items
+        eligibility = eligItems.slice(0, 3).join(', ');
+        if (eligibility.length > 300) eligibility = eligibility.slice(0, 297) + '...';
+      }
+
+      // ══════════════════════════════════════════════════════════════
+      // 6. PARSE IMPORTANT LINKS (Apply Online, Notification, Official)
+      // ══════════════════════════════════════════════════════════════
+      const links = { apply: '#', notification: '#', official: '#' };
+      
+      // Links are typically in a table or list near the bottom
+      const allAnchors = Array.from(document.querySelectorAll('a'));
+      const linkSections = Array.from(document.querySelectorAll('li, tr, p, div'));
+      
+      for (const el of linkSections) {
+        const text = (el.innerText || '').toLowerCase();
+        const anchor = el.querySelector('a[href]');
+        if (!anchor) continue;
+        const href = anchor.href;
+        if (!href || href === '#' || href.includes('javascript:')) continue;
+        
+        if ((text.includes('apply online') || text.includes('mains form')) && links.apply === '#') {
+          links.apply = href;
+        } else if (text.includes('notification') && !text.includes('official') && links.notification === '#') {
+          links.notification = href;
+        } else if (text.includes('official website') && links.official === '#') {
+          links.official = href;
+        }
+      }
 
       return {
         dates: { applyStart, applyEnd, examDate },

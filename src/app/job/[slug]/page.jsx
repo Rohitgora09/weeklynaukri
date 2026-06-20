@@ -32,6 +32,18 @@ function findStaticJob(idOrSlug) {
   return allData.find(item => item.id === idOrSlug || item.title?.toLowerCase().replace(/\s+/g, '-') === idOrSlug);
 }
 
+// Helper to format fee values — prevents double ₹ and handles N/A gracefully
+function formatFee(value) {
+  if (!value || value === 'N/A' || value === 'undefined') return 'Check Notification';
+  const str = String(value).trim();
+  // If it already contains ₹, return as-is
+  if (str.includes('₹')) return str;
+  // If it's a pure number, format with ₹
+  if (/^\d+$/.test(str)) return `₹ ${str}/-`;
+  // Otherwise return as-is
+  return str;
+}
+
 // Main logic to fetch job details (static or SQLite + scraped)
 async function getJobData(slug) {
   // 1. Check static fallback data
@@ -57,20 +69,31 @@ async function getJobData(slug) {
       const details = typeof cached.full_details_json === 'string'
         ? JSON.parse(cached.full_details_json)
         : cached.full_details_json;
-      return {
-        isStatic: false,
-        job: {
-          id: cached.job_id,
-          slug: cached.url_slug,
-          title: cached.title,
-          org: cached.org || 'WeeklyNaukri.Com',
-          status: cached.category === 'latestJobs' ? 'New' : (cached.category === 'results' ? 'Declared' : 'Available'),
-          date: new Date(cached.scraped_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
-          source_url: cached.source_url,
-          category: cached.category,
-          ...details
-        }
-      };
+      
+      // Check if fee data looks stale (all N/A) — if so, skip cache and re-scrape
+      const feeStale = details.fee && 
+        (details.fee.general === 'N/A' || !details.fee.general) &&
+        (details.fee.scSt === 'N/A' || !details.fee.scSt) &&
+        (details.fee.women === 'N/A' || !details.fee.women);
+      
+      if (!feeStale || cached.category === 'privateJobs') {
+        return {
+          isStatic: false,
+          job: {
+            id: cached.job_id,
+            slug: cached.url_slug,
+            title: cached.title,
+            org: cached.org || 'WeeklyNaukri.Com',
+            status: cached.category === 'latestJobs' ? 'New' : (cached.category === 'results' ? 'Declared' : 'Available'),
+            date: new Date(cached.scraped_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+            source_url: cached.source_url,
+            category: cached.category,
+            ...details
+          }
+        };
+      }
+      
+      console.log(`Fee data stale for ${slug}, will re-scrape...`);
     } catch (e) {
       console.error("Failed to parse cached details JSON:", e);
     }
@@ -310,9 +333,9 @@ export default async function JobDetailsPage({ params }) {
                   Application Fee
                 </div>
                 <div className="p-5 text-sm space-y-2 text-gray-800">
-                  <p><span className="font-semibold text-gray-600">For General / OBC / EWS:</span> ₹ {job.fee.general}</p>
-                  <p><span className="font-semibold text-gray-600">For SC / ST:</span> ₹ {job.fee.scSt}</p>
-                  <p><span className="font-semibold text-gray-600">For Female Candidates:</span> ₹ {job.fee.women}</p>
+                  <p><span className="font-semibold text-gray-600">For General / OBC / EWS:</span> {formatFee(job.fee.general)}</p>
+                  <p><span className="font-semibold text-gray-600">For SC / ST:</span> {formatFee(job.fee.scSt)}</p>
+                  <p><span className="font-semibold text-gray-600">For Female Candidates:</span> {formatFee(job.fee.women)}</p>
                   <p className="font-bold mt-4 mb-1 border-t border-gray-150 pt-3 text-xs text-gray-500 uppercase">Payment Modes (Online Only):</p>
                   <ul className="list-disc pl-5 space-y-1 text-xs text-gray-550">
                     <li>Credit / Debit Card</li>
