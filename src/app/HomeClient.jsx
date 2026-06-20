@@ -370,16 +370,17 @@ export default function HomeClient({ initialJobs, initialNotices }) {
       <Navbar onCategorySelect={handleCategorySelect} />
 
       {/* Ticker / Notice Marquee Banner */}
-      <div className="bg-gradient-to-r from-rose-600 to-red-500 text-white overflow-hidden marquee-wrap w-full">
-        <div className="max-w-7xl mx-auto flex items-center">
-          <span className="bg-ink text-white text-[11px] font-bold uppercase tracking-widest px-3 py-2 shrink-0 flex items-center gap-1">
-            <Megaphone size={12} /> Live
+      <div className="bg-gradient-to-r from-rose-600 to-red-500 text-white overflow-hidden marquee-wrap w-full flex items-center">
+        <div className="max-w-7xl mx-auto flex items-center w-full">
+          <span className="bg-ink text-white text-[11px] font-extrabold uppercase tracking-widest px-4 py-2.5 shrink-0 flex items-center">
+            LIVE
           </span>
+          <span className="text-white/45 px-2 shrink-0 select-none font-bold">|</span>
           <div className="overflow-hidden flex-1">
             <div className="animate-marquee text-xs py-2">
               {ticker.concat(ticker).map((t, i) => (
                 <Link key={i} href={`/job/${t.url_slug || t.slug || t.id}`} className="mx-6 hover:underline font-medium inline-block">
-                  ● {t.title}
+                  • {t.title}
                 </Link>
               ))}
             </div>
