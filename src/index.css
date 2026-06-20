@@ -185,14 +185,14 @@ input:focus:not(:focus-visible) {
 
 .animate-marquee {
   animation: marquee 35s linear infinite;
-  display: flex;
-  width: max-content;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .animate-marquee-reverse {
   animation: marquee-reverse 35s linear infinite;
-  display: flex;
-  width: max-content;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .animate-marquee:hover, .animate-marquee-reverse:hover {
