@@ -116,7 +116,7 @@ export default function Signup() {
           </Link>
           <Link href="/" className="flex items-center gap-2 shrink-0">
             <img src="/logo.svg" alt="WeeklyNaukri Logo" className="w-9 h-9 shrink-0" />
-            <span className="font-heading font-extrabold text-xl tracking-tight text-ink hidden sm:block">Weekly<span className="text-action">Naukri</span></span>
+            <span className="font-heading font-extrabold text-lg sm:text-xl tracking-tight text-ink">Weekly<span className="text-action">Naukri</span></span>
           </Link>
         </div>
       </nav>
@@ -124,17 +124,17 @@ export default function Signup() {
       <main className="flex-1 flex items-center justify-center p-6 py-12">
         <div className="w-full max-w-sm border border-ink bg-white">
           {!otpSent ? (
-            <div className="bg-ink text-white px-6 py-5 text-center flex flex-col items-center">
+            <div className="bg-ink text-white px-6 py-6 text-center flex flex-col items-center">
               <img src="/logo.svg" alt="WeeklyNaukri Logo" className="w-12 h-12 rounded-full shadow-sm mb-2" />
-              <h1 className="font-heading font-extrabold text-xl">Create an account</h1>
+              <h1 className="font-heading font-extrabold text-2xl sm:text-xl">Create an account</h1>
               <p className="text-xs text-slate-400 mt-1">Join WeeklyNaukri.com for free job alerts.</p>
             </div>
           ) : (
-            <div className="bg-ink text-white px-6 py-5 text-center flex flex-col items-center">
+            <div className="bg-ink text-white px-6 py-6 text-center flex flex-col items-center">
               <div className="w-12 h-12 bg-action text-white rounded-full flex items-center justify-center mb-2 shadow-sm">
                 <KeyRound className="w-6 h-6" />
               </div>
-              <h1 className="font-heading font-extrabold text-xl">Verify your account</h1>
+              <h1 className="font-heading font-extrabold text-2xl sm:text-xl">Verify your account</h1>
               <p className="text-xs text-slate-400 mt-1">
                 Enter code sent to <strong className="text-white">{email}</strong>
               </p>
@@ -157,7 +157,7 @@ export default function Signup() {
               <>
                 <form onSubmit={handleSignupDetails} className="space-y-4">
                   <label className="block">
-                    <span className="text-[11px] uppercase tracking-wide text-muted font-semibold">Full Name</span>
+                    <span className="text-xs sm:text-[11px] uppercase tracking-wide text-muted font-semibold">Full Name</span>
                     <div className="flex items-center border border-line mt-1 focus-within:border-action">
                       <User className="h-[15px] w-[15px] ml-3 text-muted" />
                       <input
@@ -172,7 +172,7 @@ export default function Signup() {
                   </label>
 
                   <label className="block">
-                    <span className="text-[11px] uppercase tracking-wide text-muted font-semibold">Email Address</span>
+                    <span className="text-xs sm:text-[11px] uppercase tracking-wide text-muted font-semibold">Email Address</span>
                     <div className="flex items-center border border-line mt-1 focus-within:border-action">
                       <Mail className="h-[15px] w-[15px] ml-3 text-muted" />
                       <input
@@ -187,7 +187,7 @@ export default function Signup() {
                   </label>
 
                   <label className="block">
-                    <span className="text-[11px] uppercase tracking-wide text-muted font-semibold">Password</span>
+                    <span className="text-xs sm:text-[11px] uppercase tracking-wide text-muted font-semibold">Password</span>
                     <div className="flex items-center border border-line mt-1 focus-within:border-action relative">
                       <Lock className="h-[15px] w-[15px] ml-3 text-muted" />
                       <input
