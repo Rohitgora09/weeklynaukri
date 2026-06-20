@@ -57,8 +57,8 @@ export default function Login() {
             <ArrowLeft className="w-4 h-4" /> Back to Home
           </Link>
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <img src="/logo.svg" alt="WeeklyNaukri Logo" width="48" height="48" className="h-12 w-12 object-cover rounded-full shadow-sm shrink-0" />
-            <span className="font-bold text-gray-900 tracking-tight hidden sm:block text-lg">WeeklyNaukri</span>
+            <img src="/logo.svg" alt="WeeklyNaukri Logo" className="w-9 h-9 shrink-0" />
+            <span className="font-heading font-extrabold text-xl tracking-tight text-ink hidden sm:block">Weekly<span className="text-action">Naukri</span></span>
           </Link>
         </div>
       </nav>
