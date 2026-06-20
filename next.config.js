@@ -15,6 +15,21 @@ const nextConfig = {
         destination: '/job/:id',
         permanent: true,
       },
+      {
+        source: '/private-jobs',
+        destination: '/referrals',
+        permanent: true,
+      },
+      {
+        source: '/admissions',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/documents',
+        destination: '/',
+        permanent: true,
+      },
     ];
   },
 };

@@ -66,9 +66,9 @@ const COLS = [
     title: 'Resources',
     links: [
       ['Syllabus Vault', '/syllabus'],
-      ['Admissions', '/admissions'],
-      ['Documents', '/documents'],
-      ['Private Jobs', '/private-jobs'],
+      ['IT Govt Jobs', '/it-govt-jobs'],
+      ['Exam Calendar', '/exam-calendar'],
+      ['Private Jobs', '/referrals'],
     ],
   },
   {
