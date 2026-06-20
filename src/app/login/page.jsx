@@ -65,73 +65,70 @@ export default function Login() {
 
       {/* Main Form content */}
       <main className="flex-1 flex items-center justify-center p-6 py-12">
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-          <div className="p-8 md:p-10">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-              <p className="text-gray-500 text-sm">Sign in to manage referrals and alerts.</p>
-            </div>
+        <div className="w-full max-w-sm border border-ink bg-white">
+          <div className="bg-ink text-white px-6 py-5 text-center flex flex-col items-center">
+            <img src="/logo.svg" alt="WeeklyNaukri Logo" className="w-12 h-12 rounded-full shadow-sm mb-2" />
+            <h1 className="font-heading font-extrabold text-xl">Welcome Back</h1>
+            <p className="text-xs text-slate-400 mt-1">Sign in to manage referrals and alerts.</p>
+          </div>
 
+          <div className="p-6 md:p-8">
             {error && (
-              <div className="mb-6 p-4 bg-red-50 text-red-750 text-xs rounded-xl border border-red-100">
+              <div className="mb-4 p-3 bg-red-50 text-alert text-xs border border-red-100 font-medium">
                 {error}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 block">Email Address</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-                    <Mail className="h-5 w-5" />
-                  </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <label className="block">
+                <span className="text-[11px] uppercase tracking-wide text-muted font-semibold">Email Address</span>
+                <div className="flex items-center border border-line mt-1 focus-within:border-action">
+                  <Mail className="h-[15px] w-[15px] ml-3 text-muted" />
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="block w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-black/10 focus:border-gray-400 bg-gray-50/50 hover:bg-gray-50"
+                    className="w-full px-2 py-2 text-sm outline-none"
                   />
                 </div>
-              </div>
+              </label>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 block">Password</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-                    <Lock className="h-5 w-5" />
-                  </div>
+              <label className="block">
+                <span className="text-[11px] uppercase tracking-wide text-muted font-semibold">Password</span>
+                <div className="flex items-center border border-line mt-1 focus-within:border-action relative">
+                  <Lock className="h-[15px] w-[15px] ml-3 text-muted" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="block w-full pl-11 pr-11 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-black/10 focus:border-gray-400 bg-gray-50/50 hover:bg-gray-50"
+                    className="w-full pl-2 pr-10 py-2 text-sm outline-none"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-650"
+                    className="absolute right-3 text-gray-400 hover:text-gray-600 bg-transparent border-none p-0 flex items-center cursor-pointer"
                   >
-                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
-              </div>
+              </label>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-black text-white py-3.5 rounded-xl font-medium shadow-md shadow-black/10 hover:bg-gray-800 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-4"
+                className="w-full bg-action hover:bg-blue-800 text-white font-bold py-2.5 transition-colors disabled:opacity-50 mt-2 flex items-center justify-center gap-2 cursor-pointer"
               >
                 {loading ? 'Signing In...' : 'Sign In'}
               </button>
             </form>
 
-            <div className="mt-8 text-center text-sm text-gray-550">
+            <div className="mt-6 text-center text-xs text-slatebody">
               New to WeeklyNaukri?{' '}
-              <Link href="/signup" className="font-semibold text-black hover:underline">
+              <Link href="/signup" className="font-semibold text-ink hover:underline">
                 Create an account
               </Link>
             </div>
