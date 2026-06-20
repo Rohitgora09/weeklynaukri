@@ -562,7 +562,6 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             { id: 'Govt Jobs', label: 'Latest Govt Jobs', icon: Briefcase },
             { id: 'Answer Keys', label: 'Answer Keys', icon: KeyRound },
             { id: 'Admissions', label: 'Admissions', icon: GraduationCap },
-            { id: 'Documents', label: 'Important Documents', icon: FileText },
             { id: 'Private Jobs', label: 'Private Jobs', icon: Building2 }
           ].map((item) => {
             const Icon = item.icon;
@@ -571,7 +570,6 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                           item.id === 'Govt Jobs' ? latestJobs.length :
                           item.id === 'Answer Keys' ? answerKeys.length :
                           item.id === 'Admissions' ? admissions.length :
-                          item.id === 'Documents' ? documents.length :
                           item.id === 'Private Jobs' ? privateJobs.length : 0;
             return (
               <button 
@@ -749,9 +747,9 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                 )}
               </div>
 
-              {/* Secondary Grid: Answer Keys, Admissions, Important Documents, Private Jobs */}
+              {/* Secondary Grid: Answer Keys, Admissions, Private Jobs */}
               <LazySection height="450px" forceVisible={forceLazyVisible}>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
                   {showAnswerKeys && (
                     <JobList
                       title="Answer Keys"
@@ -773,17 +771,6 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                       items={filteredAdmissions}
                       limit={10}
                       emptyText="No admission alerts match your query."
-                    />
-                  )}
-                  {showDocuments && (
-                    <JobList
-                      title="Important Documents"
-                      subtitle="Scholarships & certificate forms"
-                      iconName="FileText"
-                      accent="brand"
-                      items={filteredDocuments}
-                      limit={10}
-                      emptyText="No documents match your query."
                     />
                   )}
                   {showPrivate && (
