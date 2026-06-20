@@ -554,7 +554,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
       </div>
 
       {/* Category Sticky Nav Strip */}
-      <section className="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-[100px] z-30 hidden md:block w-full">
+      <section className="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-[64px] z-30 hidden md:block w-full">
         <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-center gap-2 overflow-x-auto feed-scroll">
           {[
             { id: 'Results', label: 'Latest Results', icon: FileCheck2 },
