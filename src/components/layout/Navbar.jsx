@@ -60,15 +60,7 @@ export default function Navbar({ onCategorySelect }) {
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200 shadow-sm w-full" data-testid="site-header">
-      {/* Top brand bar */}
-      <div className="bg-brand text-white">
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-9 text-xs">
-          <span className="tabular tracking-wide hidden sm:block">Daily Sarkari updates • Govt Jobs • Results • Admit Cards</span>
-          <Link href="/ssc-gd-2026" className="hover:underline font-medium" data-testid="topbar-sscgd-link">
-            SSC GD 2026 Marks Calculator →
-          </Link>
-        </div>
-      </div>
+
 
       {/* Main Nav Container */}
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16 gap-4">
