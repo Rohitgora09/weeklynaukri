@@ -70,12 +70,9 @@ async function getJobData(slug) {
         ? JSON.parse(cached.full_details_json)
         : cached.full_details_json;
       
-      // Check if fee data looks stale (all N/A) — if so, skip cache and re-scrape
+      // Check if fee data was scraped with the old parser — if so, skip cache and re-scrape
       const isNewParser = details.fee && ('items' in details.fee);
-      const feeStale = !isNewParser && details.fee && 
-        (details.fee.general === 'N/A' || !details.fee.general) &&
-        (details.fee.scSt === 'N/A' || !details.fee.scSt) &&
-        (details.fee.women === 'N/A' || !details.fee.women);
+      const feeStale = !isNewParser;
       
       if (!feeStale || cached.category === 'privateJobs') {
         return {
