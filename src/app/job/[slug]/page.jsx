@@ -311,6 +311,7 @@ export default async function JobDetailsPage({ params }) {
         </div>
 
         {isDetailedJob ? (
+          <>
           <div className="border border-gray-300 bg-white mb-8 rounded-lg overflow-hidden shadow-sm">
             
             {/* Important Dates & Fees splits */}
@@ -388,66 +389,188 @@ export default async function JobDetailsPage({ params }) {
               </table>
             </div>
 
-            {/* How to Fill Form */}
+            {/* How to Fill / Check / Download Form */}
             <div className="border-b border-gray-300">
               <div className="bg-blue-950 text-white font-bold text-center py-2 text-sm uppercase">
-                How To Fill Online Form
+                {job.howToSteps && job.howToSteps.length > 0
+                  ? 'How To Check & Download'
+                  : 'How To Fill Online Form'}
               </div>
-              <ul className="list-disc pl-8 pr-6 py-5 text-xs space-y-2 text-gray-750 leading-relaxed">
-                <li>Interested candidates can read full notifications and submit applications online before <span className="font-bold text-amber-600">{job.dates.applyEnd}</span>.</li>
-                <li>Make sure to gather scans of all required documents (ID Proof, Photo, Signature, Eligibility marksheets) before initiating the application process.</li>
-                <li>Preview and check all columns carefully before final submission of the application form.</li>
-                <li className="text-red-600 font-semibold">Verify details such as age limit, qualification requirements, and payment status prior to submitting.</li>
+              <ul className="list-disc pl-8 pr-6 py-5 text-sm space-y-2 text-gray-750 leading-relaxed">
+                {job.howToSteps && job.howToSteps.length > 0 ? (
+                  job.howToSteps.map((step, i) => (
+                    <li key={i}>{step}</li>
+                  ))
+                ) : (
+                  <>
+                    <li>Interested candidates can read full notifications and submit applications online before <span className="font-bold text-amber-600">{job.dates.applyEnd}</span>.</li>
+                    <li>Make sure to gather scans of all required documents (ID Proof, Photo, Signature, Eligibility marksheets) before initiating the application process.</li>
+                    <li>Preview and check all columns carefully before final submission of the application form.</li>
+                    <li className="text-red-600 font-semibold">Verify details such as age limit, qualification requirements, and payment status prior to submitting.</li>
+                  </>
+                )}
               </ul>
             </div>
 
-            {/* Selection details */}
-            <div className="border-b border-gray-300 bg-gray-50/30">
+            {/* Selection Process */}
+            <div className="border-b border-gray-300">
               <div className="bg-blue-900 text-white font-bold text-center py-2 text-sm uppercase">
-                Mode of Selection
+                {job.title} : Mode of Selection
               </div>
-              <ul className="list-disc pl-8 py-3.5 text-xs text-gray-750">
-                <li className="font-semibold">Computer Based Test (CBT) / Written Exam</li>
-                <li>Document Verification</li>
+              <ul className="list-disc pl-8 py-3.5 text-sm text-gray-750 space-y-1">
+                {job.selectionProcess && job.selectionProcess.length > 0 ? (
+                  job.selectionProcess.map((item, i) => (
+                    <li key={i} className="font-semibold">{item}</li>
+                  ))
+                ) : (
+                  <>
+                    <li className="font-semibold">Written Exam</li>
+                    <li className="font-semibold">Physical Standard Test (PST)</li>
+                    <li className="font-semibold">Physical Efficiency Test (PET)</li>
+                    <li>Document Verification</li>
+                    <li>Medical Test</li>
+                  </>
+                )}
               </ul>
             </div>
 
-            {/* Useful Links Table */}
-            <div>
-              <div className="bg-blue-100 text-amber-600 font-bold text-center py-2 text-xs uppercase tracking-wider border-b border-gray-300">
-                Useful Important Links
+            {/* Physical Standard Test (PST) */}
+            {job.physicalStandards && job.physicalStandards.length > 1 && (
+              <div className="border-b border-gray-300">
+                <div className="bg-blue-950 text-white font-bold text-center py-2 text-sm uppercase">
+                  {job.title} : Physical Standard Test
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[400px]">
+                    <tbody>
+                      {job.physicalStandards.map((row, i) => (
+                        <tr key={i} className={`border-b border-gray-200 ${i === 0 ? 'bg-blue-50 font-bold text-sm text-blue-950' : 'text-sm'}`}>
+                          {row.map((cell, j) => (
+                            <td key={j} className="p-3 text-center border-r border-gray-200 last:border-r-0">{cell}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              <table className="w-full text-left border-collapse">
+            )}
+
+            {/* Physical Efficiency Test (PET) */}
+            {job.physicalEfficiency && job.physicalEfficiency.length > 1 && (
+              <div className="border-b border-gray-300">
+                <div className="bg-blue-950 text-white font-bold text-center py-2 text-sm uppercase">
+                  {job.title} : Physical Efficiency Test
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[400px]">
+                    <tbody>
+                      {job.physicalEfficiency.map((row, i) => (
+                        <tr key={i} className={`border-b border-gray-200 ${i === 0 ? 'bg-blue-50 font-bold text-sm text-blue-950' : 'text-sm'}`}>
+                          {row.map((cell, j) => (
+                            <td key={j} className="p-3 text-center border-r border-gray-200 last:border-r-0">{cell}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* Social Join CTA */}
+            <div className="border-b border-gray-300">
+              <table className="w-full text-center border-collapse text-sm">
                 <tbody>
-                  <tr className="border-b border-gray-300 hover:bg-gray-50/50">
-                    <td className="p-3.5 text-xs font-bold text-blue-900 border-r border-gray-300 w-2/3">Apply Online</td>
-                    <td className="p-3.5 text-center">
-                      <a href={job.links?.apply || '#'} target="_blank" rel="noopener noreferrer" className="inline-block bg-blue-950 text-white px-4 py-2 rounded text-xs font-bold hover:bg-blue-800 transition-colors">
-                        Click Here
-                      </a>
+                  <tr className="border-b border-gray-200">
+                    <td className="p-3 font-bold text-rose-700 border-r border-gray-200">Join Our WhatsApp Channel</td>
+                    <td className="p-3">
+                      <a href="https://chat.whatsapp.com/GeHRdlojdjU7hurA2QCIT7" target="_blank" rel="noopener noreferrer" className="text-blue-700 font-bold hover:text-red-600 transition-colors">Follow Now</a>
                     </td>
                   </tr>
-                  <tr className="border-b border-gray-300 hover:bg-gray-50/50">
-                    <td className="p-3.5 text-xs font-bold text-blue-900 border-r border-gray-300">Download Notification</td>
-                    <td className="p-3.5 text-center">
-                      <a href={job.links?.notification || '#'} target="_blank" rel="noopener noreferrer" className="inline-block bg-amber-600 text-white px-4 py-2 rounded text-xs font-bold hover:bg-amber-700 transition-colors">
-                        Click Here
-                      </a>
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-gray-50/50">
-                    <td className="p-3.5 text-xs font-bold text-blue-900 border-r border-gray-300">Official Website</td>
-                    <td className="p-3.5 text-center">
-                      <a href={job.links?.official || '#'} target="_blank" rel="noopener noreferrer" className="inline-block text-blue-700 font-bold hover:underline text-xs">
-                        Click Here
-                      </a>
+                  <tr>
+                    <td className="p-3 font-bold text-rose-700 border-r border-gray-200">Join Our Telegram Channel</td>
+                    <td className="p-3">
+                      <a href="https://t.me/weekly_naukri" target="_blank" rel="noopener noreferrer" className="text-blue-700 font-bold hover:text-red-600 transition-colors">Follow Now</a>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
+            {/* Useful Important Links — Expanded */}
+            <div>
+              <div className="bg-red-50 text-red-600 font-bold text-center py-2 text-sm uppercase tracking-wider border-b border-gray-300">
+                Some Useful Important Links
+              </div>
+              <table className="w-full text-left border-collapse">
+                <tbody>
+                  {job.allImportantLinks && job.allImportantLinks.length > 0 ? (
+                    job.allImportantLinks.map((link, i) => (
+                      <tr key={i} className="border-b border-gray-200 hover:bg-yellow-50/50">
+                        <td className="p-3 text-sm font-bold text-blue-900 border-r border-gray-200 w-1/2 text-center">{link.label}</td>
+                        <td className="p-3 text-center">
+                          <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-blue-700 font-bold hover:text-red-600 transition-colors text-sm">
+                            Click Here
+                          </a>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <>
+                      <tr className="border-b border-gray-200 hover:bg-yellow-50/50">
+                        <td className="p-3.5 text-sm font-bold text-blue-900 border-r border-gray-200 w-2/3">Apply Online</td>
+                        <td className="p-3.5 text-center">
+                          <a href={job.links?.apply || '#'} target="_blank" rel="noopener noreferrer" className="inline-block bg-blue-950 text-white px-4 py-2 rounded text-xs font-bold hover:bg-blue-800 transition-colors">
+                            Click Here
+                          </a>
+                        </td>
+                      </tr>
+                      <tr className="border-b border-gray-200 hover:bg-yellow-50/50">
+                        <td className="p-3.5 text-sm font-bold text-blue-900 border-r border-gray-200">Download Notification</td>
+                        <td className="p-3.5 text-center">
+                          <a href={job.links?.notification || '#'} target="_blank" rel="noopener noreferrer" className="inline-block bg-amber-600 text-white px-4 py-2 rounded text-xs font-bold hover:bg-amber-700 transition-colors">
+                            Click Here
+                          </a>
+                        </td>
+                      </tr>
+                      <tr className="hover:bg-yellow-50/50">
+                        <td className="p-3.5 text-sm font-bold text-blue-900 border-r border-gray-200">Official Website</td>
+                        <td className="p-3.5 text-center">
+                          <a href={job.links?.official || '#'} target="_blank" rel="noopener noreferrer" className="inline-block text-blue-700 font-bold hover:underline text-xs">
+                            Click Here
+                          </a>
+                        </td>
+                      </tr>
+                    </>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
           </div>
+
+          {/* FAQ / Important Questions Section */}
+          {job.faqItems && job.faqItems.length > 0 && (
+            <div className="border border-gray-300 bg-white mb-8 rounded-lg overflow-hidden shadow-sm">
+              <div className="bg-blue-950 text-white font-bold text-center py-2.5 text-sm uppercase">
+                {job.title} : Important Questions
+              </div>
+              <div className="divide-y divide-gray-200">
+                {job.faqItems.map((faq, i) => (
+                  <div key={i} className="p-5">
+                    <p className="text-sm font-bold text-blue-900 mb-1.5">
+                      <span className="text-amber-600 mr-1">Q{i + 1}.</span> {faq.q}
+                    </p>
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold text-green-700 mr-1">Ans.</span> {faq.a}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          </>
         ) : (
           /* Simplified Layout (Results, Admit Cards, etc.) */
           <div className="border border-gray-300 bg-white mb-8 rounded-lg overflow-hidden shadow-sm">

@@ -695,27 +695,155 @@ export async function fetchSarkariJobDetails(url) {
       }
 
       // ══════════════════════════════════════════════════════════════
-      // 6. PARSE IMPORTANT LINKS (Apply Online, Notification, Official)
+      // 6. PARSE IMPORTANT LINKS — extract ALL links from "SOME USEFUL IMPORTANT LINKS" table
       // ══════════════════════════════════════════════════════════════
       const links = { apply: '#', notification: '#', official: '#' };
-      
-      // Links are typically in a table or list near the bottom
-      const allAnchors = Array.from(document.querySelectorAll('a'));
-      const linkSections = Array.from(document.querySelectorAll('li, tr, p, div'));
-      
-      for (const el of linkSections) {
-        const text = (el.innerText || '').toLowerCase();
-        const anchor = el.querySelector('a[href]');
-        if (!anchor) continue;
-        const href = anchor.href;
-        if (!href || href === '#' || href.includes('javascript:')) continue;
-        
-        if ((text.includes('apply online') || text.includes('mains form')) && links.apply === '#') {
-          links.apply = href;
-        } else if (text.includes('notification') && !text.includes('official') && links.notification === '#') {
-          links.notification = href;
-        } else if (text.includes('official website') && links.official === '#') {
-          links.official = href;
+      const allImportantLinks = [];
+
+      // Find the "SOME USEFUL IMPORTANT LINKS" header, then grab the table below it
+      const allHeadings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, [class*="gb-headline"]'));
+      let foundLinksSection = false;
+      for (const heading of allHeadings) {
+        const hText = (heading.innerText || '').toLowerCase().trim();
+        if (hText.includes('useful') && hText.includes('link')) {
+          foundLinksSection = true;
+          // Walk to find the next table
+          let sibling = heading.nextElementSibling || heading.parentElement?.nextElementSibling;
+          for (let i = 0; i < 10 && sibling; i++) {
+            const table = sibling.tagName === 'TABLE' ? sibling : sibling.querySelector?.('table');
+            if (table) {
+              const rows = Array.from(table.querySelectorAll('tr'));
+              rows.forEach(row => {
+                const cells = Array.from(row.querySelectorAll('td, th'));
+                if (cells.length >= 2) {
+                  const label = (cells[0].innerText || '').trim();
+                  const anchor = cells[1].querySelector('a[href]');
+                  const href = anchor ? anchor.href : null;
+                  if (label && href && href !== '#' && !href.includes('javascript:')) {
+                    allImportantLinks.push({ label, url: href });
+                    // Also populate the primary links object
+                    const lower = label.toLowerCase();
+                    if ((lower.includes('apply online') || lower.includes('mains form')) && links.apply === '#') {
+                      links.apply = href;
+                    } else if (lower.includes('notification') && !lower.includes('official') && links.notification === '#') {
+                      links.notification = href;
+                    } else if (lower.includes('official website') && links.official === '#') {
+                      links.official = href;
+                    }
+                  }
+                }
+              });
+              break;
+            }
+            sibling = sibling.nextElementSibling;
+          }
+          break;
+        }
+      }
+
+      // Fallback: if no "useful links" section found, do the old scan
+      if (allImportantLinks.length === 0) {
+        const linkSections = Array.from(document.querySelectorAll('li, tr, p, div'));
+        for (const el of linkSections) {
+          const text = (el.innerText || '').toLowerCase();
+          const anchor = el.querySelector('a[href]');
+          if (!anchor) continue;
+          const href = anchor.href;
+          if (!href || href === '#' || href.includes('javascript:')) continue;
+          if ((text.includes('apply online') || text.includes('mains form')) && links.apply === '#') {
+            links.apply = href;
+          } else if (text.includes('notification') && !text.includes('official') && links.notification === '#') {
+            links.notification = href;
+          } else if (text.includes('official website') && links.official === '#') {
+            links.official = href;
+          }
+        }
+      }
+
+      // ══════════════════════════════════════════════════════════════
+      // 7. PARSE MODE OF SELECTION
+      // ══════════════════════════════════════════════════════════════
+      const selectionItems = findSectionItems(['mode of selection', 'selection process']);
+      const selectionProcess = selectionItems.length > 0
+        ? selectionItems.filter(s => s.length > 2 && s.length < 200)
+        : [];
+
+      // ══════════════════════════════════════════════════════════════
+      // 8. PARSE PHYSICAL STANDARD TEST (PST) & PHYSICAL EFFICIENCY TEST (PET)
+      // ══════════════════════════════════════════════════════════════
+      const physicalStandards = [];
+      const physicalEfficiency = [];
+
+      const allTables = Array.from(document.querySelectorAll('table'));
+      for (const table of allTables) {
+        const tableText = (table.innerText || '').toLowerCase();
+        if (tableText.includes('physical standard') || tableText.includes('height') && tableText.includes('chest')) {
+          const rows = Array.from(table.querySelectorAll('tr'));
+          rows.forEach(row => {
+            const cells = Array.from(row.querySelectorAll('td, th'));
+            if (cells.length >= 2) {
+              physicalStandards.push(cells.map(c => (c.innerText || '').trim()));
+            }
+          });
+        }
+        if (tableText.includes('physical efficiency') || tableText.includes('race distance')) {
+          const rows = Array.from(table.querySelectorAll('tr'));
+          rows.forEach(row => {
+            const cells = Array.from(row.querySelectorAll('td, th'));
+            if (cells.length >= 2) {
+              physicalEfficiency.push(cells.map(c => (c.innerText || '').trim()));
+            }
+          });
+        }
+      }
+
+      // ══════════════════════════════════════════════════════════════
+      // 9. PARSE HOW TO FILL / HOW TO CHECK / HOW TO DOWNLOAD
+      // ══════════════════════════════════════════════════════════════
+      const howToItems = findSectionItems(['how to fill', 'how to check', 'how to download', 'how to apply']);
+      const howToSteps = howToItems.length > 0
+        ? howToItems.filter(s => s.length > 5 && s.length < 500)
+        : [];
+
+      // ══════════════════════════════════════════════════════════════
+      // 10. PARSE FAQ / IMPORTANT QUESTIONS
+      // ══════════════════════════════════════════════════════════════
+      const faqItems = [];
+      // Look for tables with "Important Question" or Q&A pattern
+      for (const table of allTables) {
+        const headerText = (table.innerText || '').toLowerCase();
+        if (headerText.includes('important question') || headerText.includes('faq')) {
+          const rows = Array.from(table.querySelectorAll('tr, td'));
+          let currentQ = null;
+          rows.forEach(row => {
+            const text = (row.innerText || '').trim();
+            if (text.toLowerCase().startsWith('question:')) {
+              currentQ = text.replace(/^question:\s*/i, '').trim();
+            } else if (text.toLowerCase().startsWith('answer:') && currentQ) {
+              const answer = text.replace(/^answer:\s*/i, '').trim();
+              if (currentQ.length > 5 && answer.length > 5) {
+                faqItems.push({ q: currentQ, a: answer });
+              }
+              currentQ = null;
+            }
+          });
+        }
+      }
+      // Also check for Q&A in lists
+      if (faqItems.length === 0) {
+        const allLis = Array.from(document.querySelectorAll('li'));
+        let currentQ = null;
+        for (const li of allLis) {
+          const text = (li.innerText || '').trim();
+          if (text.toLowerCase().startsWith('question:')) {
+            currentQ = text.replace(/^question:\s*/i, '').trim();
+          } else if (text.toLowerCase().startsWith('answer:') && currentQ) {
+            const answer = text.replace(/^answer:\s*/i, '').trim();
+            if (currentQ.length > 5 && answer.length > 5) {
+              faqItems.push({ q: currentQ, a: answer });
+            }
+            currentQ = null;
+          }
         }
       }
 
@@ -725,7 +853,13 @@ export async function fetchSarkariJobDetails(url) {
         ageLimit: { min: minAge, max: maxAge, relaxation: 'As per rules' },
         vacancies,
         eligibility,
-        links
+        links,
+        allImportantLinks,
+        selectionProcess,
+        physicalStandards,
+        physicalEfficiency,
+        howToSteps,
+        faqItems
       };
     });
 
