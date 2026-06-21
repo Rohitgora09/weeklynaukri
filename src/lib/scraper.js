@@ -942,8 +942,8 @@ export async function deepScrapeAllListings() {
         ? JSON.parse(row.full_details_json)
         : row.full_details_json;
 
-      if (!details.fee || !('items' in details.fee)) return true;
-      return false; // Already has details scraped with the new parser
+      if (details.parserVersion !== 2) return true;
+      return false; // Already has details scraped with the new parser version
     } catch (e) {
       return true; // Bad JSON, re-scrape
     }
