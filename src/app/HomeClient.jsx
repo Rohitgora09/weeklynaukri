@@ -400,8 +400,8 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             <Sparkles size={12} /> Sarkari Result Hub · 2026
           </div>
           
-          <h1 className="font-heading font-extrabold text-3xl sm:text-5xl tracking-tight leading-[1.08] text-ink mb-4 max-w-4xl mx-auto">
-            Latest <span className="text-gradient">Govt Jobs, Results</span>{" "}&amp; Admit Cards — all in one fast feed.
+          <h1 className="font-heading font-extrabold text-3xl sm:text-5xl tracking-tight leading-[1.08] text-ink mb-4 max-w-5xl mx-auto">
+            Latest <span className="text-gradient">Govt &amp; Private Jobs</span>, Sarkari Results &amp; Admit Cards
           </h1>
           
           <p className="text-slatebody text-sm sm:text-base mb-6 max-w-2xl mx-auto leading-relaxed">
