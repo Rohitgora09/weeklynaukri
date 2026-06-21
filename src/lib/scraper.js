@@ -542,12 +542,17 @@ export async function fetchSarkariJobDetails(url) {
 
       // ── Helper: extract fee amount from text (strips ₹, /-, whitespace) ──
       function extractFeeAmount(text) {
-        if (!text) return 'N/A';
-        // Match a number (possibly with commas) that may be preceded by ₹ and followed by /-
-        const m = text.match(/₹?\s*([\d,]+)\s*\/?-?/);
+        if (!text || text === 'N/A') return 'N/A';
+        // Strip common prefixes: "For", "Rs", "Rs."
+        let cleaned = text.replace(/^(for\s+)/i, '').trim();
+        // Match a number (possibly with commas) that may be preceded by ₹/Rs and followed by /-
+        const m = cleaned.match(/(?:₹|Rs\.?\s*)\s*([\d,]+)\s*\/?-?/i);
         if (m) return m[1].replace(/,/g, '');
-        // If text literally says "Nil" or "0" or "Free"
-        if (/nil|free/i.test(text)) return '0';
+        // Try matching just a standalone number
+        const numMatch = cleaned.match(/^(\d[\d,]*)\s*\/?-?$/);
+        if (numMatch) return numMatch[1].replace(/,/g, '');
+        // If text literally says "Nil" or "Free" or "No Fee" or "Exempted"
+        if (/nil|free|no\s*fee|exempt/i.test(cleaned)) return '0';
         return 'N/A';
       }
 
@@ -730,6 +735,93 @@ export async function fetchSarkariJobDetails(url) {
     console.error("Error scraping detailed job info:", error.message);
     return null;
   }
+}
+
+// 3b. Deep-scrape detailed info for ALL cached SarkariResult listings
+// This runs in the background worker and pre-populates full_details_json
+// so users see complete data (dates, fees, age, vacancies) immediately.
+export async function deepScrapeAllListings() {
+  const sarkariCategories = ['latestJobs', 'admitCards', 'results', 'answerKeys', 'admissions'];
+
+  console.log(`[DeepScrape] Starting deep scrape for all Sarkari listings...`);
+
+  // Fetch all rows that need deep scraping
+  const { data: rows, error } = await supabase
+    .from('scraper_cache')
+    .select('url_slug, source_url, full_details_json, category')
+    .in('category', sarkariCategories);
+
+  if (error || !rows) {
+    console.error('[DeepScrape] Failed to query scraper_cache:', error?.message);
+    return;
+  }
+
+  // Filter to only rows that need scraping:
+  // - No full_details_json at all
+  // - Or full_details_json has all N/A fees (stale from old parser)
+  const needsScraping = rows.filter(row => {
+    // Skip if source URL is a PDF
+    if ((row.source_url || '').toLowerCase().includes('.pdf')) return false;
+    
+    if (!row.full_details_json) return true;
+
+    try {
+      const details = typeof row.full_details_json === 'string'
+        ? JSON.parse(row.full_details_json)
+        : row.full_details_json;
+
+      // Re-scrape if fee data is all N/A or missing
+      if (!details.fee) return true;
+      const feeStale = 
+        (!details.fee.general || details.fee.general === 'N/A') &&
+        (!details.fee.scSt || details.fee.scSt === 'N/A') &&
+        (!details.fee.women || details.fee.women === 'N/A');
+      return feeStale;
+    } catch (e) {
+      return true; // Bad JSON, re-scrape
+    }
+  });
+
+  console.log(`[DeepScrape] Found ${needsScraping.length} listings needing deep scrape (out of ${rows.length} total).`);
+
+  let successCount = 0;
+  let failCount = 0;
+
+  for (const row of needsScraping) {
+    try {
+      console.log(`[DeepScrape] Scraping: ${row.url_slug} (${row.source_url})`);
+      const details = await fetchSarkariJobDetails(row.source_url);
+
+      if (details) {
+        const { error: updateError } = await supabase
+          .from('scraper_cache')
+          .update({ full_details_json: details })
+          .eq('url_slug', row.url_slug);
+
+        if (updateError) {
+          console.error(`[DeepScrape] Failed to update ${row.url_slug}:`, updateError.message);
+          failCount++;
+        } else {
+          successCount++;
+          console.log(`[DeepScrape] ✓ Updated ${row.url_slug} — Fee: Gen=${details.fee?.general}, SC/ST=${details.fee?.scSt}, Women=${details.fee?.women}`);
+        }
+      } else {
+        failCount++;
+        console.log(`[DeepScrape] ✗ No details returned for ${row.url_slug}`);
+      }
+
+      // Delay between requests to avoid rate-limiting (3 seconds)
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+    } catch (err) {
+      failCount++;
+      console.error(`[DeepScrape] Error on ${row.url_slug}:`, err.message);
+      // Continue with next item
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+  }
+
+  console.log(`[DeepScrape] Complete. Success: ${successCount}, Failed: ${failCount}`);
 }
 
 // 4. Fetch Private Sector IT/Software Jobs from Freshersworld
