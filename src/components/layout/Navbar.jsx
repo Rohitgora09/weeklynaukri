@@ -12,7 +12,7 @@ const NAV_ITEMS = [
   { label: 'Admit Cards', path: '/admit-cards' },
   { label: 'Answer Keys', path: '/answer-keys' },
   { label: 'Test Series', path: '/test-series' },
-  { label: 'Study Material', path: '/notes' },
+  { label: 'Study Notes', path: '/notes' },
   { label: 'Image Resizer', path: '/image-resizer' },
   { label: 'SSC GD 2026', path: '/ssc-gd-2026' },
   { label: 'Blog', path: '/blog' },

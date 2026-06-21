@@ -65,7 +65,7 @@ const COLS = [
   {
     title: 'Resources',
     links: [
-      ['Study Material', '/notes'],
+      ['Study Notes', '/notes'],
       ['IT Govt Jobs', '/it-govt-jobs'],
       ['Exam Calendar', '/exam-calendar'],
       ['Private Jobs', '/referrals'],
