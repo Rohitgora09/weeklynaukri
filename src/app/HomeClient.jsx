@@ -405,7 +405,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
           </h1>
           
           <p className="text-slatebody text-sm sm:text-base mb-6 max-w-2xl mx-auto leading-relaxed">
-            <strong className="text-ink">WeeklyNaukri.com</strong> is a privacy-first, mobile-first hub for Indian competitive exams (Sarkari Naukri), tech careers and private jobs. We track official portals daily and publish verified <strong className="text-ink">results, admit cards, answer keys &amp; admissions</strong>.
+            <strong className="text-ink">WeeklyNaukri</strong> is a fast, privacy-first hub for <strong className="text-ink">Sarkari Naukri</strong>, govt jobs, private careers, and competitive exams. Get verified <strong className="text-ink">admit cards, results &amp; keys</strong>.
           </p>
 
           {/* Search input bar */}
