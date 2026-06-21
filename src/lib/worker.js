@@ -1,3 +1,4 @@
+import './load-env.js';
 import { fetchSSCNotices, fetchSarkariResultData, fetchPrivateJobs, deepScrapeAllListings } from './scraper.js';
 
 const WARM_INTERVAL = 15 * 60 * 1000; // 15 minutes

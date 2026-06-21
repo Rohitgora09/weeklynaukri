@@ -1,7 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 // Polyfill for WebSocket on older Node.js versions (Node < 22)
 // Since we don't use Supabase Realtime subscriptions, we can safely mock the constructor.
@@ -9,46 +6,22 @@ if (typeof globalThis.WebSocket === 'undefined') {
   globalThis.WebSocket = class {};
 }
 
-// Parse and load .env.local manually for standalone scripts running outside Next.js
-if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-  try {
-    let envPath = path.resolve(process.cwd(), '.env.local');
-    if (!fs.existsSync(envPath)) {
-      const __dirname = path.dirname(fileURLToPath(import.meta.url));
-      envPath = path.resolve(__dirname, '../../.env.local');
-    }
-    if (fs.existsSync(envPath)) {
-      const envContent = fs.readFileSync(envPath, 'utf8');
-      envContent.split('\n').forEach(line => {
-        const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
-        if (match) {
-          const key = match[1];
-          let value = match[2] || '';
-          if (value.trim().startsWith('"') && value.trim().endsWith('"')) value = value.trim().slice(1, -1);
-          if (value.trim().startsWith("'") && value.trim().endsWith("'")) value = value.trim().slice(1, -1);
-          process.env[key] = value.trim();
-        }
-      });
-    }
-  } catch (e) {
-    console.warn("Failed to load .env.local file:", e.message);
-  }
-}
-
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// Use service role key on server, or anon key on client browser
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.warn("WARNING: Supabase URL or Service Role key environment variables are missing!");
+if (!supabaseUrl || !supabaseKey) {
+  console.warn("WARNING: Supabase URL or Key environment variables are missing!");
 }
 
 export const supabase = createClient(
   supabaseUrl || 'https://placeholder-project.supabase.co', 
-  supabaseServiceKey || 'placeholder-key',
+  supabaseKey || 'placeholder-key',
   {
     auth: {
-      persistSession: false,
-      autoRefreshToken: false
+      persistSession: typeof window !== 'undefined',
+      autoRefreshToken: typeof window !== 'undefined'
     }
   }
 );
+

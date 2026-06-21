@@ -1,3 +1,4 @@
+import './src/lib/load-env.js';
 import { fetchSarkariResultData } from './src/lib/scraper.js';
 import { supabase } from './src/lib/supabase.js';
 
