@@ -71,7 +71,8 @@ async function getJobData(slug) {
         : cached.full_details_json;
       
       // Check if fee data looks stale (all N/A) — if so, skip cache and re-scrape
-      const feeStale = details.fee && 
+      const isNewParser = details.fee && ('items' in details.fee);
+      const feeStale = !isNewParser && details.fee && 
         (details.fee.general === 'N/A' || !details.fee.general) &&
         (details.fee.scSt === 'N/A' || !details.fee.scSt) &&
         (details.fee.women === 'N/A' || !details.fee.women);
@@ -321,11 +322,30 @@ export default async function JobDetailsPage({ params }) {
                   Important Dates
                 </div>
                 <div className="p-5 text-sm space-y-2.5 text-gray-800">
-                  <p><span className="font-semibold text-gray-600">Online Apply Start Date:</span> <span className="font-bold text-blue-900">{job.dates.applyStart}</span></p>
-                  <p><span className="font-semibold text-gray-600">Online Apply Last Date:</span> <span className="font-bold text-amber-600">{job.dates.applyEnd}</span></p>
-                  {job.dates.examDate && <p><span className="font-semibold text-gray-600">Exam Date:</span> <span className="font-bold text-blue-900">{job.dates.examDate}</span></p>}
-                  <p><span className="font-semibold text-gray-600">Admit Card:</span> <span className="font-bold text-blue-900">Before Exam</span></p>
-                  <p><span className="font-semibold text-gray-600">Result Date:</span> <span className="font-bold text-amber-600">Will Be Updated Here</span></p>
+                  {job.dates?.items && job.dates.items.length > 0 ? (
+                    job.dates.items.map((item, i) => {
+                      const parts = item.split(/[:–]\s*/);
+                      if (parts.length >= 2) {
+                        const label = parts[0].trim();
+                        const val = parts.slice(1).join(':').trim();
+                        return (
+                          <p key={i}>
+                            <span className="font-semibold text-gray-600">{label}:</span>{' '}
+                            <span className="font-bold text-blue-900">{val}</span>
+                          </p>
+                        );
+                      }
+                      return <p key={i} className="font-semibold text-gray-700">{item}</p>;
+                    })
+                  ) : (
+                    <>
+                      <p><span className="font-semibold text-gray-600">Online Apply Start Date:</span> <span className="font-bold text-blue-900">{job.dates?.applyStart}</span></p>
+                      <p><span className="font-semibold text-gray-600">Online Apply Last Date:</span> <span className="font-bold text-amber-600">{job.dates?.applyEnd}</span></p>
+                      {job.dates?.examDate && <p><span className="font-semibold text-gray-600">Exam Date:</span> <span className="font-bold text-blue-900">{job.dates.examDate}</span></p>}
+                      <p><span className="font-semibold text-gray-600">Admit Card:</span> <span className="font-bold text-blue-900">Before Exam</span></p>
+                      <p><span className="font-semibold text-gray-600">Result Date:</span> <span className="font-bold text-amber-600">Will Be Updated Here</span></p>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -334,10 +354,29 @@ export default async function JobDetailsPage({ params }) {
                   Application Fee
                 </div>
                 <div className="p-5 text-sm space-y-2 text-gray-800">
-                  <p><span className="font-semibold text-gray-600">For General / OBC / EWS:</span> {formatFee(job.fee.general)}</p>
-                  <p><span className="font-semibold text-gray-600">For SC / ST:</span> {formatFee(job.fee.scSt)}</p>
-                  <p><span className="font-semibold text-gray-600">For Female Candidates:</span> {formatFee(job.fee.women)}</p>
-                  <p className="font-bold mt-4 mb-1 border-t border-gray-150 pt-3 text-xs text-gray-500 uppercase">Payment Modes (Online Only):</p>
+                  {job.fee?.items && job.fee.items.length > 0 ? (
+                    job.fee.items.map((item, i) => {
+                      const parts = item.split(/[:–]\s*/);
+                      if (parts.length >= 2) {
+                        const label = parts[0].trim();
+                        const val = parts.slice(1).join(':').trim();
+                        return (
+                          <p key={i}>
+                            <span className="font-semibold text-gray-600">{label}:</span>{' '}
+                            <span className="font-bold text-blue-900">{val}</span>
+                          </p>
+                        );
+                      }
+                      return <p key={i} className="font-semibold text-gray-700">{item}</p>;
+                    })
+                  ) : (
+                    <>
+                      <p><span className="font-semibold text-gray-600">For General / OBC / EWS:</span> {formatFee(job.fee?.general)}</p>
+                      <p><span className="font-semibold text-gray-600">For SC / ST:</span> {formatFee(job.fee?.scSt)}</p>
+                      <p><span className="font-semibold text-gray-600">For Female Candidates:</span> {formatFee(job.fee?.women)}</p>
+                    </>
+                  )}
+                  <p className="font-bold mt-4 mb-1 border-t border-gray-150 pt-3 text-xs text-gray-550 uppercase">Payment Modes (Online Only):</p>
                   <ul className="list-disc pl-5 space-y-1 text-xs text-gray-550">
                     <li>Credit / Debit Card</li>
                     <li>Internet Banking</li>
@@ -354,9 +393,28 @@ export default async function JobDetailsPage({ params }) {
                   Age Limit (As of Notification)
                 </div>
                 <div className="p-5 text-sm space-y-2 text-gray-850">
-                  <p><span className="font-semibold text-gray-500">Minimum Age Required:</span> {job.ageLimit.min}</p>
-                  <p><span className="font-semibold text-gray-500">Maximum Age Allowed:</span> {job.ageLimit.max}</p>
-                  <p className="text-xs text-gray-400 italic">Age Relaxation extra as per rules.</p>
+                  {job.ageLimit?.items && job.ageLimit.items.length > 0 ? (
+                    job.ageLimit.items.map((item, i) => {
+                      const parts = item.split(/[:–]\s*/);
+                      if (parts.length >= 2) {
+                        const label = parts[0].trim();
+                        const val = parts.slice(1).join(':').trim();
+                        return (
+                          <p key={i}>
+                            <span className="font-semibold text-gray-600">{label}:</span>{' '}
+                            <span className="font-bold text-blue-900">{val}</span>
+                          </p>
+                        );
+                      }
+                      return <p key={i} className="font-semibold text-gray-700">{item}</p>;
+                    })
+                  ) : (
+                    <>
+                      <p><span className="font-semibold text-gray-550">Minimum Age Required:</span> {job.ageLimit?.min}</p>
+                      <p><span className="font-semibold text-gray-550">Maximum Age Allowed:</span> {job.ageLimit?.max}</p>
+                      <p className="text-xs text-gray-400 italic">Age Relaxation extra as per rules.</p>
+                    </>
+                  )}
                 </div>
               </div>
               <div>
@@ -369,25 +427,45 @@ export default async function JobDetailsPage({ params }) {
               </div>
             </div>
 
-            {/* Eligibility Table */}
-            <div className="overflow-x-auto border-b border-gray-300">
-              <table className="w-full text-left border-collapse min-w-[500px]">
-                <thead>
-                  <tr className="bg-blue-950 text-white">
-                    <th className="p-2.5 text-center text-xs font-bold uppercase border-r border-gray-300 w-1/3">Post Name</th>
-                    <th className="p-2.5 text-center text-xs font-bold uppercase border-r border-gray-300 w-1/6">Total Posts</th>
-                    <th className="p-2.5 text-center text-xs font-bold uppercase w-1/2">Eligibility Criteria</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-t border-gray-300">
-                    <td className="p-4 text-sm font-semibold text-center border-r border-gray-300 text-blue-900">{job.title}</td>
-                    <td className="p-4 text-sm text-center border-r border-gray-300 font-bold">{job.vacancies}</td>
-                    <td className="p-4 text-xs text-gray-700 leading-relaxed">{job.eligibility}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            {/* Vacancy Details Table */}
+            {job.vacancyDetails && job.vacancyDetails.length > 0 ? (
+              <div className="overflow-x-auto border-b border-gray-300">
+                <div className="bg-blue-950 text-white font-bold text-center py-2 text-sm uppercase">
+                  Vacancy Details (Total: {job.vacancies})
+                </div>
+                <table className="w-full text-left border-collapse min-w-[500px]">
+                  <tbody>
+                    {job.vacancyDetails.map((row, i) => (
+                      <tr key={i} className={`border-b border-gray-200 ${i === 0 ? 'bg-blue-50 font-bold text-xs text-blue-950 uppercase border-t border-gray-300' : 'text-xs text-gray-700'}`}>
+                        {row.map((cell, j) => (
+                          <td key={j} className="p-2.5 text-center border-r border-gray-200 last:border-r-0">{cell}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              /* Fallback Simple Eligibility Table */
+              <div className="overflow-x-auto border-b border-gray-300">
+                <table className="w-full text-left border-collapse min-w-[500px]">
+                  <thead>
+                    <tr className="bg-blue-950 text-white">
+                      <th className="p-2.5 text-center text-xs font-bold uppercase border-r border-gray-300 w-1/3">Post Name</th>
+                      <th className="p-2.5 text-center text-xs font-bold uppercase border-r border-gray-300 w-1/6">Total Posts</th>
+                      <th className="p-2.5 text-center text-xs font-bold uppercase w-1/2">Eligibility Criteria</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-t border-gray-300">
+                      <td className="p-4 text-sm font-semibold text-center border-r border-gray-300 text-blue-900">{job.title}</td>
+                      <td className="p-4 text-sm text-center border-r border-gray-300 font-bold">{job.vacancies}</td>
+                      <td className="p-4 text-xs text-gray-700 leading-relaxed">{job.eligibility}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
 
             {/* How to Fill / Check / Download Form */}
             <div className="border-b border-gray-300">

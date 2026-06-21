@@ -527,39 +527,10 @@ export async function fetchSarkariJobDetails(url) {
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     const details = await page.evaluate(() => {
-      // ── Helper: extract value after a colon/dash from a text line ──
-      function extractValue(text) {
-        if (!text) return 'N/A';
-        // Remove HTML tags if any leaked through
-        const clean = text.replace(/<[^>]*>/g, '').trim();
-        // Try splitting at : or –
-        const parts = clean.split(/\s*[:–]\s*/);
-        if (parts.length > 1) {
-          return parts.slice(1).join(':').trim() || clean;
-        }
-        return clean;
-      }
-
-      // ── Helper: extract fee amount from text (strips ₹, /-, whitespace) ──
-      function extractFeeAmount(text) {
-        if (!text || text === 'N/A') return 'N/A';
-        // Strip common prefixes: "For", "Rs", "Rs."
-        let cleaned = text.replace(/^(for\s+)/i, '').trim();
-        // Match a number (possibly with commas) that may be preceded by ₹/Rs and followed by /-
-        const m = cleaned.match(/(?:₹|Rs\.?\s*)\s*([\d,]+)\s*\/?-?/i);
-        if (m) return m[1].replace(/,/g, '');
-        // Try matching just a standalone number
-        const numMatch = cleaned.match(/^(\d[\d,]*)\s*\/?-?$/);
-        if (numMatch) return numMatch[1].replace(/,/g, '');
-        // If text literally says "Nil" or "Free" or "No Fee" or "Exempted"
-        if (/nil|free|no\s*fee|exempt/i.test(cleaned)) return '0';
-        return 'N/A';
-      }
-
-      // ── Helper: find all <li> text items within a section identified by its header ──
+      // ── Helper: Robust section finder for GenerateBlocks (gb-headline) structure ──
+      // Finds a section heading matching keywords, then extracts all <li> text items
+      // from sibling elements within the same parent container AND next siblings
       function findSectionItems(headerKeywords) {
-        // Strategy: find heading elements (h1-h6, div with gb-headline class) whose text
-        // matches one of the keywords, then collect <li> texts from the next sibling container.
         const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, [class*="gb-headline"]'));
         
         for (const heading of headings) {
@@ -567,41 +538,51 @@ export async function fetchSarkariJobDetails(url) {
           const matched = headerKeywords.some(kw => hText.includes(kw.toLowerCase()));
           if (!matched) continue;
 
-          // Collect list items: look in the heading's parent container or next siblings
           const items = [];
           
-          // Strategy 1: Same parent container — look for sibling elements with <li>
-          let container = heading.closest('.gb-grid-column') || heading.closest('.gb-container') || heading.parentElement;
-          if (container) {
-            const lis = container.querySelectorAll('li');
-            lis.forEach(li => {
-              const t = (li.innerText || '').trim();
-              if (t.length > 2) items.push(t);
-            });
-            // Also check for standalone div/p text (e.g., vacancy count in a div)
-            if (items.length === 0) {
-              const divs = container.querySelectorAll('div[class*="gb-headline"], p');
-              divs.forEach(d => {
-                if (d === heading) return;
-                const t = (d.innerText || '').trim();
-                if (t.length > 1 && t.length < 200) items.push(t);
+          // Strategy 1: Check the NEXT SIBLING elements (gb-headline divs contain the <ul>/<li>)
+          let sibling = heading.nextElementSibling;
+          for (let i = 0; i < 8 && sibling; i++) {
+            const lis = sibling.querySelectorAll('li');
+            if (lis.length > 0) {
+              lis.forEach(li => {
+                const t = (li.innerText || '').trim();
+                if (t.length > 2) items.push(t);
               });
             }
+            // Also check for standalone text in gb-headline divs (e.g. "15 Posts")
+            if (sibling.classList && sibling.classList.contains('gb-headline-text') || 
+                (sibling.className || '').includes('gb-headline')) {
+              const t = (sibling.innerText || '').trim();
+              if (t.length > 1 && t.length < 200 && items.indexOf(t) === -1) {
+                // Only add if it doesn't already contain the list items
+                if (lis.length === 0) items.push(t);
+              }
+            }
+            sibling = sibling.nextElementSibling;
+            // Stop if we hit another heading (next section)
+            if (sibling && (sibling.tagName || '').match(/^H[1-6]$/)) break;
+            if (sibling && (sibling.className || '').includes('gb-headline') && 
+                sibling.tagName !== 'DIV' && sibling.tagName !== 'P') break;
           }
           
-          // Strategy 2: Walk next siblings if container didn't yield results
+          // Strategy 2: Same parent container if siblings didn't work
           if (items.length === 0) {
-            let sibling = heading.nextElementSibling;
-            for (let i = 0; i < 5 && sibling; i++) {
-              const lis = sibling.querySelectorAll('li');
-              if (lis.length > 0) {
-                lis.forEach(li => {
-                  const t = (li.innerText || '').trim();
-                  if (t.length > 2) items.push(t);
+            let container = heading.closest('.gb-grid-column') || heading.closest('.gb-container') || heading.parentElement;
+            if (container) {
+              const lis = container.querySelectorAll('li');
+              lis.forEach(li => {
+                const t = (li.innerText || '').trim();
+                if (t.length > 2) items.push(t);
+              });
+              if (items.length === 0) {
+                const divs = container.querySelectorAll('div[class*="gb-headline"], p');
+                divs.forEach(d => {
+                  if (d === heading) return;
+                  const t = (d.innerText || '').trim();
+                  if (t.length > 1 && t.length < 300) items.push(t);
                 });
-                break;
               }
-              sibling = sibling.nextElementSibling;
             }
           }
           
@@ -610,67 +591,81 @@ export async function fetchSarkariJobDetails(url) {
         return [];
       }
 
-      // ── Helper: search list items for a matching keyword and extract the value ──
-      function findInItems(items, keywords) {
-        for (const item of items) {
-          const lower = item.toLowerCase();
-          for (const kw of keywords) {
-            if (lower.includes(kw.toLowerCase())) {
-              return extractValue(item);
-            }
-          }
+      // ══════════════════════════════════════════════════════════════
+      // 1. IMPORTANT DATES — capture ALL items raw
+      // ══════════════════════════════════════════════════════════════
+      const dateItems = findSectionItems(['important dates', 'important date']);
+      // Build structured dates from raw items
+      const dates = { items: dateItems };
+      for (const item of dateItems) {
+        const lower = item.toLowerCase();
+        if (lower.includes('apply') && lower.includes('start') || lower.includes('application begin') || lower.includes('form start')) {
+          dates.applyStart = item.split(/[:–]\s*/).pop().trim();
         }
+        if (lower.includes('last date') || lower.includes('apply') && lower.includes('last')) {
+          dates.applyEnd = item.split(/[:–]\s*/).pop().trim();
+        }
+        if (lower.includes('exam date') || lower.includes('prelims') || lower.includes('cbt date')) {
+          dates.examDate = item.split(/[:–]\s*/).pop().trim();
+        }
+      }
+      if (!dates.applyStart) dates.applyStart = 'Check Notification';
+      if (!dates.applyEnd) dates.applyEnd = 'Check Notification';
+
+      // ══════════════════════════════════════════════════════════════
+      // 2. APPLICATION FEE — capture ALL items raw (not categorized)
+      // ══════════════════════════════════════════════════════════════
+      const feeItems = findSectionItems(['application fee', 'exam fee', 'examination fee']);
+      // Store raw fee items for display, and also extract categorized for backward compat
+      const fee = { items: feeItems, general: 'N/A', scSt: 'N/A', women: 'N/A' };
+      
+      function extractFeeAmount(text) {
+        if (!text || text === 'N/A') return 'N/A';
+        const m = text.match(/(?:₹|Rs\.?\s*)\s*([\d,]+)\s*\/?-?/i);
+        if (m) return m[1].replace(/,/g, '');
+        const numMatch = text.match(/(\d[\d,]*)\s*\/?-?/);
+        if (numMatch) return numMatch[1].replace(/,/g, '');
+        if (/nil|free|no\s*fee|exempt/i.test(text)) return '0';
         return 'N/A';
       }
 
-      // ══════════════════════════════════════════════════════════════
-      // 1. PARSE IMPORTANT DATES
-      // ══════════════════════════════════════════════════════════════
-      const dateItems = findSectionItems(['important dates', 'important date']);
-      const applyStart = findInItems(dateItems, ['Apply Start Date', 'Application Begin', 'Form Start Date', 'Mains Form Start']);
-      const applyEnd = findInItems(dateItems, ['Apply Last Date', 'Last Date for Apply', 'Last Date', 'Form Last Date', 'Mains Form Last Date']);
-      let examDate = findInItems(dateItems, ['Exam Date', 'Pre Exam Date', 'Prelims Date', 'CBT Date']);
+      for (const item of feeItems) {
+        const lower = item.toLowerCase();
+        if ((lower.includes('general') || lower.includes('ur') || lower.includes('all category') || lower.includes('other state')) && fee.general === 'N/A') {
+          fee.general = extractFeeAmount(item);
+        }
+        if ((lower.includes('sc') && lower.includes('st') || lower.includes('obc')) && fee.scSt === 'N/A') {
+          fee.scSt = extractFeeAmount(item);
+        }
+        if ((lower.includes('female') || lower.includes('women') || lower.includes('mahila')) && fee.women === 'N/A') {
+          fee.women = extractFeeAmount(item);
+        }
+      }
 
       // ══════════════════════════════════════════════════════════════
-      // 2. PARSE APPLICATION FEE
-      // ══════════════════════════════════════════════════════════════
-      const feeItems = findSectionItems(['application fee', 'exam fee', 'examination fee']);
-      
-      // Find general fee — look for various common label patterns
-      const generalFeeText = findInItems(feeItems, [
-        'General, OBC, EWS', 'General / OBC / EWS', 'General / OBC',
-        'Gen / OBC', 'Gen, OBC', 'General/OBC', 'All Category Candidate',
-        'All Other Category', 'UR / OBC', 'Unreserved'
-      ]);
-      const generalFee = extractFeeAmount(generalFeeText);
-
-      // Find SC/ST fee
-      const scStFeeText = findInItems(feeItems, [
-        'SC / ST', 'SC/ST', 'SC / ST / PH', 'SC/ST/PH'
-      ]);
-      const scStFee = extractFeeAmount(scStFeeText);
-
-      // Find female / women fee
-      const femaleFeeText = findInItems(feeItems, [
-        'Female Category', 'All Female', 'Female', 'Women', 'All Category Female',
-        'Mahila', 'Lady'
-      ]);
-      const femaleFee = extractFeeAmount(femaleFeeText);
-
-      // ══════════════════════════════════════════════════════════════
-      // 3. PARSE AGE LIMIT
+      // 3. AGE LIMIT — capture raw items
       // ══════════════════════════════════════════════════════════════
       const ageItems = findSectionItems(['age limit', 'age criteria']);
-      const minAge = findInItems(ageItems, ['Minimum Age', 'Min Age']);
-      const maxAge = findInItems(ageItems, ['Maximum Age', 'Max Age']);
+      const ageLimit = { items: ageItems, min: 'N/A', max: 'N/A', relaxation: 'As per rules' };
+      for (const item of ageItems) {
+        const lower = item.toLowerCase();
+        if (lower.includes('minimum') || lower.includes('min age')) {
+          ageLimit.min = item.split(/[:–]\s*/).pop().trim();
+        }
+        if (lower.includes('maximum') || lower.includes('max age')) {
+          ageLimit.max = item.split(/[:–]\s*/).pop().trim();
+        }
+        if (lower.includes('relaxation')) {
+          ageLimit.relaxation = item;
+        }
+      }
 
       // ══════════════════════════════════════════════════════════════
-      // 4. PARSE VACANCIES
+      // 4. VACANCIES
       // ══════════════════════════════════════════════════════════════
       const vacancyItems = findSectionItems(['total post', 'vacancy', 'total vacancy']);
       let vacancies = 'Check Notification';
       if (vacancyItems.length > 0) {
-        // Often the vacancy count is in a standalone div like "933 Posts"
         for (const item of vacancyItems) {
           const m = item.match(/([\d,]+)\s*(post|vacanc|seat)/i);
           if (m) {
@@ -684,30 +679,54 @@ export async function fetchSarkariJobDetails(url) {
       }
 
       // ══════════════════════════════════════════════════════════════
-      // 5. PARSE ELIGIBILITY
+      // 5. ELIGIBILITY — capture raw items
       // ══════════════════════════════════════════════════════════════
       const eligItems = findSectionItems(['eligibility', 'qualification', 'education']);
       let eligibility = 'Check Official Notification';
       if (eligItems.length > 0) {
-        // Join first few items
         eligibility = eligItems.slice(0, 3).join(', ');
         if (eligibility.length > 300) eligibility = eligibility.slice(0, 297) + '...';
       }
 
       // ══════════════════════════════════════════════════════════════
-      // 6. PARSE IMPORTANT LINKS — extract ALL links from "SOME USEFUL IMPORTANT LINKS" table
+      // 6. VACANCY DETAILS TABLE
+      // ══════════════════════════════════════════════════════════════
+      const vacancyDetails = [];
+      const allTables = Array.from(document.querySelectorAll('table'));
+      // Find vacancy details table
+      const allHeadings2 = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, [class*="gb-headline"]'));
+      for (const heading of allHeadings2) {
+        const hText = (heading.innerText || '').toLowerCase().trim();
+        if (hText.includes('vacancy detail') || hText.includes('post detail')) {
+          let sibling = heading.nextElementSibling || heading.parentElement?.nextElementSibling;
+          for (let i = 0; i < 10 && sibling; i++) {
+            const table = sibling.tagName === 'TABLE' ? sibling : sibling.querySelector?.('table');
+            if (table) {
+              const rows = Array.from(table.querySelectorAll('tr'));
+              rows.forEach(row => {
+                const cells = Array.from(row.querySelectorAll('td, th'));
+                if (cells.length >= 2) {
+                  vacancyDetails.push(cells.map(c => (c.innerText || '').trim()));
+                }
+              });
+              break;
+            }
+            sibling = sibling.nextElementSibling;
+          }
+          break;
+        }
+      }
+
+      // ══════════════════════════════════════════════════════════════
+      // 7. IMPORTANT LINKS — ALL links from table
       // ══════════════════════════════════════════════════════════════
       const links = { apply: '#', notification: '#', official: '#' };
       const allImportantLinks = [];
 
-      // Find the "SOME USEFUL IMPORTANT LINKS" header, then grab the table below it
       const allHeadings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, [class*="gb-headline"]'));
-      let foundLinksSection = false;
       for (const heading of allHeadings) {
         const hText = (heading.innerText || '').toLowerCase().trim();
         if (hText.includes('useful') && hText.includes('link')) {
-          foundLinksSection = true;
-          // Walk to find the next table
           let sibling = heading.nextElementSibling || heading.parentElement?.nextElementSibling;
           for (let i = 0; i < 10 && sibling; i++) {
             const table = sibling.tagName === 'TABLE' ? sibling : sibling.querySelector?.('table');
@@ -721,15 +740,10 @@ export async function fetchSarkariJobDetails(url) {
                   const href = anchor ? anchor.href : null;
                   if (label && href && href !== '#' && !href.includes('javascript:')) {
                     allImportantLinks.push({ label, url: href });
-                    // Also populate the primary links object
                     const lower = label.toLowerCase();
-                    if ((lower.includes('apply online') || lower.includes('mains form')) && links.apply === '#') {
-                      links.apply = href;
-                    } else if (lower.includes('notification') && !lower.includes('official') && links.notification === '#') {
-                      links.notification = href;
-                    } else if (lower.includes('official website') && links.official === '#') {
-                      links.official = href;
-                    }
+                    if ((lower.includes('apply online') || lower.includes('mains form')) && links.apply === '#') links.apply = href;
+                    else if ((lower.includes('download') && lower.includes('notification') || lower.includes('official notification')) && links.notification === '#') links.notification = href;
+                    else if (lower.includes('official website') && links.official === '#') links.official = href;
                   }
                 }
               });
@@ -741,7 +755,7 @@ export async function fetchSarkariJobDetails(url) {
         }
       }
 
-      // Fallback: if no "useful links" section found, do the old scan
+      // Fallback link scan
       if (allImportantLinks.length === 0) {
         const linkSections = Array.from(document.querySelectorAll('li, tr, p, div'));
         for (const el of linkSections) {
@@ -750,109 +764,86 @@ export async function fetchSarkariJobDetails(url) {
           if (!anchor) continue;
           const href = anchor.href;
           if (!href || href === '#' || href.includes('javascript:')) continue;
-          if ((text.includes('apply online') || text.includes('mains form')) && links.apply === '#') {
-            links.apply = href;
-          } else if (text.includes('notification') && !text.includes('official') && links.notification === '#') {
-            links.notification = href;
-          } else if (text.includes('official website') && links.official === '#') {
-            links.official = href;
-          }
+          if ((text.includes('apply online') || text.includes('mains form')) && links.apply === '#') links.apply = href;
+          else if (text.includes('notification') && !text.includes('official') && links.notification === '#') links.notification = href;
+          else if (text.includes('official website') && links.official === '#') links.official = href;
         }
       }
 
       // ══════════════════════════════════════════════════════════════
-      // 7. PARSE MODE OF SELECTION
+      // 8. MODE OF SELECTION
       // ══════════════════════════════════════════════════════════════
       const selectionItems = findSectionItems(['mode of selection', 'selection process']);
-      const selectionProcess = selectionItems.length > 0
-        ? selectionItems.filter(s => s.length > 2 && s.length < 200)
-        : [];
+      const selectionProcess = selectionItems.filter(s => s.length > 2 && s.length < 200);
 
       // ══════════════════════════════════════════════════════════════
-      // 8. PARSE PHYSICAL STANDARD TEST (PST) & PHYSICAL EFFICIENCY TEST (PET)
+      // 9. PHYSICAL TESTS TABLES
       // ══════════════════════════════════════════════════════════════
       const physicalStandards = [];
       const physicalEfficiency = [];
-
-      const allTables = Array.from(document.querySelectorAll('table'));
       for (const table of allTables) {
         const tableText = (table.innerText || '').toLowerCase();
-        if (tableText.includes('physical standard') || tableText.includes('height') && tableText.includes('chest')) {
-          const rows = Array.from(table.querySelectorAll('tr'));
-          rows.forEach(row => {
+        if (tableText.includes('physical standard') || (tableText.includes('height') && tableText.includes('chest'))) {
+          Array.from(table.querySelectorAll('tr')).forEach(row => {
             const cells = Array.from(row.querySelectorAll('td, th'));
-            if (cells.length >= 2) {
-              physicalStandards.push(cells.map(c => (c.innerText || '').trim()));
-            }
+            if (cells.length >= 2) physicalStandards.push(cells.map(c => (c.innerText || '').trim()));
           });
         }
         if (tableText.includes('physical efficiency') || tableText.includes('race distance')) {
-          const rows = Array.from(table.querySelectorAll('tr'));
-          rows.forEach(row => {
+          Array.from(table.querySelectorAll('tr')).forEach(row => {
             const cells = Array.from(row.querySelectorAll('td, th'));
-            if (cells.length >= 2) {
-              physicalEfficiency.push(cells.map(c => (c.innerText || '').trim()));
-            }
+            if (cells.length >= 2) physicalEfficiency.push(cells.map(c => (c.innerText || '').trim()));
           });
         }
       }
 
       // ══════════════════════════════════════════════════════════════
-      // 9. PARSE HOW TO FILL / HOW TO CHECK / HOW TO DOWNLOAD
+      // 10. HOW TO FILL / CHECK / DOWNLOAD
       // ══════════════════════════════════════════════════════════════
       const howToItems = findSectionItems(['how to fill', 'how to check', 'how to download', 'how to apply']);
-      const howToSteps = howToItems.length > 0
-        ? howToItems.filter(s => s.length > 5 && s.length < 500)
-        : [];
+      const howToSteps = howToItems.filter(s => s.length > 5 && s.length < 500);
 
       // ══════════════════════════════════════════════════════════════
-      // 10. PARSE FAQ / IMPORTANT QUESTIONS
+      // 11. FAQ / IMPORTANT QUESTIONS
       // ══════════════════════════════════════════════════════════════
       const faqItems = [];
-      // Look for tables with "Important Question" or Q&A pattern
       for (const table of allTables) {
         const headerText = (table.innerText || '').toLowerCase();
         if (headerText.includes('important question') || headerText.includes('faq')) {
-          const rows = Array.from(table.querySelectorAll('tr, td'));
           let currentQ = null;
-          rows.forEach(row => {
-            const text = (row.innerText || '').trim();
+          Array.from(table.querySelectorAll('tr, td, li')).forEach(el => {
+            const text = (el.innerText || '').trim();
             if (text.toLowerCase().startsWith('question:')) {
               currentQ = text.replace(/^question:\s*/i, '').trim();
             } else if (text.toLowerCase().startsWith('answer:') && currentQ) {
               const answer = text.replace(/^answer:\s*/i, '').trim();
-              if (currentQ.length > 5 && answer.length > 5) {
-                faqItems.push({ q: currentQ, a: answer });
-              }
+              if (currentQ.length > 5 && answer.length > 5) faqItems.push({ q: currentQ, a: answer });
               currentQ = null;
             }
           });
         }
       }
-      // Also check for Q&A in lists
       if (faqItems.length === 0) {
-        const allLis = Array.from(document.querySelectorAll('li'));
         let currentQ = null;
-        for (const li of allLis) {
+        Array.from(document.querySelectorAll('li')).forEach(li => {
           const text = (li.innerText || '').trim();
           if (text.toLowerCase().startsWith('question:')) {
             currentQ = text.replace(/^question:\s*/i, '').trim();
           } else if (text.toLowerCase().startsWith('answer:') && currentQ) {
             const answer = text.replace(/^answer:\s*/i, '').trim();
-            if (currentQ.length > 5 && answer.length > 5) {
-              faqItems.push({ q: currentQ, a: answer });
-            }
+            if (currentQ.length > 5 && answer.length > 5) faqItems.push({ q: currentQ, a: answer });
             currentQ = null;
           }
-        }
+        });
       }
 
       return {
-        dates: { applyStart, applyEnd, examDate },
-        fee: { general: generalFee, scSt: scStFee, women: femaleFee },
-        ageLimit: { min: minAge, max: maxAge, relaxation: 'As per rules' },
+        dates,
+        fee,
+        ageLimit,
         vacancies,
         eligibility,
+        vacancyDetails,
         links,
         allImportantLinks,
         selectionProcess,
@@ -892,7 +883,7 @@ export async function deepScrapeAllListings() {
 
   // Filter to only rows that need scraping:
   // - No full_details_json at all
-  // - Or full_details_json has all N/A fees (stale from old parser)
+  // - Or full_details_json was scraped with the old parser (no 'items' in fee)
   const needsScraping = rows.filter(row => {
     // Skip if source URL is a PDF
     if ((row.source_url || '').toLowerCase().includes('.pdf')) return false;
@@ -904,13 +895,8 @@ export async function deepScrapeAllListings() {
         ? JSON.parse(row.full_details_json)
         : row.full_details_json;
 
-      // Re-scrape if fee data is all N/A or missing
-      if (!details.fee) return true;
-      const feeStale = 
-        (!details.fee.general || details.fee.general === 'N/A') &&
-        (!details.fee.scSt || details.fee.scSt === 'N/A') &&
-        (!details.fee.women || details.fee.women === 'N/A');
-      return feeStale;
+      if (!details.fee || !('items' in details.fee)) return true;
+      return false; // Already has details scraped with the new parser
     } catch (e) {
       return true; // Bad JSON, re-scrape
     }
