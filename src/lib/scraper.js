@@ -884,6 +884,7 @@ export async function fetchSarkariJobDetails(url) {
       }
 
       return {
+        parserVersion: 2,
         dates,
         fee,
         ageLimit,

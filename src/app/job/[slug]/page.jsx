@@ -193,8 +193,8 @@ async function getJobData(slug) {
         ? JSON.parse(cached.full_details_json)
         : cached.full_details_json;
       
-      // Check if fee data was scraped with the old parser — if so, skip cache and re-scrape
-      const isNewParser = details.fee && ('items' in details.fee);
+      // Check if details were scraped with the old parser version — if so, skip cache and re-scrape
+      const isNewParser = details.parserVersion === 2;
       const feeStale = !isNewParser;
       
       if (!feeStale || cached.category === 'privateJobs') {
