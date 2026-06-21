@@ -150,13 +150,13 @@ function getCleanFaqs(job) {
 }
 
 // Clean WhatsApp and Telegram URLs from competitors to our own, and block competitor links
-function getCleanLinkUrl(url, label = '') {
-  if (!url || url === '#') return '#';
+function getCleanLinkUrl(url, label = '', fallbackUrl = '#') {
+  if (!url || url === '#') return fallbackUrl;
   const lowerUrl = url.toLowerCase();
   const lowerLabel = String(label).toLowerCase();
   
   if (lowerUrl.includes('sarkariresult')) {
-    return '#';
+    return fallbackUrl;
   }
   if (lowerUrl.includes('whatsapp.com') || lowerLabel.includes('whatsapp')) {
     return 'https://chat.whatsapp.com/GeHRdlojdjU7hurA2QCIT7';
@@ -711,7 +711,7 @@ export default async function JobDetailsPage({ params }) {
                         <tr key={i} className="border-b border-gray-200 hover:bg-yellow-50/50">
                           <td className="p-3 text-sm font-bold text-blue-900 border-r border-gray-200 w-1/2 text-center">{link.label}</td>
                           <td className="p-3 text-center">
-                            <a href={getCleanLinkUrl(link.url, link.label)} target="_blank" rel="noopener noreferrer" className="text-blue-700 font-bold hover:text-red-600 transition-colors text-sm">
+                            <a href={getCleanLinkUrl(link.url, link.label, job.links?.official || '#')} target="_blank" rel="noopener noreferrer" className="text-blue-700 font-bold hover:text-red-600 transition-colors text-sm">
                               Click Here
                             </a>
                           </td>
@@ -722,7 +722,7 @@ export default async function JobDetailsPage({ params }) {
                       <tr className="border-b border-gray-200 hover:bg-yellow-50/50">
                         <td className="p-3.5 text-sm font-bold text-blue-900 border-r border-gray-200 w-2/3">Apply Online</td>
                         <td className="p-3.5 text-center">
-                          <a href={getCleanLinkUrl(job.links?.apply || '#')} target="_blank" rel="noopener noreferrer" className="inline-block bg-blue-950 text-white px-4 py-2 rounded text-xs font-bold hover:bg-blue-800 transition-colors">
+                          <a href={getCleanLinkUrl(job.links?.apply || '#', '', job.links?.official || '#')} target="_blank" rel="noopener noreferrer" className="inline-block bg-blue-950 text-white px-4 py-2 rounded text-xs font-bold hover:bg-blue-800 transition-colors">
                             Click Here
                           </a>
                         </td>
@@ -730,7 +730,7 @@ export default async function JobDetailsPage({ params }) {
                       <tr className="border-b border-gray-200 hover:bg-yellow-50/50">
                         <td className="p-3.5 text-sm font-bold text-blue-900 border-r border-gray-200">Download Notification</td>
                         <td className="p-3.5 text-center">
-                          <a href={getCleanLinkUrl(job.links?.notification || '#')} target="_blank" rel="noopener noreferrer" className="inline-block bg-amber-600 text-white px-4 py-2 rounded text-xs font-bold hover:bg-amber-700 transition-colors">
+                          <a href={getCleanLinkUrl(job.links?.notification || '#', '', job.links?.official || '#')} target="_blank" rel="noopener noreferrer" className="inline-block bg-amber-600 text-white px-4 py-2 rounded text-xs font-bold hover:bg-amber-700 transition-colors">
                             Click Here
                           </a>
                         </td>
@@ -738,7 +738,7 @@ export default async function JobDetailsPage({ params }) {
                       <tr className="hover:bg-yellow-50/50">
                         <td className="p-3.5 text-sm font-bold text-blue-900 border-r border-gray-200">Official Website</td>
                         <td className="p-3.5 text-center">
-                          <a href={getCleanLinkUrl(job.links?.official || '#')} target="_blank" rel="noopener noreferrer" className="inline-block text-blue-700 font-bold hover:underline text-xs">
+                          <a href={getCleanLinkUrl(job.links?.official || '#', '', 'https://weeklynaukri.com')} target="_blank" rel="noopener noreferrer" className="inline-block text-blue-700 font-bold hover:underline text-xs">
                             Click Here
                           </a>
                         </td>
@@ -799,7 +799,7 @@ export default async function JobDetailsPage({ params }) {
                     <tr className="border-b border-gray-300 hover:bg-gray-50/50">
                       <td className="p-3.5 text-xs font-bold text-blue-900 border-r border-gray-300 w-2/3">Link / Download Page</td>
                       <td className="p-3.5 text-center">
-                        <a href={getCleanLinkUrl(job.links?.apply || '#')} target="_blank" rel="noopener noreferrer" className="inline-block bg-blue-950 text-white px-4 py-2 rounded text-xs font-bold hover:bg-blue-800 transition-colors">
+                        <a href={getCleanLinkUrl(job.links?.apply || '#', '', job.links?.official || '#')} target="_blank" rel="noopener noreferrer" className="inline-block bg-blue-950 text-white px-4 py-2 rounded text-xs font-bold hover:bg-blue-800 transition-colors">
                           Click Here
                         </a>
                       </td>
@@ -807,7 +807,7 @@ export default async function JobDetailsPage({ params }) {
                     <tr className="border-b border-gray-300 hover:bg-gray-50/50">
                       <td className="p-3.5 text-xs font-bold text-blue-900 border-r border-gray-300">Official Notification</td>
                       <td className="p-3.5 text-center">
-                        <a href={getCleanLinkUrl(job.links?.notification || '#')} target="_blank" rel="noopener noreferrer" className="inline-block bg-amber-600 text-white px-4 py-2 rounded text-xs font-bold hover:bg-amber-700 transition-colors">
+                        <a href={getCleanLinkUrl(job.links?.notification || '#', '', job.links?.official || '#')} target="_blank" rel="noopener noreferrer" className="inline-block bg-amber-600 text-white px-4 py-2 rounded text-xs font-bold hover:bg-amber-700 transition-colors">
                           Click Here
                         </a>
                       </td>
@@ -815,7 +815,7 @@ export default async function JobDetailsPage({ params }) {
                     <tr className="hover:bg-gray-50/50">
                       <td className="p-3.5 text-xs font-bold text-blue-900 border-r border-gray-300">Official Website</td>
                       <td className="p-3.5 text-center">
-                        <a href={getCleanLinkUrl(job.links?.official || '#')} target="_blank" rel="noopener noreferrer" className="inline-block text-blue-700 font-bold hover:underline text-xs">
+                        <a href={getCleanLinkUrl(job.links?.official || '#', '', 'https://weeklynaukri.com')} target="_blank" rel="noopener noreferrer" className="inline-block text-blue-700 font-bold hover:underline text-xs">
                           Click Here
                         </a>
                       </td>
