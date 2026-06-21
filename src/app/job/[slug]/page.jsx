@@ -44,6 +44,111 @@ function formatFee(value) {
   return str;
 }
 
+// Clean double/mangled titles and format appropriately
+function getCleanJobTitle(job) {
+  if (!job) return '';
+  let title = (job.title || '').trim();
+  title = title.replace(/\s+/g, ' ');
+  return title;
+}
+
+// Clean organization names (remove trailing duplicates like 'Online', 'Form')
+function getCleanOrg(job) {
+  if (!job || !job.org) return 'Government';
+  let org = job.org.trim();
+  org = org.replace(/\s+(Online|Form|Offline|Apply|New|Vacancy|Details|Answer|Key|Result)$/i, '');
+  return org;
+}
+
+// Convert Every-Word-Title-Case sentences to normal sentence case
+function toSentenceCase(str) {
+  if (!str) return '';
+  
+  // Normalize spacing
+  str = str.replace(/\s+/g, ' ').trim();
+  
+  // List of words that should remain capitalized (acronyms, proper nouns, months)
+  const preserveCaps = new Set([
+    'up', 'ssc', 'rrb', 'upsc', 'ibps', 'tcs', 'wipro', 'infosys', 'cognizant',
+    'sc', 'st', 'obc', 'ews', 'ur', 'gpay', 'phonepe', 'bhim', 'upi', 'omr', 'cbt',
+    'india', 'uttar', 'pradesh', 'rajasthan', 'police', 'constable', 'adpo', 'cgpsc',
+    'january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'
+  ]);
+
+  // Regex to split by sentences to capitalize the first letter of each sentence
+  const sentences = str.split(/([.!?]\s+)/);
+  
+  const processedSentences = sentences.map((part, index) => {
+    if (index % 2 === 1) return part; // return punctuation delimiter
+    if (!part) return '';
+
+    const words = part.split(' ');
+    const result = [];
+    
+    for (let i = 0; i < words.length; i++) {
+      let word = words[i];
+      if (!word) continue;
+
+      // Extract raw alphabetic characters for check
+      const cleanWord = word.replace(/[^a-zA-Z]/g, "").toLowerCase();
+      
+      if (i === 0) {
+        if (word === word.toUpperCase() && word.length > 1) {
+          result.push(word);
+        } else {
+          result.push(word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+        }
+      } else if (preserveCaps.has(cleanWord) || (word === word.toUpperCase() && word.length > 1 && !/^\d+$/.test(word))) {
+        if (word.startsWith('(') && word.endsWith(')')) {
+          const innerClean = cleanWord;
+          if (preserveCaps.has(innerClean)) {
+            result.push(word);
+          } else {
+            result.push('(' + innerClean + ')');
+          }
+        } else {
+          result.push(word);
+        }
+      } else {
+        result.push(word.toLowerCase());
+      }
+    }
+    return result.join(' ');
+  });
+
+  return processedSentences.join('');
+}
+
+// Dynamically patch FAQ answers to align tenses and remove contradictions
+function getCleanFaqs(job) {
+  if (!job.faqItems || job.faqItems.length === 0) return [];
+  
+  const isAnswerKeyOut = job.category === 'answerKeys' || job.title?.toLowerCase().includes('answer key');
+  const isResultOut = job.category === 'results' || job.title?.toLowerCase().includes('result');
+  const isAdmitCardOut = job.category === 'admitCards' || job.title?.toLowerCase().includes('admit card');
+
+  return job.faqItems.map(faq => {
+    const q = toSentenceCase(faq.q || '');
+    let a = faq.a || '';
+
+    if (isAnswerKeyOut && q.toLowerCase().includes('answer key') && (q.toLowerCase().includes('when') || q.toLowerCase().includes('release'))) {
+      if (a.toLowerCase().includes('will be') || a.toLowerCase().includes('will announced') || a.toLowerCase().includes('after the exam')) {
+        a = `The Answer Key is out and available now. It was released on ${job.date || 'recently'}. You can download it directly from the Useful Important Links table on this page.`;
+      }
+    } else if (isResultOut && q.toLowerCase().includes('result') && (q.toLowerCase().includes('when') || q.toLowerCase().includes('declare') || q.toLowerCase().includes('release'))) {
+      if (a.toLowerCase().includes('will be') || a.toLowerCase().includes('will declared') || a.toLowerCase().includes('after the exam')) {
+        a = `The Result has been declared and is available now. You can check your result using the direct link in the links table above.`;
+      }
+    } else if (isAdmitCardOut && q.toLowerCase().includes('admit card') && (q.toLowerCase().includes('when') || q.toLowerCase().includes('release') || q.toLowerCase().includes('available'))) {
+      if (a.toLowerCase().includes('will be') || a.toLowerCase().includes('will released') || a.toLowerCase().includes('before the exam')) {
+        a = `The Admit Card has been released and is available for download. You can download your admit card using the link in the Useful Important Links section above.`;
+      }
+    }
+
+    return { q, a: toSentenceCase(a) };
+  });
+}
+
 // Main logic to fetch job details (static or SQLite + scraped)
 async function getJobData(slug) {
   // 1. Check static fallback data
@@ -179,20 +284,18 @@ export async function generateMetadata({ params }) {
   const isDetailedJob = !!job.fee;
   
   // Keep title concise and under 60 characters
-  const rawTitle = isDetailedJob
-    ? `${job.org} ${job.title} Form 2026`
-    : `${job.title} 2026`;
-  const cleanTitle = rawTitle.length > 47 ? `${rawTitle.slice(0, 44)}...` : rawTitle;
-  const pageTitle = `${cleanTitle} — WeeklyNaukri`;
+  const cleanTitle = getCleanJobTitle(job);
+  const truncatedTitle = cleanTitle.length > 47 ? `${cleanTitle.slice(0, 44)}...` : cleanTitle;
+  const pageTitle = `${truncatedTitle} — WeeklyNaukri`;
 
   // Keep meta description concise and under 155 characters
   const rawDesc = isDetailedJob
-    ? `${job.org} ${job.title} (Vacancies: ${job.vacancies || 'N/A'}). Last Date: ${job.dates?.applyEnd || 'See info'}. Apply online & check details at WeeklyNaukri.`
-    : `${job.title} 2026 - Check status, download notification, and get official links at WeeklyNaukri.com.`;
+    ? `${cleanTitle} (Vacancies: ${job.vacancies || 'N/A'}). Last Date: ${job.dates?.applyEnd || 'See info'}. Apply online & check details at WeeklyNaukri.`
+    : `${cleanTitle} - Check status, download notification, and get official links at WeeklyNaukri.com.`;
   const pageDescription = rawDesc.length > 153 ? `${rawDesc.slice(0, 150)}...` : rawDesc;
 
   const pageUrl = `https://weeklynaukri.com/job/${slug}`;
-  const shareImage = 'https://weeklynaukri.com/logo.png';
+  const shareImage = `https://weeklynaukri.com/job/${slug}/opengraph-image`;
 
   return {
     title: pageTitle,
@@ -292,16 +395,16 @@ export default async function JobDetailsPage({ params }) {
           </Link>
           <span className="text-gray-300">/</span>
           <span className="text-gray-700 font-medium truncate">
-            {job.org} {job.title}
+            {getCleanJobTitle(job)}
           </span>
         </div>
 
         <div className="text-center mb-8">
           <h1 className="text-xl md:text-3xl font-extrabold text-blue-950 leading-tight mb-2 uppercase tracking-wide">
-            {job.org} {job.title} Online Form 2026
+            {getCleanJobTitle(job)}
           </h1>
           <h2 className="text-sm md:text-base font-bold text-amber-600 mb-2 uppercase tracking-wider">
-            {job.org} / {job.company || 'Government'} Examination 2026 : Short Details
+            {getCleanOrg(job)} / {job.company || 'Government'} Examination 2026 : Short Details
           </h2>
           <h3 className="text-md md:text-lg font-bold text-blue-900 uppercase">
             WeeklyNaukri.Com
@@ -457,7 +560,7 @@ export default async function JobDetailsPage({ params }) {
                     <tr className="border-t border-gray-300">
                       <td className="p-4 text-sm font-semibold text-center border-r border-gray-300 text-blue-900">{job.title}</td>
                       <td className="p-4 text-sm text-center border-r border-gray-300 font-bold">{job.vacancies}</td>
-                      <td className="p-4 text-xs text-gray-700 leading-relaxed">{job.eligibility}</td>
+                      <td className="p-4 text-xs text-gray-700 leading-relaxed">{toSentenceCase(job.eligibility)}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -474,7 +577,7 @@ export default async function JobDetailsPage({ params }) {
               <ul className="list-disc pl-8 pr-6 py-5 text-sm space-y-2 text-gray-750 leading-relaxed">
                 {job.howToSteps && job.howToSteps.length > 0 ? (
                   job.howToSteps.map((step, i) => (
-                    <li key={i}>{step}</li>
+                    <li key={i}>{toSentenceCase(step)}</li>
                   ))
                 ) : (
                   <>
@@ -490,12 +593,12 @@ export default async function JobDetailsPage({ params }) {
             {/* Selection Process */}
             <div className="border-b border-gray-300">
               <div className="bg-blue-900 text-white font-bold text-center py-2 text-sm uppercase">
-                {job.title} : Mode of Selection
+                {getCleanJobTitle(job)} : Mode of Selection
               </div>
               <ul className="list-disc pl-8 py-3.5 text-sm text-gray-750 space-y-1">
                 {job.selectionProcess && job.selectionProcess.length > 0 ? (
                   job.selectionProcess.map((item, i) => (
-                    <li key={i} className="font-semibold">{item}</li>
+                    <li key={i} className="font-semibold">{toSentenceCase(item)}</li>
                   ))
                 ) : (
                   <>
@@ -626,13 +729,13 @@ export default async function JobDetailsPage({ params }) {
           </div>
 
           {/* FAQ / Important Questions Section */}
-          {job.faqItems && job.faqItems.length > 0 && (
+          {getCleanFaqs(job) && getCleanFaqs(job).length > 0 && (
             <div className="border border-gray-300 bg-white mb-8 rounded-lg overflow-hidden shadow-sm">
               <div className="bg-blue-950 text-white font-bold text-center py-2.5 text-sm uppercase">
-                {job.title} : Important Questions
+                {getCleanJobTitle(job)} : Important Questions
               </div>
               <div className="divide-y divide-gray-200">
-                {job.faqItems.map((faq, i) => (
+                {getCleanFaqs(job).map((faq, i) => (
                   <div key={i} className="p-5">
                     <p className="text-sm font-bold text-blue-900 mb-1.5">
                       <span className="text-amber-600 mr-1">Q{i + 1}.</span> {faq.q}

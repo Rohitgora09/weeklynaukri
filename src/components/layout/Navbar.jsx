@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { label: 'Results', path: '/results' },
   { label: 'Admit Cards', path: '/admit-cards' },
   { label: 'Answer Keys', path: '/answer-keys' },
+  { label: 'Test Series', path: '/test-series' },
   { label: 'Syllabus', path: '/syllabus' },
   { label: 'Image Resizer', path: '/image-resizer' },
   { label: 'SSC GD 2026', path: '/ssc-gd-2026' },
@@ -89,7 +90,7 @@ export default function Navbar({ onCategorySelect }) {
 
         {/* Desktop nav links */}
         <nav className="hidden lg:flex items-center gap-1 text-sm">
-          {NAV_ITEMS.slice(0, 6).map((item) => (
+          {NAV_ITEMS.slice(0, 7).map((item) => (
             <Link
               key={item.label}
               href={item.path}

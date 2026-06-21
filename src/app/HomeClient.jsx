@@ -401,7 +401,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
           </div>
           
           <h1 className="font-heading font-extrabold text-3xl sm:text-5xl tracking-tight leading-[1.08] text-ink mb-4 max-w-4xl mx-auto">
-            Latest <span className="text-gradient">Govt Jobs, Results</span> &amp; Admit Cards — all in one fast feed.
+            Latest <span className="text-gradient">Govt Jobs, Results</span>{" "}&amp; Admit Cards — all in one fast feed.
           </h1>
           
           <p className="text-slatebody text-sm sm:text-base mb-6 max-w-2xl mx-auto leading-relaxed">

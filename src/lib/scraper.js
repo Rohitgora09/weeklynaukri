@@ -531,22 +531,42 @@ export async function fetchSarkariJobDetails(url) {
       // Finds a section heading matching keywords, then extracts all <li> text items
       // from sibling elements within the same parent container AND next siblings
       function findSectionItems(headerKeywords) {
-        const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, [class*="gb-headline"]'));
+        // Find headings, class-based headlines, and table headers/cells
+        const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, [class*="gb-headline"], td, th')).filter(el => {
+          // Ignore if it contains list items or tables internally (e.g. wrapper elements)
+          if (el.querySelector('table, ul, ol, li')) return false;
+          const text = (el.innerText || '').trim();
+          // Headings should be relatively short
+          if (text.length === 0 || text.length > 150) return false;
+          return true;
+        });
         
         for (const heading of headings) {
           const hText = (heading.innerText || '').toLowerCase().trim();
+          
+          // Ignore FAQ or Q&A headers when looking for normal sections
+          const isFaqKeyword = headerKeywords.some(kw => kw.toLowerCase().includes('faq') || kw.toLowerCase().includes('question'));
+          if (!isFaqKeyword && (hText.includes('faq') || hText.includes('question') || hText.includes('q&a') || hText.includes('frequently asked'))) {
+            continue;
+          }
+
           const matched = headerKeywords.some(kw => hText.includes(kw.toLowerCase()));
           if (!matched) continue;
 
           const items = [];
           
-          // Strategy 1: Check the NEXT SIBLING elements (gb-headline divs contain the <ul>/<li>)
-          let sibling = heading.nextElementSibling;
+          // Strategy 1: Check the NEXT SIBLING elements (or next row if heading is a table cell)
+          let sibling = (heading.tagName === 'TD' || heading.tagName === 'TH')
+            ? heading.parentElement?.nextElementSibling
+            : heading.nextElementSibling;
+
           for (let i = 0; i < 8 && sibling; i++) {
             const lis = sibling.querySelectorAll('li');
             if (lis.length > 0) {
               lis.forEach(li => {
                 const t = (li.innerText || '').trim();
+                // Filter out inline FAQ questions from leaking into other sections
+                if (t.toLowerCase().includes('question:') || t.toLowerCase().includes('answer:')) return;
                 if (t.length > 2) items.push(t);
               });
             }
@@ -555,10 +575,23 @@ export async function fetchSarkariJobDetails(url) {
                 (sibling.className || '').includes('gb-headline')) {
               const t = (sibling.innerText || '').trim();
               if (t.length > 1 && t.length < 200 && items.indexOf(t) === -1) {
-                // Only add if it doesn't already contain the list items
                 if (lis.length === 0) items.push(t);
               }
             }
+            
+            // If it's a table row td sibling, we might also get raw text
+            if (sibling.tagName === 'TR') {
+              const cells = Array.from(sibling.querySelectorAll('td, th'));
+              cells.forEach(c => {
+                if (!c.querySelector('ul, ol')) {
+                  const t = (c.innerText || '').trim();
+                  if (t.length > 2 && t.length < 200 && items.indexOf(t) === -1) {
+                    items.push(t);
+                  }
+                }
+              });
+            }
+
             sibling = sibling.nextElementSibling;
             // Stop if we hit another heading (next section)
             if (sibling && (sibling.tagName || '').match(/^H[1-6]$/)) break;
@@ -566,23 +599,16 @@ export async function fetchSarkariJobDetails(url) {
                 sibling.tagName !== 'DIV' && sibling.tagName !== 'P') break;
           }
           
-          // Strategy 2: Same parent container if siblings didn't work
-          if (items.length === 0) {
+          // Strategy 2: Same parent container if siblings didn't work (skip for td/th)
+          if (items.length === 0 && heading.tagName !== 'TD' && heading.tagName !== 'TH') {
             let container = heading.closest('.gb-grid-column') || heading.closest('.gb-container') || heading.parentElement;
             if (container) {
               const lis = container.querySelectorAll('li');
               lis.forEach(li => {
                 const t = (li.innerText || '').trim();
+                if (t.toLowerCase().includes('question:') || t.toLowerCase().includes('answer:')) return;
                 if (t.length > 2) items.push(t);
               });
-              if (items.length === 0) {
-                const divs = container.querySelectorAll('div[class*="gb-headline"], p');
-                divs.forEach(d => {
-                  if (d === heading) return;
-                  const t = (d.innerText || '').trim();
-                  if (t.length > 1 && t.length < 300) items.push(t);
-                });
-              }
             }
           }
           
@@ -739,6 +765,7 @@ export async function fetchSarkariJobDetails(url) {
                   const anchor = cells[1].querySelector('a[href]');
                   const href = anchor ? anchor.href : null;
                   if (label && href && href !== '#' && !href.includes('javascript:')) {
+                    if (href.toLowerCase().includes('sarkariresult')) return;
                     allImportantLinks.push({ label, url: href });
                     const lower = label.toLowerCase();
                     if ((lower.includes('apply online') || lower.includes('mains form')) && links.apply === '#') links.apply = href;
@@ -764,6 +791,7 @@ export async function fetchSarkariJobDetails(url) {
           if (!anchor) continue;
           const href = anchor.href;
           if (!href || href === '#' || href.includes('javascript:')) continue;
+          if (href.toLowerCase().includes('sarkariresult')) continue;
           if ((text.includes('apply online') || text.includes('mains form')) && links.apply === '#') links.apply = href;
           else if (text.includes('notification') && !text.includes('official') && links.notification === '#') links.notification = href;
           else if (text.includes('official website') && links.official === '#') links.official = href;
