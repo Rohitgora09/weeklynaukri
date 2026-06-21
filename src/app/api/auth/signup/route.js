@@ -39,12 +39,12 @@ export async function POST(request) {
 
     if (error) throw error;
 
-    // Always return the same message whether email exists or not — prevents email enumeration
+    // Return an error if the email is already registered
     if (checkExists) {
       return NextResponse.json({
-        success: true,
-        message: 'OTP verification code sent. Please check your inbox.'
-      });
+        success: false,
+        error: 'Email already exists. Please sign in instead.'
+      }, { status: 400 });
     }
 
     // Register pending account details and generate OTP code
