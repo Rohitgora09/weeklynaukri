@@ -763,9 +763,19 @@ export async function fetchSarkariJobDetails(url) {
                 if (cells.length >= 2) {
                   const label = (cells[0].innerText || '').trim();
                   const anchor = cells[1].querySelector('a[href]');
-                  const href = anchor ? anchor.href : null;
+                  let href = anchor ? anchor.href : null;
                   if (label && href && href !== '#' && !href.includes('javascript:')) {
                     if (href.toLowerCase().includes('sarkariresult')) return;
+
+                    // Replace competitor WhatsApp/Telegram groups with ours
+                    const lowerLabel = label.toLowerCase();
+                    const lowerHref = href.toLowerCase();
+                    if (lowerLabel.includes('whatsapp') || lowerHref.includes('whatsapp.com')) {
+                      href = "https://chat.whatsapp.com/GeHRdlojdjU7hurA2QCIT7";
+                    } else if (lowerLabel.includes('telegram') || lowerHref.includes('t.me') || lowerHref.includes('telegram.me')) {
+                      href = "https://t.me/weekly_naukri";
+                    }
+
                     allImportantLinks.push({ label, url: href });
                     const lower = label.toLowerCase();
                     if ((lower.includes('apply online') || lower.includes('mains form')) && links.apply === '#') links.apply = href;
@@ -789,9 +799,17 @@ export async function fetchSarkariJobDetails(url) {
           const text = (el.innerText || '').toLowerCase();
           const anchor = el.querySelector('a[href]');
           if (!anchor) continue;
-          const href = anchor.href;
+          let href = anchor.href;
           if (!href || href === '#' || href.includes('javascript:')) continue;
           if (href.toLowerCase().includes('sarkariresult')) continue;
+          
+          // Replace competitor WhatsApp/Telegram groups with ours
+          if (text.includes('whatsapp') || href.toLowerCase().includes('whatsapp.com')) {
+            href = "https://chat.whatsapp.com/GeHRdlojdjU7hurA2QCIT7";
+          } else if (text.includes('telegram') || href.toLowerCase().includes('t.me') || href.toLowerCase().includes('telegram.me')) {
+            href = "https://t.me/weekly_naukri";
+          }
+
           if ((text.includes('apply online') || text.includes('mains form')) && links.apply === '#') links.apply = href;
           else if (text.includes('notification') && !text.includes('official') && links.notification === '#') links.notification = href;
           else if (text.includes('official website') && links.official === '#') links.official = href;
