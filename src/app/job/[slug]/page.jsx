@@ -149,12 +149,15 @@ function getCleanFaqs(job) {
   });
 }
 
-// Clean WhatsApp and Telegram URLs from competitors to our own
+// Clean WhatsApp and Telegram URLs from competitors to our own, and block competitor links
 function getCleanLinkUrl(url, label = '') {
   if (!url || url === '#') return '#';
   const lowerUrl = url.toLowerCase();
   const lowerLabel = String(label).toLowerCase();
   
+  if (lowerUrl.includes('sarkariresult')) {
+    return '#';
+  }
   if (lowerUrl.includes('whatsapp.com') || lowerLabel.includes('whatsapp')) {
     return 'https://chat.whatsapp.com/GeHRdlojdjU7hurA2QCIT7';
   }
@@ -699,16 +702,21 @@ export default async function JobDetailsPage({ params }) {
               <table className="w-full text-left border-collapse">
                 <tbody>
                   {job.allImportantLinks && job.allImportantLinks.length > 0 ? (
-                    job.allImportantLinks.map((link, i) => (
-                      <tr key={i} className="border-b border-gray-200 hover:bg-yellow-50/50">
-                        <td className="p-3 text-sm font-bold text-blue-900 border-r border-gray-200 w-1/2 text-center">{link.label}</td>
-                        <td className="p-3 text-center">
-                          <a href={getCleanLinkUrl(link.url, link.label)} target="_blank" rel="noopener noreferrer" className="text-blue-700 font-bold hover:text-red-600 transition-colors text-sm">
-                            Click Here
-                          </a>
-                        </td>
-                      </tr>
-                    ))
+                    job.allImportantLinks
+                      .filter(link => {
+                        const url = (link.url || '').toLowerCase();
+                        return !url.includes('sarkariresult');
+                      })
+                      .map((link, i) => (
+                        <tr key={i} className="border-b border-gray-200 hover:bg-yellow-50/50">
+                          <td className="p-3 text-sm font-bold text-blue-900 border-r border-gray-200 w-1/2 text-center">{link.label}</td>
+                          <td className="p-3 text-center">
+                            <a href={getCleanLinkUrl(link.url, link.label)} target="_blank" rel="noopener noreferrer" className="text-blue-700 font-bold hover:text-red-600 transition-colors text-sm">
+                              Click Here
+                            </a>
+                          </td>
+                        </tr>
+                      ))
                   ) : (
                     <>
                       <tr className="border-b border-gray-200 hover:bg-yellow-50/50">
