@@ -39,7 +39,17 @@ export async function GET() {
       '/rajasthan-jobs-2026',
       '/syllabus',
       '/ssc-gd-2026',
-      '/image-resizer'
+      '/image-resizer',
+      '/ssc-gd-marks-calculator',
+      '/mp-govt-jobs-2026',
+      '/bihar-govt-jobs-2026',
+      '/maharashtra-govt-jobs-2026',
+      '/haryana-govt-jobs-2026',
+      '/gujarat-govt-jobs-2026',
+      '/punjab-govt-jobs-2026',
+      '/jharkhand-govt-jobs-2026',
+      '/chhattisgarh-govt-jobs-2026',
+      '/notes'
     ];
 
     const staticUrls = staticPages.map(page => ({
