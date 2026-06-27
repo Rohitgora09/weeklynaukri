@@ -2,6 +2,7 @@ import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { supabase } from './supabase.js';
 import { slugify } from '../utils/slugify.js';
+import { dedupeTitle, formatRelativeDate } from './utils.js';
 
 puppeteer.use(StealthPlugin());
 
@@ -250,7 +251,7 @@ export async function fetchSarkariResultData(force = false) {
       org: item.org,
       tag,
       tagColor: color,
-      date: 'Recent',
+      date: formatRelativeDate(item.scraped_at),
       dates: dates
     };
   };
@@ -414,14 +415,16 @@ export async function fetchSarkariResultData(force = false) {
       if (!items || items.length === 0) return;
       activeCategories.push(categoryName);
       items.forEach(item => {
-        const id = stableId('sr-', item.title);
-        const slug = slugify(item.title);
+        const cleanTitle = dedupeTitle(item.title);
+        const cleanOrg = dedupeTitle(item.org);
+        const id = stableId('sr-', cleanTitle);
+        const slug = slugify(cleanTitle);
         const preservedDetails = detailsMap.get(slug) || null;
         insertRows.push({
           url_slug: slug,
           job_id: id,
-          title: item.title,
-          org: item.org,
+          title: cleanTitle,
+          org: cleanOrg,
           category: categoryName,
           source_url: item.link,
           full_details_json: preservedDetails,
@@ -863,7 +866,12 @@ export async function fetchSarkariJobDetails(url) {
               currentQ = text.replace(/^question:\s*/i, '').trim();
             } else if (text.toLowerCase().startsWith('answer:') && currentQ) {
               const answer = text.replace(/^answer:\s*/i, '').trim();
-              if (currentQ.length > 5 && answer.length > 5) faqItems.push({ q: currentQ, a: answer });
+              if (currentQ.length > 5 && answer.length > 5) {
+                const exists = faqItems.some(item => item.q === currentQ);
+                if (!exists) {
+                  faqItems.push({ q: currentQ, a: answer });
+                }
+              }
               currentQ = null;
             }
           });
@@ -877,7 +885,12 @@ export async function fetchSarkariJobDetails(url) {
             currentQ = text.replace(/^question:\s*/i, '').trim();
           } else if (text.toLowerCase().startsWith('answer:') && currentQ) {
             const answer = text.replace(/^answer:\s*/i, '').trim();
-            if (currentQ.length > 5 && answer.length > 5) faqItems.push({ q: currentQ, a: answer });
+            if (currentQ.length > 5 && answer.length > 5) {
+              const exists = faqItems.some(item => item.q === currentQ);
+              if (!exists) {
+                faqItems.push({ q: currentQ, a: answer });
+              }
+            }
             currentQ = null;
           }
         });

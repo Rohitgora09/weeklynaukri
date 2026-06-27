@@ -26,6 +26,8 @@ export async function GET() {
 - [Remote Jobs Guide](https://weeklynaukri.com/remote-jobs-guide): Guide to finding remote and work-from-home jobs in India.
 - [FAQ](https://weeklynaukri.com/faq): Frequently asked questions about using WeeklyNaukri.
 - [About](https://weeklynaukri.com/about): About WeeklyNaukri.com.
+- [Study Notes Vault](https://weeklynaukri.com/notes): PDF study notes and syllabus sheets synced in real-time from Telegram.
+- [SSC GD Marks Calculator](https://weeklynaukri.com/ssc-gd-marks-calculator): Dedicated score estimator and cutoff analysis tool.
 - [Contact](https://weeklynaukri.com/contact): Contact and support.
 - [Privacy Policy](https://weeklynaukri.com/privacy-policy): Privacy and data handling.
 

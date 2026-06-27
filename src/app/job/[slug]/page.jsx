@@ -11,6 +11,7 @@ import { supabase } from '../../../lib/supabase';
 import { fetchSarkariJobDetails } from '../../../lib/scraper';
 import JobPostingSchema from '../../../components/seo/JobPostingSchema';
 import ShareButtonClient from './ShareButtonClient'; // Client side click handler for clipboard/share
+import { dedupeTitle } from '../../../lib/utils';
 
 // Import static fallback data
 import { 
@@ -49,7 +50,7 @@ function getCleanJobTitle(job) {
   if (!job) return '';
   let title = (job.title || '').trim();
   title = title.replace(/\s+/g, ' ');
-  return title;
+  return dedupeTitle(title);
 }
 
 // Clean organization names (remove trailing duplicates like 'Online', 'Form')
@@ -155,8 +156,14 @@ function getCleanLinkUrl(url, label = '', fallbackUrl = '#') {
   const lowerUrl = url.toLowerCase();
   const lowerLabel = String(label).toLowerCase();
   
-  if (lowerUrl.includes('sarkariresult')) {
-    return fallbackUrl;
+  const isCompetitor = (u) => {
+    if (!u) return false;
+    const lu = u.toLowerCase();
+    return lu.includes('sarkariresult') || lu.includes('rojgarresult');
+  };
+
+  if (isCompetitor(url)) {
+    return isCompetitor(fallbackUrl) ? '/' : fallbackUrl;
   }
   if (lowerUrl.includes('whatsapp.com') || lowerLabel.includes('whatsapp')) {
     return 'https://chat.whatsapp.com/GeHRdlojdjU7hurA2QCIT7';
