@@ -39,23 +39,35 @@ export async function POST(request) {
     let storagePath = null;
 
     try {
-      // 1. Fetch file path metadata from Telegram API
+      console.log(`[Telegram Webhook] Step 1: Requesting file metadata from Telegram for file_id: ${fileId}...`);
       const fileMetaRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getFile?file_id=${fileId}`);
+      
+      if (!fileMetaRes.ok) {
+        throw new Error(`Telegram getFile metadata API returned status ${fileMetaRes.status}`);
+      }
+      
       const fileMeta = await fileMetaRes.json();
+      console.log(`[Telegram Webhook] Telegram getFile metadata response:`, JSON.stringify(fileMeta));
 
       if (fileMeta.ok && fileMeta.result?.file_path) {
         const filePath = fileMeta.result.file_path;
         const downloadUrl = `https://api.telegram.org/file/bot${BOT_TOKEN}/${filePath}`;
 
-        console.log(`[Telegram Webhook] Downloading file from Telegram...`);
+        console.log(`[Telegram Webhook] Step 2: Downloading file content from Telegram: ${downloadUrl}...`);
         const fileResponse = await fetch(downloadUrl);
+        
+        if (!fileResponse.ok) {
+          throw new Error(`Telegram download URL returned status ${fileResponse.status}`);
+        }
+        
         const fileBuffer = await fileResponse.arrayBuffer();
+        console.log(`[Telegram Webhook] File downloaded successfully. Size: ${fileBuffer.byteLength} bytes.`);
 
         // 2. Upload file to Supabase Storage 'materials' bucket
         const uniqueFileName = `${Date.now()}_${fileName.replace(/\s+/g, '_')}`;
         storagePath = `uploads/${uniqueFileName}`;
 
-        console.log(`[Telegram Webhook] Uploading to Supabase Storage...`);
+        console.log(`[Telegram Webhook] Step 3: Uploading file to Supabase Storage bucket 'materials' at path: ${storagePath}...`);
         const { error: uploadError } = await supabase.storage
           .from('materials')
           .upload(storagePath, fileBuffer, {
@@ -66,10 +78,8 @@ export async function POST(request) {
 
         if (uploadError) {
           console.warn('[Telegram Webhook] Supabase Storage upload failed. Fallback to telegram URL...', uploadError.message);
-          // Set storage path to null to fall back to Telegram file links or direct files
           storagePath = null;
         } else {
-          // Get public download URL for the uploaded file
           const { data: publicUrlData } = supabase.storage
             .from('materials')
             .getPublicUrl(storagePath);
@@ -79,9 +89,11 @@ export async function POST(request) {
             console.log(`[Telegram Webhook] Uploaded successfully. Public URL: ${storagePath}`);
           }
         }
+      } else {
+        console.warn(`[Telegram Webhook] Telegram did not return file path metadata:`, fileMeta);
       }
     } catch (err) {
-      console.error('[Telegram Webhook] File download/upload process error:', err.message);
+      console.error('[Telegram Webhook] File download/upload process error:', err);
     }
 
     // 3. Save file entry metadata into study_materials table
