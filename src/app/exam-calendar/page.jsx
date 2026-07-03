@@ -98,10 +98,24 @@ export default function ExamCalendarPage() {
         'addressCountry': 'IN'
       }
     },
+    'image': [
+      'https://weeklynaukri.com/og-image.png'
+    ],
     'organizer': {
       '@type': 'Organization',
       'name': evt.board,
       'url': evt.link
+    },
+    'performer': {
+      '@type': 'Organization',
+      'name': evt.board
+    },
+    'offers': {
+      '@type': 'Offer',
+      'url': evt.link,
+      'price': '0',
+      'priceCurrency': 'INR',
+      'availability': 'https://schema.org/InStock'
     },
     'description': evt.desc
   }));
