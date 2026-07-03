@@ -61,3 +61,18 @@ src/
   data/           # static job and mock test data
   utils/          # helpers (slugify)
 ```
+
+## Job alert emails
+
+Subscribers are stored in the Supabase `alert_subscribers` table
+(create it once with `supabase/alert_subscribers.sql` in the Supabase
+SQL editor). New-listing digests are sent by POSTing to
+`/api/alerts/dispatch` with the admin password. Add a daily cron on
+the VPS:
+
+```cron
+0 9 * * * curl -s -X POST -H "x-admin-password: $ADMIN_PASSWORD" https://weeklynaukri.com/api/alerts/dispatch
+```
+
+Emails go out via the same SMTP settings used for OTP mail
+(`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`).

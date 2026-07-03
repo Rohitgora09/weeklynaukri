@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Bookmark, Trash2, ChevronRight, Briefcase } from 'lucide-react';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
+import AlertSubscribeForm from '../../components/jobs/AlertSubscribeForm';
 import { useSavedJobs } from '../../hooks/useSavedJobs';
 import { T } from '../../lib/LanguageContext';
 
@@ -102,6 +103,10 @@ export default function SavedJobsPage() {
             })}
           </div>
         )}
+
+        <div className="mt-10">
+          <AlertSubscribeForm />
+        </div>
       </main>
 
       <Footer />

@@ -37,6 +37,7 @@ import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { T } from '../lib/LanguageContext';
 import JobList from '../components/jobs/JobList';
+import AlertSubscribeForm from '../components/jobs/AlertSubscribeForm';
 import SarkariCalendar from '../components/jobs/SarkariCalendar';
 import Card from '../components/ui/Card';
 import Tag from '../components/ui/Tag';
@@ -557,6 +558,13 @@ export default function HomeClient({ initialJobs, initialNotices }) {
               Telegram Channel
             </a>
           </div>
+        </div>
+      </div>
+
+      {/* Email Job Alerts */}
+      <div className="max-w-7xl mx-auto px-6 mb-4 w-full">
+        <div className="max-w-xl mx-auto">
+          <AlertSubscribeForm />
         </div>
       </div>
 
