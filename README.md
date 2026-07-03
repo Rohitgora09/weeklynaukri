@@ -1,6 +1,8 @@
-# weeklynaukri
+# WeeklyNaukri
 
-A job board for Indian government and private jobs, with authentication, resume parsing, exam test series, live job scraping, and analytics.
+**Live site: [weeklynaukri.com](https://weeklynaukri.com)** — Latest Sarkari Naukri, government jobs, results, admit cards, and answer keys, updated daily.
+
+A job board for Indian government and private jobs, with authentication, resume parsing, exam test series, live job scraping, and analytics. Free tools include an [SSC GD marks calculator](https://weeklynaukri.com/ssc-gd-marks-calculator) and a [photo/signature resizer](https://weeklynaukri.com/image-resizer) for government exam applications.
 
 ## Tech stack
 
