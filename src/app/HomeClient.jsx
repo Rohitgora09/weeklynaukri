@@ -457,7 +457,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                 </div>
               </div>
               <Link 
-                href="/it-govt-jobs" 
+                href="/it-government-jobs-2026"
                 className="bg-brand hover:bg-action text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors shadow-sm shrink-0 ml-2"
                 aria-label="Explore Technical and IT Government Jobs"
               >

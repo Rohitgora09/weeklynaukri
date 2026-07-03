@@ -139,6 +139,7 @@ export default function Navbar({ onCategorySelect }) {
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           data-testid="mobile-menu-toggle"
           aria-label="Menu"
+          aria-expanded={mobileMenuOpen}
         >
           {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>

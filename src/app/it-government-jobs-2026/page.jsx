@@ -1,5 +1,5 @@
 import { fetchSSCNotices, fetchSarkariResultData } from '../../lib/scraper';
-import ItGovtJobsClient from '../it-govt-jobs/ItGovtJobsClient';
+import ItGovtJobsClient from './ItGovtJobsClient';
 
 export const revalidate = 900; // Cache for 15 minutes
 

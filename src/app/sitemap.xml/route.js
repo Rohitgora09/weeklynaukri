@@ -22,7 +22,6 @@ export async function GET() {
       '/privacy-policy',
       '/about',
       '/referrals',
-      '/it-govt-jobs',
       '/test-series',
       '/faq',
       '/remote-jobs-guide',
@@ -52,10 +51,13 @@ export async function GET() {
       '/notes'
     ];
 
+    // Listing hubs update daily as new jobs are scraped
+    const dailyPages = new Set(['', '/latest-jobs', '/results', '/admit-cards', '/answer-keys']);
+
     const staticUrls = staticPages.map(page => ({
       loc: `https://weeklynaukri.com${page}`,
-      changefreq: page === '' ? 'daily' : 'monthly',
-      priority: page === '' ? '1.0' : '0.5'
+      changefreq: dailyPages.has(page) ? 'daily' : 'monthly',
+      priority: page === '' ? '1.0' : (dailyPages.has(page) ? '0.9' : '0.5')
     }));
 
     // Get all dynamic scraped jobs from Supabase Cache

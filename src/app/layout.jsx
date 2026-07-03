@@ -27,17 +27,17 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const viewport = {
   width: 'device-width',
   initialScale: 1.0,
+  themeColor: '#1e3a8a',
 };
 
 export const metadata = {
   title: 'Latest Govt Jobs & Sarkari Result 2026 | WeeklyNaukri',
   description: "WeeklyNaukri is a fast, privacy-first hub for Sarkari Naukri, govt jobs, private careers, and competitive exams. Get verified admit cards, results & keys.",
   metadataBase: new URL('https://weeklynaukri.com'),
+  manifest: '/manifest.webmanifest',
   icons: {
     icon: '/favicon.svg',
-  },
-  alternates: {
-    canonical: '/',
+    apple: '/logo.png',
   },
   openGraph: {
     type: 'website',

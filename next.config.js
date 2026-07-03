@@ -30,6 +30,16 @@ const nextConfig = {
         destination: '/',
         permanent: true,
       },
+      {
+        source: '/it-govt-jobs',
+        destination: '/it-government-jobs-2026',
+        permanent: true,
+      },
+      {
+        source: '/it-govt-jobs-2026',
+        destination: '/it-government-jobs-2026',
+        permanent: true,
+      },
     ];
   },
 };

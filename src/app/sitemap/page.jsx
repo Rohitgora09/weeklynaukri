@@ -53,7 +53,7 @@ export default async function SitemapPage() {
     { name: 'Sarkari Exam Results', path: '/results' },
     { name: 'Admit Card Downloads', path: '/admit-cards' },
     { name: 'Answer Keys & Objections', path: '/answer-keys' },
-    { name: 'IT & Technical Govt Jobs', path: '/it-govt-jobs' },
+    { name: 'IT & Technical Govt Jobs', path: '/it-government-jobs-2026' },
     { name: 'Free Online Mock Test Series', path: '/test-series' },
     { name: 'Job Referrals Board', path: '/referrals' },
     { name: 'Career Prep Blog', path: '/blog' },

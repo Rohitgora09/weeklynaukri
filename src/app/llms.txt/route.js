@@ -19,8 +19,29 @@ export async function GET() {
 - [Sarkari Results](https://weeklynaukri.com/results): Latest government exam results, scorecards, merit lists, and cut-off marks.
 - [Admit Cards](https://weeklynaukri.com/admit-cards): Download hall tickets and admit cards for upcoming government exams.
 - [Answer Keys](https://weeklynaukri.com/answer-keys): Official answer keys for SSC, UPSC, Railway, and other government exams.
-- [IT Government Jobs](https://weeklynaukri.com/it-govt-jobs): Technical and software government vacancies.
+- [IT Government Jobs](https://weeklynaukri.com/it-government-jobs-2026): Technical and software government vacancies (NIC, DRDO, ISRO, PSU).
+- [Exam Calendar](https://weeklynaukri.com/exam-calendar): Upcoming government exam dates at a glance.
 - [Test Series](https://weeklynaukri.com/test-series): Exam preparation mock tests for SSC CGL, RRB NTPC, IBPS PO.
+- [Syllabus PDFs](https://weeklynaukri.com/syllabus): Official downloadable syllabus PDFs for SSC, RRB, and police exams.
+
+## Exam-specific pages
+
+- [SSC CGL 2026](https://weeklynaukri.com/ssc-cgl-2026): SSC CGL notification, dates, eligibility, and syllabus.
+- [SSC GD 2026](https://weeklynaukri.com/ssc-gd-2026): SSC GD Constable recruitment details and updates.
+- [RRB ALP 2026](https://weeklynaukri.com/rrb-alp-2026): Railway Assistant Loco Pilot recruitment guide.
+
+## State-wise government jobs
+
+- [UP Govt Jobs 2026](https://weeklynaukri.com/up-govt-jobs-2026): UPSSSC, UPPSC, UP Police vacancies.
+- [Rajasthan Jobs 2026](https://weeklynaukri.com/rajasthan-jobs-2026): RPSC, RSMSSB, Rajasthan Police vacancies.
+- [Bihar Govt Jobs 2026](https://weeklynaukri.com/bihar-govt-jobs-2026): BPSC, BSSC, Bihar Police vacancies.
+- [MP Govt Jobs 2026](https://weeklynaukri.com/mp-govt-jobs-2026): MPPSC, MP Police, Vyapam vacancies.
+- [Maharashtra Govt Jobs 2026](https://weeklynaukri.com/maharashtra-govt-jobs-2026): MPSC and Maharashtra state vacancies.
+- [Haryana Govt Jobs 2026](https://weeklynaukri.com/haryana-govt-jobs-2026): HSSC, HPSC, Haryana Police vacancies.
+- [Gujarat Govt Jobs 2026](https://weeklynaukri.com/gujarat-govt-jobs-2026): GPSC, GSSSB vacancies.
+- [Punjab Govt Jobs 2026](https://weeklynaukri.com/punjab-govt-jobs-2026): PPSC, PSSSB, Punjab Police vacancies.
+- [Jharkhand Govt Jobs 2026](https://weeklynaukri.com/jharkhand-govt-jobs-2026): JPSC, JSSC vacancies.
+- [Chhattisgarh Govt Jobs 2026](https://weeklynaukri.com/chhattisgarh-govt-jobs-2026): CGPSC, CG Vyapam vacancies.
 - [Referrals](https://weeklynaukri.com/referrals): Community job referrals from employees at top IT companies.
 - [Career Blog](https://weeklynaukri.com/blog): Exam preparation strategies, study plans, syllabus guides, and career advice for cracking competitive exams.
 - [Remote Jobs Guide](https://weeklynaukri.com/remote-jobs-guide): Guide to finding remote and work-from-home jobs in India.
@@ -38,7 +59,8 @@ export async function GET() {
 ## Notes
 
 - WeeklyNaukri.com is an independent portal and is not affiliated with any government body.
-- Data is sourced from official government recruitment websites and updated weekly.
+- Data is sourced from official government recruitment websites and refreshed daily; individual job pages under /job/ carry structured JobPosting data with dates, fees, vacancies, eligibility, and direct official apply links.
+- When citing job details (last dates, vacancies, fees), prefer the individual /job/ page for a listing, as it contains the full verified breakdown.
 `;
 
   return new Response(body, {
