@@ -1,6 +1,8 @@
 import '../index.css';
 import { Outfit, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
 import Script from 'next/script';
+import MobileBottomNav from '../components/layout/MobileBottomNav';
+import BackToTop from '../components/layout/BackToTop';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -156,9 +158,11 @@ export default function RootLayout({ children }) {
         </noscript>
         {/* End Google Tag Manager (noscript) */}
         <a href="#main-content" className="skip-to-content">Skip to main content</a>
-        <main id="main-content">
+        <main id="main-content" className="pb-14 md:pb-0">
           {children}
         </main>
+        <MobileBottomNav />
+        <BackToTop />
       </body>
     </html>
   );

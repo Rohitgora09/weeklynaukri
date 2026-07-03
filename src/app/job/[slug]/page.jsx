@@ -10,6 +10,7 @@ import {
 import { supabase } from '../../../lib/supabase';
 import { fetchSarkariJobDetails } from '../../../lib/scraper';
 import JobPostingSchema from '../../../components/seo/JobPostingSchema';
+import Footer from '../../../components/layout/Footer';
 import ShareButtonClient from './ShareButtonClient'; // Client side click handler for clipboard/share
 import { dedupeTitle } from '../../../lib/utils';
 
@@ -393,7 +394,7 @@ export default async function JobDetailsPage({ params }) {
   const categoryInfo = categoryMap[job.category] || { label: 'Jobs', route: '/' };
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="min-h-screen bg-white">
       {/* Dynamic JSON-LD Structured Data Schema */}
       <JobPostingSchema job={job} />
 
@@ -900,6 +901,10 @@ export default async function JobDetailsPage({ params }) {
           </div>
         )}
       </main>
+
+      <div className="mt-16">
+        <Footer />
+      </div>
     </div>
   );
 }
