@@ -3,17 +3,19 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Briefcase, FileCheck2, IdCard, KeyRound } from 'lucide-react';
+import { useLanguage } from '../../lib/LanguageContext';
 
 const TABS = [
-  { label: 'Home', path: '/', icon: Home },
-  { label: 'Jobs', path: '/latest-jobs', icon: Briefcase },
-  { label: 'Results', path: '/results', icon: FileCheck2 },
-  { label: 'Admit Card', path: '/admit-cards', icon: IdCard },
-  { label: 'Keys', path: '/answer-keys', icon: KeyRound },
+  { label: 'Home', hi: 'होम', path: '/', icon: Home },
+  { label: 'Jobs', hi: 'नौकरियां', path: '/latest-jobs', icon: Briefcase },
+  { label: 'Results', hi: 'रिजल्ट', path: '/results', icon: FileCheck2 },
+  { label: 'Admit Card', hi: 'एडमिट कार्ड', path: '/admit-cards', icon: IdCard },
+  { label: 'Keys', hi: 'आंसर की', path: '/answer-keys', icon: KeyRound },
 ];
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
+  const { lang } = useLanguage();
 
   return (
     <nav
@@ -23,8 +25,9 @@ export default function MobileBottomNav() {
       data-testid="mobile-bottom-nav"
     >
       <div className="grid grid-cols-5">
-        {TABS.map(({ label, path, icon: Icon }) => {
+        {TABS.map(({ label, hi, path, icon: Icon }) => {
           const active = pathname === path;
+          const shown = lang === 'hi' && hi ? hi : label;
           return (
             <Link
               key={path}
@@ -36,7 +39,7 @@ export default function MobileBottomNav() {
               data-testid={`bottom-nav-${label.toLowerCase().replace(/\s+/g, '-')}`}
             >
               <Icon size={19} strokeWidth={active ? 2.4 : 2} aria-hidden="true" />
-              {label}
+              {shown}
               {active && <span className="absolute top-0 h-0.5 w-8 rounded-full bg-action" aria-hidden="true" />}
             </Link>
           );

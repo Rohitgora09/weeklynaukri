@@ -35,6 +35,7 @@ import {
 } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
+import { T } from '../lib/LanguageContext';
 import JobList from '../components/jobs/JobList';
 import SarkariCalendar from '../components/jobs/SarkariCalendar';
 import Card from '../components/ui/Card';
@@ -401,11 +402,17 @@ export default function HomeClient({ initialJobs, initialNotices }) {
           </div>
           
           <h1 className="font-heading font-extrabold text-3xl sm:text-5xl tracking-tight leading-[1.08] text-ink mb-4 max-w-5xl mx-auto">
-            Latest <span className="text-gradient">Govt &amp; Private Jobs</span>, Sarkari Results &amp; Admit Cards
+            <T
+              en={<>Latest <span className="text-gradient">Govt &amp; Private Jobs</span>, Sarkari Results &amp; Admit Cards</>}
+              hi={<>नवीनतम <span className="text-gradient">सरकारी और प्राइवेट नौकरियां</span>, सरकारी रिजल्ट और एडमिट कार्ड</>}
+            />
           </h1>
           
           <p className="text-slatebody text-sm sm:text-base mb-6 max-w-2xl mx-auto leading-relaxed">
-            <strong className="text-ink">WeeklyNaukri</strong> is a fast, privacy-first hub for <strong className="text-ink">Sarkari Naukri</strong>, govt jobs, private careers, and competitive exams. Get verified <strong className="text-ink">admit cards, results &amp; keys</strong>.
+            <T
+              en={<><strong className="text-ink">WeeklyNaukri</strong> is a fast, privacy-first hub for <strong className="text-ink">Sarkari Naukri</strong>, govt jobs, private careers, and competitive exams. Get verified <strong className="text-ink">admit cards, results &amp; keys</strong>.</>}
+              hi={<><strong className="text-ink">WeeklyNaukri</strong> — सरकारी नौकरी, प्राइवेट जॉब्स और प्रतियोगी परीक्षाओं का तेज़ और भरोसेमंद हब। वेरिफाइड <strong className="text-ink">एडमिट कार्ड, रिजल्ट और आंसर की</strong> पाएं।</>}
+            />
           </p>
 
           {/* Search input bar */}
@@ -658,7 +665,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
         ) : selectedCategory === 'Private Jobs' ? (
           <div className="max-w-4xl mx-auto w-full">
             <JobList
-              title="Private Jobs"
+              title={<T en="Private Jobs" hi="प्राइवेट नौकरियां" />}
               subtitle="Top hiring companies matching skills"
               iconName="Building2"
               variant="private"
@@ -671,7 +678,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
         ) : selectedCategory === 'Results' ? (
           <div className="max-w-4xl mx-auto w-full">
             <JobList
-              title="Sarkari Results"
+              title={<T en="Sarkari Results" hi="सरकारी रिजल्ट" />}
               subtitle="Latest exam results declared"
               iconName="FileCheck2"
               accent="alert"
@@ -683,7 +690,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
         ) : selectedCategory === 'Admit Cards' ? (
           <div className="max-w-4xl mx-auto w-full">
             <JobList
-              title="Admit Cards"
+              title={<T en="Admit Cards" hi="एडमिट कार्ड" />}
               subtitle="Download hall tickets & exam dates"
               iconName="IdCard"
               accent="action"
@@ -695,7 +702,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
         ) : selectedCategory === 'Answer Keys' ? (
           <div className="max-w-4xl mx-auto w-full">
             <JobList
-              title="Answer Keys"
+              title={<T en="Answer Keys" hi="आंसर की" />}
               subtitle="Official exam answer sheets"
               iconName="KeyRound"
               accent="ok"
@@ -711,7 +718,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
                 {showResults && (
                   <JobList
-                    title="Sarkari Results"
+                    title={<T en="Sarkari Results" hi="सरकारी रिजल्ट" />}
                     subtitle="Latest exam results declared"
                     iconName="FileCheck2"
                     accent="alert"
@@ -723,7 +730,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                 )}
                 {showAdmitCards && (
                   <JobList
-                    title="Admit Cards"
+                    title={<T en="Admit Cards" hi="एडमिट कार्ड" />}
                     subtitle="Download hall tickets & exam dates"
                     iconName="IdCard"
                     accent="action"
@@ -735,7 +742,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                 )}
                 {showGovt && (
                   <JobList
-                    title="Latest Govt Jobs"
+                    title={<T en="Latest Govt Jobs" hi="नवीनतम सरकारी नौकरियां" />}
                     subtitle="Central & state government vacancies"
                     iconName="Briefcase"
                     accent="brand"
@@ -752,7 +759,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
                   {showAnswerKeys && (
                     <JobList
-                      title="Answer Keys"
+                      title={<T en="Answer Keys" hi="आंसर की" />}
                       subtitle="Official exam answer sheets"
                       iconName="KeyRound"
                       accent="ok"
@@ -764,7 +771,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                   )}
                   {showAdmissions && (
                     <JobList
-                      title="Admissions"
+                      title={<T en="Admissions" hi="एडमिशन" />}
                       subtitle="Colleges & university entrance exams"
                       iconName="GraduationCap"
                       accent="warn"
@@ -775,7 +782,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
                   )}
                   {showPrivate && (
                     <JobList
-                      title="Private Jobs"
+                      title={<T en="Private Jobs" hi="प्राइवेट नौकरियां" />}
                       subtitle="Top hiring companies matching skills"
                       iconName="Building2"
                       accent="action"

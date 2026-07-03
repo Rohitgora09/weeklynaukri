@@ -3,6 +3,7 @@ import { Outfit, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
 import Script from 'next/script';
 import MobileBottomNav from '../components/layout/MobileBottomNav';
 import BackToTop from '../components/layout/BackToTop';
+import { LanguageProvider } from '../lib/LanguageContext';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -67,8 +68,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${outfit.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}>
+    <html lang="en" className={`${outfit.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`} suppressHydrationWarning>
       <head>
+        {/* Apply saved dark theme before first paint to avoid flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{if(localStorage.getItem('wn_theme')==='dark'){document.documentElement.classList.add('dark')}}catch(e){}})();`,
+          }}
+        />
         {/* Preload critical assets for LCP/FCP */}
         <link rel="preload" as="image" href="/logo.svg" />
 
@@ -158,11 +165,13 @@ export default function RootLayout({ children }) {
         </noscript>
         {/* End Google Tag Manager (noscript) */}
         <a href="#main-content" className="skip-to-content">Skip to main content</a>
-        <main id="main-content" className="pb-14 md:pb-0">
-          {children}
-        </main>
-        <MobileBottomNav />
-        <BackToTop />
+        <LanguageProvider>
+          <main id="main-content" className="pb-14 md:pb-0">
+            {children}
+          </main>
+          <MobileBottomNav />
+          <BackToTop />
+        </LanguageProvider>
       </body>
     </html>
   );

@@ -4,18 +4,20 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, Zap, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '../../lib/LanguageContext';
+import HeaderControls from './HeaderControls';
 
 const NAV_ITEMS = [
-  { label: 'Home', path: '/' },
-  { label: 'Latest Jobs', path: '/latest-jobs' },
-  { label: 'Results', path: '/results' },
-  { label: 'Admit Cards', path: '/admit-cards' },
-  { label: 'Answer Keys', path: '/answer-keys' },
-  { label: 'Test Series', path: '/test-series' },
-  { label: 'Study Notes', path: '/notes' },
-  { label: 'Image Resizer', path: '/image-resizer' },
-  { label: 'SSC GD 2026', path: '/ssc-gd-2026' },
-  { label: 'Blog', path: '/blog' },
+  { label: 'Home', hi: 'होम', path: '/' },
+  { label: 'Latest Jobs', hi: 'नवीनतम नौकरियां', path: '/latest-jobs' },
+  { label: 'Results', hi: 'रिजल्ट', path: '/results' },
+  { label: 'Admit Cards', hi: 'एडमिट कार्ड', path: '/admit-cards' },
+  { label: 'Answer Keys', hi: 'आंसर की', path: '/answer-keys' },
+  { label: 'Test Series', hi: 'टेस्ट सीरीज', path: '/test-series' },
+  { label: 'Study Notes', hi: 'स्टडी नोट्स', path: '/notes' },
+  { label: 'Image Resizer', hi: 'फोटो रिसाइज़र', path: '/image-resizer' },
+  { label: 'SSC GD 2026', hi: 'SSC GD 2026', path: '/ssc-gd-2026' },
+  { label: 'Blog', hi: 'ब्लॉग', path: '/blog' },
 ];
 
 export default function Navbar({ onCategorySelect }) {
@@ -23,6 +25,8 @@ export default function Navbar({ onCategorySelect }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchVal, setSearchVal] = useState('');
   const router = useRouter();
+  const { lang } = useLanguage();
+  const navLabel = (item) => (lang === 'hi' && item.hi ? item.hi : item.label);
 
   useEffect(() => {
     const userJson = localStorage.getItem('user');
@@ -79,12 +83,12 @@ export default function Navbar({ onCategorySelect }) {
           <input
             value={searchVal}
             onChange={(e) => setSearchVal(e.target.value)}
-            placeholder="Search jobs, results, exams…"
+            placeholder={lang === 'hi' ? 'नौकरी, रिजल्ट, परीक्षा खोजें…' : 'Search jobs, results, exams…'}
             className="w-full px-3 py-2 text-sm outline-none bg-transparent"
             data-testid="header-search-input"
           />
           <button type="submit" className="bg-brand text-white text-xs font-semibold px-4 py-2.5 hover:bg-action transition-colors cursor-pointer" data-testid="header-search-button">
-            Search
+            {lang === 'hi' ? 'खोजें' : 'Search'}
           </button>
         </form>
 
@@ -97,10 +101,14 @@ export default function Navbar({ onCategorySelect }) {
               className="px-3 py-1.5 rounded-full font-medium text-slatebody hover:text-ink hover:bg-slate-50 transition-colors"
               data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
             >
-              {item.label}
+              {navLabel(item)}
             </Link>
           ))}
         </nav>
+
+        <div className="hidden sm:block">
+          <HeaderControls />
+        </div>
 
         {/* Auth / Action links */}
         <div className="hidden sm:flex items-center gap-4 text-sm shrink-0">
@@ -133,7 +141,10 @@ export default function Navbar({ onCategorySelect }) {
           )}
         </div>
 
-        {/* Mobile menu button */}
+        {/* Mobile controls + menu button */}
+        <div className="sm:hidden">
+          <HeaderControls compact />
+        </div>
         <button
           className="lg:hidden p-2 text-slatebody hover:text-ink cursor-pointer"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -167,7 +178,7 @@ export default function Navbar({ onCategorySelect }) {
                 className="px-4 py-3 text-sm font-medium border-b border-r border-line text-slatebody hover:bg-slate-50"
                 data-testid={`mobile-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
               >
-                {item.label}
+                {navLabel(item)}
               </Link>
             ))}
             {currentUser ? (

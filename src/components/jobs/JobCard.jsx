@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Calendar, Building2, MapPin, ChevronRight } from 'lucide-react';
+import SaveJobButton from './SaveJobButton';
 
 const TAG_COLORS = {
   purple: "bg-brand text-white",
@@ -103,7 +104,8 @@ export default function JobCard({
         </div>
       </div>
       <div className="col-span-6 sm:col-span-2 text-xs text-slatebody tabular">{displayDate}</div>
-      <div className="col-span-6 sm:col-span-2 text-right">
+      <div className="col-span-6 sm:col-span-2 text-right flex items-center justify-end gap-1">
+        <SaveJobButton slug={slug || id} title={title} org={org} variant="icon" />
         <Link href={targetHref} className="inline-flex items-center gap-1 text-xs font-bold text-action hover:underline" data-testid={`feed-detail-${slug || id}`}>
           Details <ChevronRight size={12} />
         </Link>

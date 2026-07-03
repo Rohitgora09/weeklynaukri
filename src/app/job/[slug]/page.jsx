@@ -11,6 +11,9 @@ import { supabase } from '../../../lib/supabase';
 import { fetchSarkariJobDetails } from '../../../lib/scraper';
 import JobPostingSchema from '../../../components/seo/JobPostingSchema';
 import Footer from '../../../components/layout/Footer';
+import HeaderControls from '../../../components/layout/HeaderControls';
+import SaveJobButton from '../../../components/jobs/SaveJobButton';
+import { T } from '../../../lib/LanguageContext';
 import ShareButtonClient from './ShareButtonClient'; // Client side click handler for clipboard/share
 import { dedupeTitle } from '../../../lib/utils';
 
@@ -402,9 +405,13 @@ export default async function JobDetailsPage({ params }) {
       <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-black transition-colors font-medium text-sm">
-            <ArrowLeft className="w-4 h-4" /> Back to Home
+            <ArrowLeft className="w-4 h-4" /> <T en="Back to Home" hi="होम पर वापस" />
           </Link>
-          <ShareButtonClient jobTitle={job.title} />
+          <div className="flex items-center gap-2">
+            <SaveJobButton slug={job.slug || job.id} title={job.title} org={job.org} category={job.category} />
+            <ShareButtonClient jobTitle={job.title} />
+            <HeaderControls compact />
+          </div>
         </div>
       </nav>
 
@@ -445,7 +452,7 @@ export default async function JobDetailsPage({ params }) {
             <div className="grid grid-cols-1 md:grid-cols-2 border-b border-gray-300">
               <div className="border-r-0 md:border-r border-b md:border-b-0 border-gray-300">
                 <div className="bg-blue-950 text-white font-bold text-center py-2.5 text-sm uppercase">
-                  Important Dates
+                  <T en="Important Dates" hi="महत्वपूर्ण तिथियां" />
                 </div>
                 <div className="p-5 text-sm space-y-2.5 text-gray-800">
                   {job.dates?.items && job.dates.items.length > 0 ? (
@@ -477,7 +484,7 @@ export default async function JobDetailsPage({ params }) {
 
               <div>
                 <div className="bg-blue-950 text-white font-bold text-center py-2.5 text-sm uppercase">
-                  Application Fee
+                  <T en="Application Fee" hi="आवेदन शुल्क" />
                 </div>
                 <div className="p-5 text-sm space-y-2 text-gray-800">
                   {job.fee?.items && job.fee.items.length > 0 ? (
@@ -516,7 +523,7 @@ export default async function JobDetailsPage({ params }) {
             <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] border-b border-gray-300">
               <div className="border-r-0 md:border-r border-b md:border-b-0 border-gray-300">
                 <div className="bg-blue-900 text-white font-bold text-center py-2 text-sm uppercase">
-                  Age Limit (As of Notification)
+                  <T en="Age Limit (As of Notification)" hi="आयु सीमा (अधिसूचना के अनुसार)" />
                 </div>
                 <div className="p-5 text-sm space-y-2 text-gray-850">
                   {job.ageLimit?.items && job.ageLimit.items.length > 0 ? (
@@ -545,7 +552,7 @@ export default async function JobDetailsPage({ params }) {
               </div>
               <div>
                 <div className="bg-amber-600 text-white font-bold text-center py-2 text-sm uppercase">
-                  Total Vacancies
+                  <T en="Total Vacancies" hi="कुल पद" />
                 </div>
                 <div className="p-5 flex items-center justify-center h-full min-h-[100px]">
                   <p className="text-xl font-bold text-gray-900">{job.vacancies}</p>
@@ -557,7 +564,7 @@ export default async function JobDetailsPage({ params }) {
             {job.vacancyDetails && job.vacancyDetails.length > 0 ? (
               <div className="overflow-x-auto border-b border-gray-300">
                 <div className="bg-blue-950 text-white font-bold text-center py-2 text-sm uppercase">
-                  Vacancy Details (Total: {job.vacancies})
+                  <T en="Vacancy Details" hi="रिक्ति विवरण" /> (Total: {job.vacancies})
                 </div>
                 <table className="w-full text-left border-collapse min-w-[500px]">
                   <tbody>
@@ -597,8 +604,8 @@ export default async function JobDetailsPage({ params }) {
             <div className="border-b border-gray-300">
               <div className="bg-blue-950 text-white font-bold text-center py-2 text-sm uppercase">
                 {job.howToSteps && job.howToSteps.length > 0
-                  ? 'How To Check & Download'
-                  : 'How To Fill Online Form'}
+                  ? <T en="How To Check & Download" hi="कैसे चेक और डाउनलोड करें" />
+                  : <T en="How To Fill Online Form" hi="ऑनलाइन फॉर्म कैसे भरें" />}
               </div>
               <ul className="list-disc pl-8 pr-6 py-5 text-sm space-y-2 text-gray-750 leading-relaxed">
                 {job.howToSteps && job.howToSteps.length > 0 ? (
@@ -619,7 +626,7 @@ export default async function JobDetailsPage({ params }) {
             {/* Selection Process */}
             <div className="border-b border-gray-300">
               <div className="bg-blue-900 text-white font-bold text-center py-2 text-sm uppercase">
-                {getCleanJobTitle(job)} : Mode of Selection
+                {getCleanJobTitle(job)} : <T en="Mode of Selection" hi="चयन प्रक्रिया" />
               </div>
               <ul className="list-disc pl-8 py-3.5 text-sm text-gray-750 space-y-1">
                 {job.selectionProcess && job.selectionProcess.length > 0 ? (
@@ -705,7 +712,7 @@ export default async function JobDetailsPage({ params }) {
             {/* Useful Important Links — Expanded */}
             <div>
               <div className="bg-red-50 text-red-600 font-bold text-center py-2 text-sm uppercase tracking-wider border-b border-gray-300">
-                Some Useful Important Links
+                <T en="Some Useful Important Links" hi="कुछ महत्वपूर्ण लिंक" />
               </div>
               <table className="w-full text-left border-collapse">
                 <tbody>
@@ -763,7 +770,7 @@ export default async function JobDetailsPage({ params }) {
           {getCleanFaqs(job) && getCleanFaqs(job).length > 0 && (
             <div className="border border-gray-300 bg-white mb-8 rounded-lg overflow-hidden shadow-sm">
               <div className="bg-blue-950 text-white font-bold text-center py-2.5 text-sm uppercase">
-                {getCleanJobTitle(job)} : Important Questions
+                {getCleanJobTitle(job)} : <T en="Important Questions" hi="महत्वपूर्ण प्रश्न" />
               </div>
               <div className="divide-y divide-gray-200">
                 {getCleanFaqs(job).map((faq, i) => (
@@ -800,7 +807,7 @@ export default async function JobDetailsPage({ params }) {
               {/* Useful Links Table */}
               <div className="border border-gray-300 rounded overflow-hidden">
                 <div className="bg-blue-100 text-amber-600 font-bold text-center py-2 text-xs uppercase tracking-wider border-b border-gray-300">
-                  Useful Important Links
+                  <T en="Useful Important Links" hi="महत्वपूर्ण लिंक" />
                 </div>
                 <table className="w-full text-left border-collapse">
                   <tbody>
