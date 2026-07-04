@@ -78,7 +78,7 @@ export default function Navbar({ onCategorySelect }) {
         </Link>
 
         {/* Search form (desktop) */}
-        <form onSubmit={submitSearch} className="hidden md:flex flex-1 min-w-[210px] max-w-md items-center border border-slate-200 rounded-full overflow-hidden focus-within:border-action focus-within:ring-2 focus-within:ring-action/20 transition">
+        <form onSubmit={submitSearch} className="hidden md:flex flex-1 min-w-[170px] max-w-md items-center border border-slate-200 rounded-full overflow-hidden focus-within:border-action focus-within:ring-2 focus-within:ring-action/20 transition">
           <Search size={16} className="ml-4 text-muted" />
           <input
             value={searchVal}
@@ -92,13 +92,13 @@ export default function Navbar({ onCategorySelect }) {
           </button>
         </form>
 
-        {/* Desktop nav links */}
+        {/* Desktop nav links — Home is omitted (the logo links home) */}
         <nav className="hidden lg:flex items-center gap-1 text-sm">
-          {NAV_ITEMS.slice(0, 7).map((item, i) => (
+          {NAV_ITEMS.slice(1, 7).map((item, i) => (
             <Link
               key={item.label}
               href={item.path}
-              className={`px-3 py-1.5 rounded-full font-medium text-slatebody hover:text-ink hover:bg-slate-50 transition-colors whitespace-nowrap ${i >= 5 ? 'hidden 2xl:block' : i >= 3 ? 'hidden xl:block' : ''}`}
+              className={`px-3 py-1.5 rounded-full font-medium text-slatebody hover:text-ink hover:bg-slate-50 transition-colors whitespace-nowrap ${i >= 4 ? 'hidden 2xl:block' : i >= 2 ? 'hidden xl:block' : ''}`}
               data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
             >
               {navLabel(item)}
