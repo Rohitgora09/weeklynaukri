@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { 
   ArrowLeft, 
   Share2, 
@@ -304,9 +304,11 @@ async function getJobData(slug) {
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const data = await getJobData(slug);
-  
+
+  // Expired/unknown jobs must 404, not redirect — Google flags
+  // redirect-to-home as a soft 404 ("Page with redirect")
   if (!data) {
-    redirect('/');
+    notFound();
   }
 
   const { job } = data;
@@ -361,7 +363,7 @@ export default async function JobDetailsPage({ params }) {
   const data = await getJobData(slug);
 
   if (!data) {
-    redirect('/');
+    notFound();
   }
 
   const { job } = data;
