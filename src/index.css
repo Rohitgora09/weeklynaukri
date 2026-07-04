@@ -10,6 +10,8 @@
   --color-ok: #16a34a;
   --color-warn: #eab308;
   --color-line: #e2e8f0;
+  --color-saffron: #d9670b;
+  --color-flaggreen: #046a38;
   
   --font-heading: var(--font-heading), sans-serif;
   --font-body: var(--font-body), sans-serif;
@@ -27,7 +29,7 @@ html {
 }
 
 body {
-  font-family: var(--font-body), sans-serif;
+  font-family: var(--font-body), var(--font-devanagari), sans-serif;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
@@ -37,7 +39,29 @@ body {
 }
 
 h1, h2, h3, h4, h5, .font-heading {
-  font-family: var(--font-heading), sans-serif;
+  font-family: var(--font-heading), var(--font-devanagari), serif;
+}
+
+/* ── Tricolor Hairline (signature element) ─────────────────
+   A 2px saffron/white/green rule — the bilingual-letterhead
+   motif of Indian government notices. Used under the navbar
+   and above the footer; green appears nowhere else. */
+.tricolor-rule {
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--color-saffron) 0%, var(--color-saffron) 33.3%,
+    #ffffff 33.3%, #ffffff 66.6%,
+    var(--color-flaggreen) 66.6%, var(--color-flaggreen) 100%
+  );
+}
+.dark .tricolor-rule {
+  background: linear-gradient(
+    90deg,
+    var(--color-saffron) 0%, var(--color-saffron) 33.3%,
+    #94a3b8 33.3%, #94a3b8 66.6%,
+    var(--color-flaggreen) 66.6%, var(--color-flaggreen) 100%
+  );
 }
 
 .tabular {
@@ -252,9 +276,15 @@ input:focus:not(:focus-visible) {
   animation: floaty 14s ease-in-out infinite;
 }
 
-/* Gradient text */
+/* Gradient text — navy into saffron, the identity pair */
 .text-gradient {
-  background: linear-gradient(92deg, #1E3A8A 0%, #2563EB 55%, #16A34A 120%);
+  background: linear-gradient(92deg, #1e3a8a 0%, #2563eb 45%, #d9670b 110%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.dark .text-gradient {
+  background: linear-gradient(92deg, #93c5fd 0%, #7db4f7 45%, #f59e0b 110%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -302,6 +332,8 @@ input:focus:not(:focus-visible) {
 .dark .text-blue-700 { color: #7db4f7; }
 .dark .text-green-700, .dark .text-green-800 { color: #4ade80; }
 .dark .text-amber-600 { color: #fbbf24; }
+.dark .text-saffron { color: #fb923c; }
+.dark .bg-amber-200, .dark .bg-blue-300 { opacity: 0.15; }
 .dark .text-red-600, .dark .text-alert { color: #f87171; }
 .dark .text-slate-300 { color: #3f5474; }
 .dark .text-slate-400, .dark .text-gray-400 { color: #64748b; }
@@ -328,7 +360,7 @@ input:focus:not(:focus-visible) {
 .dark input::placeholder, .dark textarea::placeholder { color: #64748b; }
 
 /* Blog prose */
-.prose-article h3 { font-family: "Outfit"; font-size: 1.25rem; font-weight: 700; margin: 1.5rem 0 0.6rem; color: #0f172a; }
+.prose-article h3 { font-family: var(--font-heading), serif; font-size: 1.25rem; font-weight: 700; margin: 1.5rem 0 0.6rem; color: #0f172a; }
 .prose-article p { margin: 0.75rem 0; line-height: 1.7; color: #334155; }
 .prose-article a { color: #2563eb; text-decoration: underline; }
 .prose-article ol, .prose-article ul { margin: 0.75rem 0 0.75rem 1.25rem; line-height: 1.7; color: #334155; }

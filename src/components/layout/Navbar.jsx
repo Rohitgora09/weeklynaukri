@@ -72,8 +72,13 @@ export default function Navbar({ onCategorySelect }) {
         {/* Brand logo & name */}
         <Link href="/" className="flex items-center gap-2 shrink-0" data-testid="logo-home-link">
           <img src="/logo.svg" alt="WeeklyNaukri Logo" className="w-9 h-9 shrink-0" />
-          <span className="font-heading font-extrabold text-xl tracking-tight text-ink">
-            Weekly<span className="text-action">Naukri</span>
+          <span className="flex flex-col leading-none">
+            <span className="font-heading font-bold text-xl tracking-tight text-ink">
+              Weekly<span className="text-action">Naukri</span>
+            </span>
+            <span className="text-[9px] text-muted tracking-[0.18em] mt-0.5" lang="hi">
+              साप्ताहिक नौकरी
+            </span>
           </span>
         </Link>
 
@@ -220,6 +225,9 @@ export default function Navbar({ onCategorySelect }) {
           </div>
         </div>
       )}
+
+      {/* Signature: bilingual-letterhead tricolor rule */}
+      <div className="tricolor-rule" aria-hidden="true" />
     </header>
   );
 }

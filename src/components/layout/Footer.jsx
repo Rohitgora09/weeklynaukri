@@ -85,12 +85,19 @@ const COLS = [
 export default function Footer() {
   return (
     <footer className="mt-16 bg-ink text-slate-350 w-full" data-testid="site-footer">
+      {/* Signature: bilingual-letterhead tricolor rule */}
+      <div className="tricolor-rule" aria-hidden="true" />
       <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-2 lg:grid-cols-5 gap-8">
         <div className="col-span-2">
           <Link href="/" className="flex items-center gap-2 mb-3">
             <img src="/logo.svg" alt="WeeklyNaukri Logo" className="w-8 h-8 shrink-0" />
-            <span className="font-heading font-extrabold text-lg text-white">
-              Weekly<span className="text-action">Naukri</span>
+            <span className="flex flex-col leading-none">
+              <span className="font-heading font-bold text-lg text-white">
+                Weekly<span className="text-action">Naukri</span>
+              </span>
+              <span className="text-[9px] text-slate-500 tracking-[0.18em] mt-0.5" lang="hi">
+                साप्ताहिक नौकरी
+              </span>
             </span>
           </Link>
           <p className="text-sm leading-relaxed max-w-xs text-slate-400">

@@ -396,11 +396,11 @@ export default function HomeClient({ initialJobs, initialNotices }) {
       <section className="relative overflow-hidden border-b border-slate-200 bg-white w-full">
         {/* Animated Glow Blobs */}
         <div className="blob bg-blue-300 w-72 h-72 -top-20 -left-10" />
-        <div className="blob bg-emerald-200 w-72 h-72 top-10 right-0 animate-delay-3000" style={{ animationDelay: '3s' }} />
+        <div className="blob bg-amber-200 w-72 h-72 top-10 right-0" style={{ animationDelay: '3s' }} />
         <div className="absolute inset-0 dot-grid opacity-40" />
 
         <div className="relative max-w-7xl mx-auto px-4 py-10 lg:py-14 text-center">
-          <div className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-action font-bold bg-blue-50 border border-blue-100 rounded-full px-3 py-1 mb-4">
+          <div className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-saffron font-bold bg-amber-50 border border-amber-100 rounded-full px-3 py-1 mb-4">
             <Sparkles size={12} /> Sarkari Result Hub · 2026
           </div>
           

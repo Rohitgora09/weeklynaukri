@@ -1,15 +1,22 @@
 import '../index.css';
-import { Outfit, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
+import { IBM_Plex_Serif, IBM_Plex_Sans, IBM_Plex_Mono, IBM_Plex_Sans_Devanagari } from 'next/font/google';
 import Script from 'next/script';
 import MobileBottomNav from '../components/layout/MobileBottomNav';
 import BackToTop from '../components/layout/BackToTop';
 import { LanguageProvider } from '../lib/LanguageContext';
 
-const outfit = Outfit({
+const plexSerif = IBM_Plex_Serif({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['500', '600', '700'],
   display: 'swap',
   variable: '--font-heading',
+});
+
+const plexDevanagari = IBM_Plex_Sans_Devanagari({
+  subsets: ['devanagari', 'latin'],
+  weight: ['400', '600'],
+  display: 'swap',
+  variable: '--font-devanagari',
 });
 
 const ibmPlexSans = IBM_Plex_Sans({
@@ -68,7 +75,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${outfit.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${plexSerif.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable} ${plexDevanagari.variable}`} suppressHydrationWarning>
       <head>
         {/* Apply saved dark theme before first paint to avoid flash */}
         <script
