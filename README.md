@@ -76,3 +76,14 @@ the VPS:
 
 Emails go out via the same SMTP settings used for OTP mail
 (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`).
+
+## IndexNow (instant Bing indexing)
+
+New job URLs are pushed to IndexNow so Bing/Yandex index them within
+minutes. The verification key file lives in `public/`. Trigger a
+submission of the last 36h of scraped URLs via cron (daily, after the
+alerts dispatch):
+
+```cron
+15 9 * * * curl -s -X POST -H "x-admin-password: $ADMIN_PASSWORD" https://weeklynaukri.com/api/indexnow/submit
+```
