@@ -7,7 +7,7 @@ import { supabase } from '../../../../lib/supabase';
 // Protected by ADMIN_PASSWORD; run from cron after scrapes:
 //   curl -X POST -H "x-admin-password: $ADMIN_PASSWORD" https://weeklynaukri.com/api/indexnow/submit
 
-const INDEXNOW_KEY = 'a17f3ef0b8022c06ba7d80d8e003ad69';
+const INDEXNOW_KEY = '915cfb998c92486fa079ab5a0b49bb32';
 const HOST = 'weeklynaukri.com';
 const LOOKBACK_HOURS = 36;
 const MAX_URLS = 500;
