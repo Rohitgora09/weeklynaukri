@@ -220,9 +220,6 @@ export default function Navbar({ onCategorySelect }) {
           </div>
         </div>
       )}
-
-      {/* Signature: bilingual-letterhead tricolor rule */}
-      <div className="tricolor-rule" aria-hidden="true" />
     </header>
   );
 }
