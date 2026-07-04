@@ -14,6 +14,7 @@ import Footer from '../../../components/layout/Footer';
 import HeaderControls from '../../../components/layout/HeaderControls';
 import SaveJobButton from '../../../components/jobs/SaveJobButton';
 import { T } from '../../../lib/LanguageContext';
+import { buildJobSummary } from '../../../lib/jobSummary';
 import ShareButtonClient from './ShareButtonClient'; // Client side click handler for clipboard/share
 import { dedupeTitle } from '../../../lib/utils';
 
@@ -445,6 +446,26 @@ export default async function JobDetailsPage({ params }) {
             WeeklyNaukri.Com
           </h3>
         </div>
+
+        {/* Original bilingual overview generated from scraped structured data */}
+        {(() => {
+          const summary = buildJobSummary(job);
+          if (!summary) return null;
+          return (
+            <section
+              className="mb-8 border border-gray-200 bg-gray-50/50 rounded-xl p-5 text-left"
+              aria-label="Job overview"
+            >
+              <h2 className="font-heading font-bold text-sm text-blue-950 uppercase tracking-wider mb-2.5">
+                Overview · एक नज़र में
+              </h2>
+              <p className="text-sm text-gray-700 leading-relaxed">{summary.en}</p>
+              <p className="text-sm text-gray-700 leading-relaxed mt-2.5 pt-2.5 border-t border-gray-200" lang="hi">
+                {summary.hi}
+              </p>
+            </section>
+          );
+        })()}
 
         {isDetailedJob ? (
           <>
