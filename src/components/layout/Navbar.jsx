@@ -98,7 +98,7 @@ export default function Navbar({ onCategorySelect }) {
             <Link
               key={item.label}
               href={item.path}
-              className={`px-3 py-1.5 rounded-full font-medium text-slatebody hover:text-ink hover:bg-slate-50 transition-colors whitespace-nowrap ${i >= 5 ? 'hidden xl:block' : ''}`}
+              className={`px-3 py-1.5 rounded-full font-medium text-slatebody hover:text-ink hover:bg-slate-50 transition-colors whitespace-nowrap ${i >= 5 ? 'hidden 2xl:block' : i >= 3 ? 'hidden xl:block' : ''}`}
               data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
             >
               {navLabel(item)}
