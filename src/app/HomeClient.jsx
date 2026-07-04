@@ -41,6 +41,8 @@ import AlertSubscribeForm from '../components/jobs/AlertSubscribeForm';
 import SarkariCalendar from '../components/jobs/SarkariCalendar';
 import Card from '../components/ui/Card';
 import Tag from '../components/ui/Tag';
+import NumberTicker from '../components/ui/NumberTicker';
+import { BentoGrid, BentoCard } from '../components/ui/BentoGrid';
 import { api } from '../services/api';
 import { 
   privateJobs as fallbackPrivateJobs, 
@@ -440,7 +442,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
           {/* Statistics chips row */}
           <div className="flex flex-wrap items-center justify-center gap-2.5 mt-6">
             {[
-              { icon: TrendingUp, label: `${totalLive > 0 ? totalLive : "50"}+ live listings`, c: "text-action bg-blue-50 border-blue-100" },
+              { icon: TrendingUp, label: <><NumberTicker value={totalLive > 0 ? totalLive : 50} />+ live listings</>, c: "text-action bg-blue-50 border-blue-100" },
               { icon: Zap, label: "Updated daily", c: "text-ok bg-green-50 border-green-100" },
               { icon: ShieldCheck, label: "Privacy-first tools", c: "text-brand bg-indigo-50 border-indigo-100" },
               { icon: CheckCircle2, label: "100% free", c: "text-rose-600 bg-rose-50 border-rose-100" },
@@ -498,7 +500,7 @@ export default function HomeClient({ initialJobs, initialNotices }) {
           <div className="mt-8 flex justify-center">
             <button
               onClick={() => setIsResumeModalOpen(true)}
-              className="bg-action text-white border-none px-8 py-3.5 rounded-full font-bold text-sm hover:bg-blue-800 hover:-translate-y-0.5 transition-all shadow-md flex items-center gap-2 cursor-pointer"
+              className="shine-sweep bg-action text-white border-none px-8 py-3.5 rounded-full font-bold text-sm hover:bg-blue-800 hover:-translate-y-0.5 transition-all shadow-md flex items-center gap-2 cursor-pointer"
               aria-label="Upload your resume to find matching jobs using AI"
             >
               <UploadCloud className="w-5 h-5 text-white" aria-hidden="true" /> Match with AI Resume
@@ -850,24 +852,49 @@ export default function HomeClient({ initialJobs, initialNotices }) {
             <div className="lg:col-span-2">
               <h2 className="font-heading font-bold text-2xl tracking-tight text-ink">Free Exam Utilities</h2>
               <p className="text-slatebody text-sm mt-1 mb-5">Built for candidates. Fast, privacy-first, no signup.</p>
-              <div className="grid sm:grid-cols-3 gap-4">
-                {[
-                  { icon: ImageIcon, title: "Photo & Signature Resizer", desc: "SSC, UPSC presets. 100% in-browser.", to: "/image-resizer", testid: "tool-image-resizer", grad: "from-blue-600 to-sky-500" },
-                  { icon: Calculator, title: "SSC GD 2026 Calculator", desc: "Marks, cut-off & PET estimator.", to: "/ssc-gd-2026", testid: "tool-ssc-gd", grad: "from-emerald-600 to-green-500" },
-                  { icon: FileStack, title: "Syllabus PDF Vault", desc: "Patterns, weightage & downloads.", to: "/syllabus", testid: "tool-syllabus", grad: "from-indigo-700 to-blue-700" },
-                ].map((t) => (
-                  <Link key={t.to} href={t.to} data-testid={t.testid}
-                    className="group bg-white rounded-2xl border border-slate-200 p-5 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1.5 hover:border-action/30"
-                  >
-                    <span className={`grid place-items-center w-12 h-12 rounded-xl bg-gradient-to-br ${t.grad} text-white mb-3 shadow-md group-hover:scale-110 transition-transform`}>
-                      <t.icon size={22} />
-                    </span>
-                    <h3 className="font-heading font-bold text-sm text-ink">{t.title}</h3>
-                    <p className="text-xs text-muted mt-1 leading-relaxed">{t.desc}</p>
-                    <span className="inline-flex items-center gap-1 text-xs font-bold text-action mt-3">Open <ArrowRight size={12} /></span>
-                  </Link>
-                ))}
-              </div>
+              <BentoGrid>
+                <BentoCard
+                  href="/image-resizer"
+                  testid="tool-image-resizer"
+                  icon={ImageIcon}
+                  gradient="from-blue-600 to-sky-500"
+                  className="sm:col-span-2"
+                  title={<T en="Photo & Signature Resizer" hi="फोटो और हस्ताक्षर रिसाइज़र" />}
+                  description={<T en="SSC, UPSC & police form presets. Runs 100% in your browser — photos never leave your device." hi="SSC, UPSC और पुलिस फॉर्म प्रीसेट। 100% आपके ब्राउज़र में — फोटो कभी अपलोड नहीं होती।" />}
+                />
+                <BentoCard
+                  href="/ssc-gd-2026"
+                  testid="tool-ssc-gd"
+                  icon={Calculator}
+                  gradient="from-emerald-600 to-green-500"
+                  title={<T en="SSC GD 2026 Calculator" hi="SSC GD 2026 कैलकुलेटर" />}
+                  description={<T en="Marks, cut-off & PET estimator." hi="मार्क्स, कट-ऑफ और PET अनुमान।" />}
+                />
+                <BentoCard
+                  href="/exam-calendar"
+                  testid="tool-exam-calendar"
+                  icon={Calendar}
+                  gradient="from-amber-500 to-orange-500"
+                  title={<T en="Exam Calendar" hi="परीक्षा कैलेंडर" />}
+                  description={<T en="Upcoming exam dates at a glance." hi="आगामी परीक्षा तिथियां एक नज़र में।" />}
+                />
+                <BentoCard
+                  href="/syllabus"
+                  testid="tool-syllabus"
+                  icon={FileStack}
+                  gradient="from-indigo-700 to-blue-700"
+                  title={<T en="Syllabus PDF Vault" hi="सिलेबस PDF वॉल्ट" />}
+                  description={<T en="Patterns, weightage & downloads." hi="पैटर्न, वेटेज और डाउनलोड।" />}
+                />
+                <BentoCard
+                  href="/notes"
+                  testid="tool-notes"
+                  icon={BookOpen}
+                  gradient="from-rose-600 to-pink-600"
+                  title={<T en="Study Notes Vault" hi="स्टडी नोट्स वॉल्ट" />}
+                  description={<T en="Free PDF notes, synced daily." hi="फ्री PDF नोट्स, रोज़ अपडेट।" />}
+                />
+              </BentoGrid>
               <div className="mt-6 flex items-center gap-3 bg-green-50 rounded-xl border border-green-100 p-4">
                 <ShieldCheck size={20} className="text-ok shrink-0" />
                 <p className="text-sm text-slatebody"><strong className="text-ink">Privacy-first:</strong> Image tools run 100% inside your browser. Your photos are never uploaded to any server.</p>

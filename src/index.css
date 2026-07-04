@@ -190,6 +190,27 @@ input:focus:not(:focus-visible) {
   animation-play-state: paused;
 }
 
+/* ── Shine Sweep (Magic UI-style shimmer, CSS only) ───────── */
+@keyframes shine-sweep {
+  0%, 65% { transform: translateX(-150%) skewX(-20deg); }
+  100% { transform: translateX(250%) skewX(-20deg); }
+}
+
+.shine-sweep {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-sweep::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  animation: shine-sweep 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
 /* ── Reduced Motion (Accessibility) ──────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,
