@@ -38,6 +38,22 @@ function findStaticJob(idOrSlug) {
   return allData.find(item => item.id === idOrSlug || item.title?.toLowerCase().replace(/\s+/g, '-') === idOrSlug);
 }
 
+// True when the notice comes from a government or board-owned domain
+function isOfficialSource(url) {
+  if (!url) return false;
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    return (
+      host.endsWith('.gov.in') ||
+      host.endsWith('.nic.in') ||
+      host === 'ibps.in' ||
+      host.endsWith('.ibps.in')
+    );
+  } catch (e) {
+    return false;
+  }
+}
+
 // Helper to format fee values — prevents double ₹ and handles N/A gracefully
 function formatFee(value) {
   if (!value || value === 'N/A' || value === 'undefined') return 'Check Notification';
@@ -445,6 +461,14 @@ export default async function JobDetailsPage({ params }) {
           <h3 className="text-md md:text-lg font-bold text-blue-900 uppercase">
             WeeklyNaukri.Com
           </h3>
+          {isOfficialSource(job.source_url) && (
+            <span className="inline-flex items-center gap-1.5 mt-3 text-[11px] font-bold uppercase tracking-wide bg-green-50 text-green-700 border border-green-200 rounded-full px-3 py-1">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+                <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <T en="Verified from official source" hi="आधिकारिक स्रोत से सत्यापित" />
+            </span>
+          )}
         </div>
 
         {/* Original bilingual overview generated from scraped structured data */}

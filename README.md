@@ -87,3 +87,19 @@ alerts dispatch):
 ```cron
 15 9 * * * curl -s -X POST -H "x-admin-password: $ADMIN_PASSWORD" https://weeklynaukri.com/api/indexnow/submit
 ```
+
+## Official sources pipeline (Phase 1)
+
+Notices are detected directly on official board sites (UPSC whats-new,
+IBPS homepage, RPSC advertisements via Puppeteer) and staged as drafts
+in the Supabase `official_jobs` table (create it once with
+`supabase/official_jobs.sql`). Review and publish them at
+`/dashboard/official` (admin login) — publishing copies the notice into
+`scraper_cache` so every existing surface picks it up. Cron:
+
+```cron
+*/45 * * * * curl -s -X POST -H "x-admin-password: $ADMIN_PASSWORD" https://weeklynaukri.com/api/official/scan
+```
+
+Job pages sourced from .gov.in/.nic.in/ibps.in domains automatically
+show a "Verified from official source" badge.
