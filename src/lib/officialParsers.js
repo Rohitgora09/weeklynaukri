@@ -34,7 +34,8 @@ export function parseUPSC(html) {
     if (title.length < 15) continue;
     let url;
     try {
-      url = new URL(encodeURI(m[1]), 'https://upsc.gov.in/').href;
+      // Always use www — the bare host 307s file requests to the homepage
+      url = new URL(encodeURI(m[1]), 'https://www.upsc.gov.in/').href;
     } catch (e) {
       continue;
     }

@@ -36,17 +36,26 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Host not allowed' }, { status: 403 });
   }
 
+  // upsc.gov.in 307s file requests to its homepage; www serves them
+  if (target.hostname === 'upsc.gov.in') {
+    target.hostname = 'www.upsc.gov.in';
+  }
+
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 45000);
     const upstream = await fetch(target.href, {
-      headers: { 'User-Agent': UA, Accept: 'application/pdf,*/*' },
+      headers: {
+        'User-Agent': UA,
+        Accept: 'application/pdf,*/*',
+        Referer: target.origin,
+      },
       signal: controller.signal,
     });
     clearTimeout(timer);
 
     if (!upstream.ok || !upstream.body) {
-      return NextResponse.json({ error: 'Upstream fetch failed' }, { status: 502 });
+      return NextResponse.redirect(target.href, 302);
     }
 
     const length = parseInt(upstream.headers.get('content-length') || '0', 10);
@@ -55,16 +64,36 @@ export async function GET(request) {
       return NextResponse.redirect(target.href, 302);
     }
 
-    const contentType = upstream.headers.get('content-type') || '';
-    if (!contentType.includes('pdf') && !target.pathname.toLowerCase().endsWith('.pdf')) {
+    // Validate magic bytes — WAF pages and redirects-to-homepage arrive as
+    // HTML with 200; streaming those as application/pdf breaks the viewer
+    const reader = upstream.body.getReader();
+    const first = await reader.read();
+    const firstChunk = first.value || new Uint8Array(0);
+    const head = Buffer.from(firstChunk.slice(0, 1024)).toString('latin1');
+    if (!head.includes('%PDF')) {
+      reader.cancel().catch(() => {});
       return NextResponse.redirect(target.href, 302);
     }
+
+    const stream = new ReadableStream({
+      start(streamController) {
+        streamController.enqueue(firstChunk);
+      },
+      async pull(streamController) {
+        const { done, value } = await reader.read();
+        if (done) streamController.close();
+        else streamController.enqueue(value);
+      },
+      cancel() {
+        reader.cancel().catch(() => {});
+      },
+    });
 
     const filename = (target.pathname.split('/').pop() || 'notification.pdf')
       .replace(/[^\w.\-]/g, '_')
       .slice(0, 100);
 
-    return new Response(upstream.body, {
+    return new Response(stream, {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
