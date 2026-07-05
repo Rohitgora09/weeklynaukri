@@ -491,6 +491,49 @@ export default async function JobDetailsPage({ params }) {
           );
         })()}
 
+        {/* Inline official notification PDF — read it here, no redirect */}
+        {(() => {
+          const candidates = [job.links?.notification, job.source_url];
+          const pdfUrl = candidates.find(
+            (u) => u && u !== '#' && /\.pdf(\?|$)/i.test(u) && isOfficialSource(u)
+          );
+          if (!pdfUrl) return null;
+          const proxied = `/api/pdf-proxy?url=${encodeURIComponent(pdfUrl)}`;
+          return (
+            <section className="mb-8 border border-gray-300 rounded-lg overflow-hidden" aria-label="Official notification PDF">
+              <div className="bg-blue-950 text-white font-bold text-sm uppercase py-2.5 px-4 flex items-center justify-between gap-3">
+                <span><T en="Official Notification PDF" hi="आधिकारिक अधिसूचना PDF" /></span>
+                <a
+                  href={proxied}
+                  target="_blank"
+                  rel="noopener"
+                  className="text-[11px] font-bold bg-white/15 hover:bg-white/25 rounded-full px-3 py-1 transition-colors normal-case"
+                >
+                  <T en="Open full screen" hi="फुल स्क्रीन खोलें" />
+                </a>
+              </div>
+              <object data={proxied} type="application/pdf" className="w-full h-[75vh] bg-gray-100">
+                <div className="p-10 text-center">
+                  <p className="text-sm text-gray-700 mb-4">
+                    <T
+                      en="Your browser cannot display PDFs inline."
+                      hi="आपका ब्राउज़र PDF यहां नहीं दिखा सकता।"
+                    />
+                  </p>
+                  <a
+                    href={proxied}
+                    target="_blank"
+                    rel="noopener"
+                    className="inline-block bg-blue-950 text-white text-sm font-bold px-6 py-2.5 rounded-full hover:bg-blue-800 transition-colors"
+                  >
+                    <T en="Open Notification PDF" hi="अधिसूचना PDF खोलें" />
+                  </a>
+                </div>
+              </object>
+            </section>
+          );
+        })()}
+
         {isDetailedJob ? (
           <>
           <div className="border border-gray-300 bg-white mb-8 rounded-lg overflow-hidden shadow-sm">
